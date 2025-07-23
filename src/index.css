@@ -1,0 +1,242 @@
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/700.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom font imports for Satoshi */
+@font-face {
+  font-family: 'Satoshi';
+  src: url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap');
+}
+
+/* Root variables for design system */
+:root {
+  --font-times: 'Times New Roman', serif;
+  --font-sans: sans-serif;
+  --font-satoshi: 'Satoshi', 'Satoshi Placeholder', sans-serif;
+  --font-inter: 'Inter', 'Inter Placeholder', sans-serif;
+  
+  /* Smooth transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base styles */
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+  
+  body {
+    @apply bg-bg-dark text-text-light font-inter text-base antialiased;
+    background-image: @apply bg-gradient-dark;
+  }
+  
+  /* Typography hierarchy */
+  h1, .h1 {
+    @apply font-satoshi font-bold text-5xl md:text-6xl lg:text-7xl leading-tight tracking-tight;
+  }
+  
+  h2, .h2 {
+    @apply font-satoshi font-bold text-3xl md:text-4xl lg:text-5xl leading-tight;
+  }
+  
+  h3, .h3 {
+    @apply font-satoshi font-medium text-2xl md:text-3xl leading-snug;
+  }
+  
+  h4, .h4 {
+    @apply font-inter font-semibold text-xl md:text-2xl;
+  }
+  
+  h5, .h5 {
+    @apply font-inter font-medium text-lg md:text-xl;
+  }
+  
+  h6, .h6 {
+    @apply font-inter font-medium text-base md:text-lg;
+  }
+  
+  p {
+    @apply font-inter text-base leading-relaxed;
+  }
+  
+  .body-large {
+    @apply font-inter text-lg leading-relaxed;
+  }
+  
+  .body-small {
+    @apply font-sans text-xs;
+  }
+  
+  /* Times New Roman for special content */
+  .serif-text {
+    @apply font-times text-base;
+  }
+  
+  /* Focus styles */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-bg-dark;
+  }
+}
+
+/* Component styles */
+@layer components {
+  /* Glass morphism card */
+  .glass-card {
+    @apply bg-bg-white-10 backdrop-blur-xl border border-border-white-10 rounded-2xl;
+    background-image: @apply bg-gradient-glass;
+  }
+  
+  .glass-card-hover {
+    @apply hover:bg-bg-white-12 hover:border-border-white-20 hover:shadow-glass transition-all duration-300;
+  }
+  
+  /* Primary button with new color scheme */
+  .btn-primary {
+    @apply bg-primary hover:bg-primary-dark text-text-white font-inter font-medium;
+    @apply px-6 py-3 rounded-lg transition-all duration-300;
+    @apply hover:shadow-glow hover:-translate-y-0.5;
+    @apply focus:ring-4 focus:ring-primary/20;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0;
+  }
+  
+  /* Secondary button */
+  .btn-secondary {
+    @apply bg-bg-white-10 hover:bg-bg-white-12 text-text-white font-inter font-medium;
+    @apply px-6 py-3 rounded-lg backdrop-blur-sm border border-border-white-20;
+    @apply hover:border-border-white-60 transition-all duration-300;
+    @apply focus:ring-4 focus:ring-bg-white-10;
+  }
+  
+  /* Ghost button */
+  .btn-ghost {
+    @apply text-text-white-90 hover:text-text-white font-inter font-medium;
+    @apply px-6 py-3 rounded-lg transition-all duration-300;
+    @apply hover:bg-bg-white-5 focus:ring-4 focus:ring-bg-white-10;
+  }
+  
+  /* Text link styles */
+  .link {
+    @apply text-primary hover:text-primary-light transition-colors duration-200;
+    @apply underline-offset-2 hover:underline;
+  }
+  
+  .link-light {
+    @apply text-text-white-80 hover:text-text-white transition-colors duration-200;
+    @apply underline-offset-2 hover:underline;
+  }
+  
+  /* Input styles */
+  .input {
+    @apply w-full px-4 py-3 rounded-lg font-inter text-base;
+    @apply bg-bg-white-5 border border-border-white-10;
+    @apply text-text-white placeholder:text-text-white-60;
+    @apply focus:bg-bg-white-10 focus:border-primary focus:ring-2 focus:ring-primary/20;
+    @apply transition-all duration-200;
+  }
+  
+  /* Section styles */
+  .section-dark {
+    @apply bg-bg-dark text-text-white;
+  }
+  
+  .section-light {
+    @apply bg-bg-light text-text-dark;
+  }
+  
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary via-accent-blue to-accent-purple;
+    @apply bg-clip-text text-transparent;
+  }
+  
+  /* Badge styles */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+    @apply bg-bg-white-10 text-text-white-90 border border-border-white-10;
+    @apply backdrop-blur-sm;
+  }
+  
+  .badge-primary {
+    @apply bg-primary/10 text-primary border-primary/20;
+  }
+  
+  .badge-accent {
+    @apply bg-accent-purple/10 text-accent-purple border-accent-purple/20;
+  }
+}
+
+/* Utility classes */
+@layer utilities {
+  /* Glassmorphism utilities */
+  .glass-light {
+    @apply bg-bg-white-5 backdrop-blur-md;
+  }
+  
+  .glass-medium {
+    @apply bg-bg-white-10 backdrop-blur-lg;
+  }
+  
+  .glass-heavy {
+    @apply bg-bg-white-12 backdrop-blur-xl;
+  }
+  
+  /* Text utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* Animation utilities */
+  .animate-in {
+    animation: animateIn 0.5s ease-out;
+  }
+  
+  @keyframes animateIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Hover lift effect */
+  .hover-lift {
+    @apply transition-transform duration-300 hover:-translate-y-1;
+  }
+  
+  /* Custom scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-bg-dark;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-bg-white-20 rounded-full;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-bg-white-60;
+  }
+  
+  /* Hide scrollbar utility */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
