@@ -10,7 +10,7 @@ interface FeatureCardProps {
 
 export const FeatureCard = ({ icon: Icon, title, description }: FeatureCardProps) => {
   return (
-    <StandardCard className="p-6 group">
+    <StandardCard className="p-6 group h-full" hoverable={false}>
       <StandardCardIcon icon={Icon as any} />
       <StandardCardTitle>{title}</StandardCardTitle>
       <StandardCardDescription>{description}</StandardCardDescription>

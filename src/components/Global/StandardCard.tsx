@@ -20,21 +20,22 @@ export const StandardCard: React.FC<StandardCardProps> = ({
   const CardWrapper = hoverable ? motion.div : 'div';
   const hoverProps = hoverable ? {
     whileHover: { scale: 1.02, y: -5 },
-    whileTap: { scale: 0.98 }
+    whileTap: { scale: 0.98 },
+    transition: { duration: 0.3, ease: 'easeOut' }
   } : {};
 
   return (
     <CardWrapper
       {...hoverProps}
       onClick={onClick}
-      className={`relative overflow-hidden rounded-2xl bg-bg-white-10 backdrop-blur-xl border border-border-white-10 
-        ${hoverable ? 'cursor-pointer hover:bg-bg-white-12 hover:border-border-white-20 hover:shadow-glass transition-all duration-300' : ''} 
+      className={`relative overflow-hidden rounded-2xl bg-bg-white-10 backdrop-blur-xl border border-border-white-20 shadow-lg
+        ${hoverable ? 'cursor-pointer hover:bg-bg-white-12 hover:border-primary hover:shadow-glass transition-all duration-300' : ''} 
         ${className}`}
     >
       {withGradient && (
         <>
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent-purple/5 opacity-50" />
-          <div className="absolute inset-0 bg-gradient-to-t from-bg-dark/80 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent-purple/10 opacity-60" />
+          <div className="absolute inset-0 bg-gradient-to-t from-bg-dark/90 via-transparent to-transparent" />
         </>
       )}
       <div className="relative z-10">

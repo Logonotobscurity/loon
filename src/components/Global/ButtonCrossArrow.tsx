@@ -17,7 +17,7 @@ const ButtonCrossArrow: React.FC<ButtonCrossArrowProps> = ({
     <CTAButton 
       onClick={onClick}
       variant="primary"
-      className={className}
+      className={`!px-4 !py-2 text-sm font-medium shadow-md hover:shadow-lg ${className}`}
     >
       <span className="inline-flex items-center gap-2">
         {text}

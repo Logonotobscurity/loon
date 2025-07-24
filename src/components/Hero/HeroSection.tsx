@@ -35,10 +35,10 @@ export const HeroSection = () => {
   return (
     <SectionWrapper id="hero" className="relative overflow-hidden min-h-[100dvh] flex flex-col items-center justify-center pt-16 sm:pt-20">
       {/* 3D Animation - hidden on small mobile */}
-      <div className="absolute inset-0 z-0 opacity-20 sm:opacity-30 md:opacity-100 md:w-1/2 md:right-0 md:left-auto">
+      <div className="absolute inset-0 z-0 opacity-20 sm:opacity-30 md:opacity-50">
         <AnimatedBlob />
       </div>
-      <div className="relative z-10 text-center px-4 sm:px-0">
+      <div className="relative z-10 w-full max-w-5xl mx-auto text-center px-4 sm:px-6 lg:px-8">
         <motion.h1
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -65,6 +65,7 @@ export const HeroSection = () => {
             variant="primary" 
             className="w-full sm:w-auto !px-6 sm:!px-8 !py-3 sm:!py-4 text-sm sm:text-base"
             onClick={() => setModalOpen(true)}
+            aria-label="Deploy your first AI agent"
           >
             {copy.hero.cta}
           </CTAButton>
@@ -72,6 +73,7 @@ export const HeroSection = () => {
             variant="secondary" 
             className="w-full sm:w-auto !px-6 sm:!px-8 !py-3 sm:!py-4 text-sm sm:text-base"
             onClick={() => setModalOpen(true)}
+            aria-label="Request a demo of LOG_ON AI platform"
           >
             Request a Demo
           </CTAButton>

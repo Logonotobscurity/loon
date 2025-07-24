@@ -25,6 +25,7 @@ export const CTAButton = ({ children, variant = 'primary', className, ...props }
     <motion.button
       whileHover={{ y: props.disabled ? 0 : -2, scale: props.disabled ? 1 : 1.02 }}
       whileTap={{ scale: props.disabled ? 1 : 0.98 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
       className={twMerge(baseClasses, variants[variant], glassEffect, className)}
       {...props}
     >

@@ -10,12 +10,15 @@ import { TextMarquee } from '../components/Global/TextMarquee';
 import { MobileFooterCTA } from '../components/Footer/MobileFooterCTA';
 import { Footer } from '../components/Footer/Footer';
 import { GridBackground } from '../components/Global/GridBackground';
+import Meta from '../components/Meta';
 
 const LandingPage = () => {
   return (
-    <GridBackground>
-      <AppHeader />
-      <main>
+    <>
+      <Meta />
+      <GridBackground>
+        <AppHeader />
+        <main>
         <HeroSection />
         <CapabilitiesSection />
         <MarketplaceSection />
@@ -27,10 +30,11 @@ const LandingPage = () => {
           bidirectional={true}
           speed={30}
         />
-      </main>
-      <Footer />
-      <MobileFooterCTA />
-    </GridBackground>
+        </main>
+        <Footer />
+        <MobileFooterCTA />
+      </GridBackground>
+    </>
   );
 };
 

@@ -13,6 +13,7 @@ export const LeadGenerationModal: React.FC<LeadGenerationModalProps> = ({ isOpen
     name: '',
     email: '',
     industryType: '',
+    userType: 'User',
     psychologyQuestion: ''
   });
 
@@ -27,6 +28,7 @@ export const LeadGenerationModal: React.FC<LeadGenerationModalProps> = ({ isOpen
       name: '',
       email: '',
       industryType: '',
+      userType: 'User',
       psychologyQuestion: ''
     });
     onClose();
@@ -69,6 +71,7 @@ export const LeadGenerationModal: React.FC<LeadGenerationModalProps> = ({ isOpen
               <button
                 onClick={onClose}
                 className="absolute right-4 top-4 p-2 rounded-lg hover:bg-bg-white-10 transition-colors duration-200 z-10"
+                aria-label="Close modal"
               >
                 <X className="h-5 w-5 text-text-white-60" />
               </button>
@@ -151,13 +154,35 @@ export const LeadGenerationModal: React.FC<LeadGenerationModalProps> = ({ isOpen
                     </select>
                   </div>
                   
+                  {/* User Type field */}
+                  <div>
+                    <label htmlFor="userType" className="block text-sm font-medium text-text-white-80 mb-2">
+                      User Type
+                    </label>
+                    <select
+                      id="userType"
+                      name="userType"
+                      value={formData.userType}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-3 bg-bg-white-5 border border-border-white-10 rounded-lg 
+                        text-text-white placeholder-text-white-40 
+                        focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20
+                        transition-all duration-200"
+                    >
+                      <option value="Developer/Vendor">Developer/Vendor</option>
+                      <option value="User">User</option>
+                      <option value="Business Owner">Business Owner</option>
+                    </select>
+                  </div>
+                  
                   {/* Psychology Question field */}
                   <div>
                     <label htmlFor="psychologyQuestion" className="block text-sm font-medium text-text-white-80 mb-2">
                       Your AI Challenge
                     </label>
                     <p className="text-xs text-text-white-60 mb-2">
-                      If you were to implement an AI agent to help with a task, what is the biggest bottleneck or challenge you would want it to solve?
+                      If you were to implement an AI agent to help with a task, what is the biggest bottleneck or challenge you would want it to solve for your {formData.userType === 'Developer/Vendor' ? 'development' : formData.userType === 'Business Owner' ? 'business operations' : 'personal use'}?
                     </p>
                     <textarea
                       id="psychologyQuestion"
