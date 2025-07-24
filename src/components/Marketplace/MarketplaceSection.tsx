@@ -1,70 +1,70 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { SectionWrapper } from '../Global/SectionWrapper';
-import { ProductCard } from './ProductCard';
-import { AssessmentCard } from './AssessmentCard';
-import { Tab } from '@headlessui/react';
+import { MarketplaceCard } from './MarketplaceCard';
 
-const marketplaceProducts = [
+// Random products for carousel - expanded list
+const randomProducts = [
   {
-    id: 1,
-    title: "Customer Support Pro",
-    description: "AI agent that handles customer inquiries 24/7 with human-like empathy and accuracy",
-    price: "From $299/mo",
-    thumbnail: "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=400&h=300&fit=crop"
+    sectionLabel: 'Automation Ops',
+    title: 'Sales Pipeline Bot',
+    subheading: 'WORKFLOWS',
+    workflows: ['Lead Scoring', 'CRM Sync', 'Follow-up Automation', 'Email Sequences'],
   },
   {
-    id: 2,
-    title: "Sales Intelligence Agent",
-    description: "Automatically qualify leads, schedule meetings, and provide real-time sales insights",
-    price: "From $499/mo",
-    thumbnail: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop"
+    sectionLabel: 'Assistant Tools',
+    title: 'Meeting Summarizer AI',
+    subheading: 'WORKFLOWS',
+    workflows: ['Transcript Analysis', 'Action Item Extraction', 'Calendar Integration', 'Team Notifications'],
   },
   {
-    id: 3,
-    title: "Content Creator Suite",
-    description: "Generate, optimize, and schedule content across all your marketing channels",
-    price: "From $399/mo",
-    thumbnail: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&h=300&fit=crop"
+    sectionLabel: 'Analytics & Insights',
+    title: 'Performance Dashboard',
+    subheading: 'WORKFLOWS',
+    workflows: ['Real-time Metrics', 'Predictive Analytics', 'Custom Reports', 'Data Export'],
   },
   {
-    id: 4,
-    title: "Data Analytics Engine",
-    description: "Transform raw data into actionable insights with automated reporting and predictions",
-    price: "From $599/mo",
-    thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop"
-  }
-];
-
-const assessmentTools = [
-  {
-    id: 1,
-    title: "AI Readiness Assessment",
-    description: "Evaluate your organization's preparedness for AI adoption across all departments",
-    duration: "15 min",
-    icon: "🎯"
+    sectionLabel: 'Customer Experience',
+    title: 'Support Agent Pro',
+    subheading: 'WORKFLOWS',
+    workflows: ['Ticket Routing', 'Sentiment Analysis', '24/7 Response', 'Multi-language Support'],
   },
   {
-    id: 2,
-    title: "Workflow Automation Audit",
-    description: "Identify processes that can be automated to save time and reduce costs",
-    duration: "20 min",
-    icon: "⚡"
+    sectionLabel: 'Security & Compliance',
+    title: 'Data Privacy Guardian',
+    subheading: 'WORKFLOWS',
+    workflows: ['GDPR Compliance', 'Access Control', 'Audit Trails', 'Encryption Management'],
   },
   {
-    id: 3,
-    title: "ROI Calculator",
-    description: "Calculate potential savings and efficiency gains from AI agent deployment",
-    duration: "10 min",
-    icon: "💰"
+    sectionLabel: 'Marketing Automation',
+    title: 'Campaign Orchestrator',
+    subheading: 'WORKFLOWS',
+    workflows: ['A/B Testing', 'Audience Segmentation', 'Content Personalization', 'ROI Tracking'],
   },
   {
-    id: 4,
-    title: "Security & Compliance Check",
-    description: "Ensure your AI implementation meets industry standards and regulations",
-    duration: "25 min",
-    icon: "🔒"
-  }
+    sectionLabel: 'HR & Recruiting',
+    title: 'Talent Scout AI',
+    subheading: 'WORKFLOWS',
+    workflows: ['Resume Screening', 'Interview Scheduling', 'Skill Matching', 'Onboarding Automation'],
+  },
+  {
+    sectionLabel: 'Finance & Accounting',
+    title: 'Invoice Processing Bot',
+    subheading: 'WORKFLOWS',
+    workflows: ['OCR Extraction', 'Payment Reconciliation', 'Expense Categorization', 'Tax Compliance'],
+  },
+  {
+    sectionLabel: 'IT Operations',
+    title: 'System Monitor Pro',
+    subheading: 'WORKFLOWS',
+    workflows: ['Uptime Monitoring', 'Alert Management', 'Log Analysis', 'Performance Optimization'],
+  },
+  {
+    sectionLabel: 'Content Management',
+    title: 'Content Publisher AI',
+    subheading: 'WORKFLOWS',
+    workflows: ['SEO Optimization', 'Multi-channel Publishing', 'Version Control', 'Editorial Calendar'],
+  },
 ];
 
 export const MarketplaceSection = () => {
@@ -75,62 +75,25 @@ export const MarketplaceSection = () => {
           Pay What Your Economy Can Afford
         </h2>
         <p className="max-w-3xl mx-auto font-inter text-base sm:text-lg text-text-white-80 px-4 sm:px-6 lg:px-0">
-          Access enterprise-grade AI agents with regional pricing. Choose from our marketplace of pre-built solutions or assess your organization's AI readiness with our free tools.
+          Access enterprise-grade AI agents with regional pricing. Explore our marketplace of pre-built solutions tailored to your needs.
         </p>
       </div>
 
-      <Tab.Group>
-        <Tab.List className="flex justify-center space-x-1 rounded-xl bg-bg-white-5 p-1 max-w-md mx-auto mb-12">
-          <Tab
-            className={({ selected }) =>
-              `w-full rounded-lg py-2.5 text-sm font-medium leading-5 transition-all duration-200
-              ${selected
-                ? 'bg-primary text-white shadow'
-                : 'text-text-white-80 hover:bg-bg-white-10 hover:text-white'
-              }`
-            }
-          >
-            Marketplace
-          </Tab>
-          <Tab
-            className={({ selected }) =>
-              `w-full rounded-lg py-2.5 text-sm font-medium leading-5 transition-all duration-200
-              ${selected
-                ? 'bg-primary text-white shadow'
-                : 'text-text-white-80 hover:bg-bg-white-10 hover:text-white'
-              }`
-            }
-          >
-            Business Assessment Tools
-          </Tab>
-        </Tab.List>
-        <Tab.Panels>
-          <Tab.Panel>
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
-            >
-              {marketplaceProducts.map((product) => (
-                <ProductCard key={product.id} {...product} />
-              ))}
-            </motion.div>
-          </Tab.Panel>
-          <Tab.Panel>
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
-            >
-              {assessmentTools.map((tool) => (
-                <AssessmentCard key={tool.id} {...tool} />
-              ))}
-            </motion.div>
-          </Tab.Panel>
-        </Tab.Panels>
-      </Tab.Group>
+      {/* Random Products Carousel */}
+      <div>
+        <h3 className="text-xl font-satoshi font-semibold text-text-white mb-6">Featured Products</h3>
+        <div className="marketplace-carousel">
+          {randomProducts.map((product, index) => (
+            <MarketplaceCard
+              key={index}
+              sectionLabel={product.sectionLabel}
+              title={product.title}
+              subheading={product.subheading}
+              workflows={product.workflows}
+            />
+          ))}
+        </div>
+      </div>
     </SectionWrapper>
   );
 };

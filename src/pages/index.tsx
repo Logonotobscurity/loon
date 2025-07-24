@@ -3,6 +3,7 @@ import { AppHeader } from '../components/Header/AppHeader';
 import { HeroSection } from '../components/Hero/HeroSection';
 import { CapabilitiesSection } from '../components/Capabilities/CapabilitiesSection';
 import { MarketplaceSection } from '../components/Marketplace/MarketplaceSection';
+import { BusinessAssessmentSection } from '../components/BusinessAssessment/BusinessAssessmentSection';
 import { UseCasesByIndustry } from '../components/UseCases/UseCasesByIndustry';
 import { AgentsUseCasesSection } from '../components/AgentsUseCases/AgentsUseCasesSection';
 import { CommunitySection } from '../components/Community/CommunitySection';
@@ -18,6 +19,7 @@ const LandingPage = () => {
         <HeroSection />
         <CapabilitiesSection />
         <MarketplaceSection />
+        <BusinessAssessmentSection />
         <UseCasesByIndustry />
         <AgentsUseCasesSection />
         <CommunitySection />

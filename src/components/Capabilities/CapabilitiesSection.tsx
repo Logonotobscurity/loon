@@ -18,10 +18,23 @@ export const CapabilitiesSection = () => {
           Transform your enterprise with LOG_ON's autonomous agents - intelligent AI partners that understand your business, automate complex workflows, and scale with your growth. From customer support to data analysis, deploy specialized agents that work 24/7 to amplify your team's capabilities.
         </p>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mt-8 sm:mt-12 relative z-10">
+      {/* Desktop grid view */}
+      <div className="hidden sm:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mt-8 sm:mt-12 relative z-10">
         {copy.capabilities.map((feature, index) => (
           <FeatureCard key={index} {...feature} icon={icons[index]} />
         ))}
+      </div>
+      {/* Mobile carousel view */}
+      <div className="sm:hidden mt-8 relative z-10">
+        <div className="capabilities-carousel">
+          <div className="capabilities-carousel-wrapper">
+            {copy.capabilities.map((feature, index) => (
+              <div key={index} className="capabilities-carousel-item">
+                <FeatureCard {...feature} icon={icons[index]} />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </SectionWrapper>
   );
