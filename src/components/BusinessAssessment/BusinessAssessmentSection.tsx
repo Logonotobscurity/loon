@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { SectionWrapper } from '../Global/SectionWrapper';
-import { MarketplaceCard } from '../Marketplace/MarketplaceCard';
+import { StandardCard, StandardCardTitle, StandardCardDescription } from '../Global/StandardCard';
+import ButtonBlackShadow from '../Global/ButtonBlackShadow';
 
 const assessmentToolsData = [
   {
@@ -46,16 +47,39 @@ export const BusinessAssessmentSection = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="marketplace-carousel"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
       >
         {assessmentToolsData.map((tool, index) => (
-          <MarketplaceCard
+          <motion.div
             key={index}
-            sectionLabel={tool.sectionLabel}
-            title={tool.title}
-            subheading={tool.subheading}
-            workflows={tool.workflows}
-          />
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+          >
+            <StandardCard className="p-6 h-full flex flex-col">
+              <span className="text-xs font-medium text-text-white-60 uppercase tracking-wide mb-2">
+                {tool.sectionLabel}
+              </span>
+              <StandardCardTitle>{tool.title}</StandardCardTitle>
+              <span className="text-sm font-medium text-primary mb-4">
+                {tool.subheading}
+              </span>
+              <div className="flex-grow">
+                <p className="text-xs font-medium text-text-white-80 uppercase tracking-wide mb-2">Workflows:</p>
+                <ul className="space-y-2">
+                  {tool.workflows.map((workflow, i) => (
+                    <li key={i} className="flex items-center gap-2 text-sm text-text-white-60">
+                      <div className="h-1.5 w-1.5 rounded-full bg-primary/60" />
+                      {workflow}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="mt-6 flex justify-center">
+                <ButtonBlackShadow />
+              </div>
+            </StandardCard>
+          </motion.div>
         ))}
       </motion.div>
     </SectionWrapper>

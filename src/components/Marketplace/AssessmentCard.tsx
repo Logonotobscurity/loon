@@ -1,6 +1,6 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Clock } from 'lucide-react';
+import { StandardCard, StandardCardTitle, StandardCardDescription } from '../Global/StandardCard';
 
 interface AssessmentCardProps {
   id: number;
@@ -12,13 +12,10 @@ interface AssessmentCardProps {
 
 export const AssessmentCard = ({ title, description, duration, icon }: AssessmentCardProps) => {
   return (
-    <motion.div
-      whileHover={{ scale: 1.02, y: -5 }}
-      className="glass-card glass-card-hover p-6 cursor-pointer group"
-    >
+    <StandardCard className="p-6 group">
       <div className="text-4xl mb-4">{icon}</div>
-      <h3 className="font-satoshi font-semibold text-xl text-text-white mb-2">{title}</h3>
-      <p className="text-text-white-60 font-inter text-sm mb-4">{description}</p>
+      <StandardCardTitle>{title}</StandardCardTitle>
+      <StandardCardDescription className="mb-4">{description}</StandardCardDescription>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-text-white-80">
           <Clock className="h-4 w-4" />
@@ -28,6 +25,6 @@ export const AssessmentCard = ({ title, description, duration, icon }: Assessmen
           Start Free →
         </button>
       </div>
-    </motion.div>
+    </StandardCard>
   );
 };

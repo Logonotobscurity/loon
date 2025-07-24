@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { SectionWrapper } from '../Global/SectionWrapper';
 import { MarketplaceCard } from './MarketplaceCard';
+import ButtonCrossArrow from '../Global/ButtonCrossArrow';
 
 // Random products for carousel - expanded list
 const randomProducts = [
@@ -74,9 +75,10 @@ export const MarketplaceSection = () => {
         <h2 className="font-satoshi font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-tight mb-3 sm:mb-4 px-4 sm:px-0">
           Pay What Your Economy Can Afford
         </h2>
-        <p className="max-w-3xl mx-auto font-inter text-base sm:text-lg text-text-white-80 px-4 sm:px-6 lg:px-0">
+        <p className="max-w-3xl mx-auto font-inter text-base sm:text-lg text-text-white-80 px-4 sm:px-6 lg:px-0 mb-6">
           Access enterprise-grade AI agents with regional pricing. Explore our marketplace of pre-built solutions tailored to your needs.
         </p>
+        <ButtonCrossArrow className="mt-4" />
       </div>
 
       {/* Random Products Carousel */}
@@ -94,6 +96,7 @@ export const MarketplaceSection = () => {
           ))}
         </div>
       </div>
+
     </SectionWrapper>
   );
 };

@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { StandardCard, StandardCardTitle, StandardCardDescription } from '../Global/StandardCard';
 
 interface AgentCardProps {
   name: string;
@@ -29,14 +30,17 @@ export const AgentCard = ({ name, blurb, imageUrl, index }: AgentCardProps) => {
       whileInView="visible"
       viewport={{ once: true }}
       custom={index}
-      className="relative p-4 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-lg overflow-hidden group list-none"
+      className="list-none"
     >
-      <div className="absolute inset-0 bg-gradient-radial from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      <div className="relative z-10 text-center">
-        <img src={imageUrl} alt={name} className="w-24 h-24 rounded-full mx-auto border-2 border-secondary" />
-        <h4 className="mt-4 font-bold text-lg text-textLight">{name}</h4>
-        <p className="text-sm text-secondary">{blurb}</p>
-      </div>
+      <StandardCard className="p-6 group text-center">
+        <img 
+          src={imageUrl} 
+          alt={name} 
+          className="w-24 h-24 rounded-full mx-auto border-2 border-primary mb-4" 
+        />
+        <StandardCardTitle className="text-center">{name}</StandardCardTitle>
+        <StandardCardDescription className="text-center">{blurb}</StandardCardDescription>
+      </StandardCard>
     </motion.li>
   );
 };
