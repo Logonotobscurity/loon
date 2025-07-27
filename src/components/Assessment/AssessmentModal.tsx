@@ -99,9 +99,9 @@ export const AssessmentModal: React.FC<AssessmentModalProps> = ({ isOpen, onClos
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', duration: 0.5 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl z-50 p-4"
+            className="fixed inset-0 flex items-center justify-center z-50 p-4 overflow-y-auto"
           >
-            <div className="relative bg-bg-dark/95 backdrop-blur-xl border border-border-white-20 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
+            <div className="relative bg-bg-dark/95 backdrop-blur-xl border border-border-white-20 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] my-8 overflow-hidden">
               {/* Gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent-purple/10 pointer-events-none" />
               
@@ -115,7 +115,7 @@ export const AssessmentModal: React.FC<AssessmentModalProps> = ({ isOpen, onClos
               </button>
               
               {/* Content */}
-              <div className="relative z-10 p-8 sm:p-10">
+              <div className="relative z-10 p-8 sm:p-10 max-h-[calc(90vh-2rem)] overflow-y-auto">
                 {!showResults ? (
                   <>
                     {/* Header */}

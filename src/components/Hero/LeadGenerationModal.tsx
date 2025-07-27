@@ -61,9 +61,9 @@ export const LeadGenerationModal: React.FC<LeadGenerationModalProps> = ({ isOpen
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', duration: 0.5 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl z-50 p-4"
+            className="fixed inset-0 flex items-center justify-center z-50 p-4 overflow-y-auto"
           >
-            <div className="relative bg-bg-dark/95 backdrop-blur-xl border border-border-white-20 rounded-2xl shadow-2xl overflow-hidden">
+            <div className="relative bg-bg-dark/95 backdrop-blur-xl border border-border-white-20 rounded-2xl shadow-2xl w-full max-w-2xl my-8">
               {/* Gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent-purple/10 pointer-events-none" />
               
