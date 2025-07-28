@@ -3,42 +3,74 @@ export interface MarketplaceProduct {
   name: string;
   description: string;
   category: string;
+  industry?: string;
   imageUrl: string;
   tags: string[];
+  isTrending?: boolean;
 }
 
-export const marketplaceCategories = [
-  {
-    id: 'automation-ops',
-    name: 'Automation Ops',
-    title: 'Pipeline Automation Tools',
-    description: 'Automate complex workflows, data pipelines, and business processes with industry-leading tools and templates.'
+export interface MarketplaceCategory {
+  id: string;
+  name: string;
+  title: string;
+  description: string;
+}
+
+export const customMarketplaceCategories: MarketplaceCategory[] = [
+  { 
+    id: 'automation-ops', 
+    name: 'Automation Ops', 
+    title: 'Automation Operations', 
+    description: 'Streamline your workflows and business processes with intelligent automation agents.' 
   },
-  {
-    id: 'assistant-tools',
-    name: 'Assistant Tools',
-    title: 'Personal Productivity Automation',
-    description: 'Enhance personal and team productivity with intelligent automation and AI-powered assistance.'
+  { 
+    id: 'assistant-tools', 
+    name: 'Assistant Tools', 
+    title: 'AI Assistant Tools', 
+    description: 'Enhance productivity and decision-making with smart AI assistants for various tasks.' 
   },
-  {
-    id: 'process-mining',
-    name: 'Process Mining',
-    title: 'Business Process Analysis Templates',
-    description: 'Discover, analyze, and optimize your business processes with advanced mining and visualization tools.'
+  { 
+    id: 'process-mining', 
+    name: 'Process Mining', 
+    title: 'Process Mining Solutions', 
+    description: 'Uncover bottlenecks and optimize your operational efficiency by analyzing business processes.' 
   },
-  {
-    id: 'integration-services',
-    name: 'Integration Services',
-    title: 'Connectors to Popular Platforms',
-    description: 'Seamlessly connect and integrate with your existing tools and platforms through our extensive connector library.'
+  { 
+    id: 'integration-services', 
+    name: 'Integration Services', 
+    title: 'Integration Services', 
+    description: 'Seamlessly connect your existing systems and applications with powerful integrations.' 
   },
-  {
-    id: 'agent-catalog',
-    name: 'Agent Catalog',
-    title: 'Specialized AI Agents for Business Functions',
-    description: 'Deploy specialized AI agents tailored for specific business functions and industry needs.'
+  { 
+    id: 'agent-catalog', 
+    name: 'Agent Catalog', 
+    title: 'Full Agent Catalog', 
+    description: 'Explore a comprehensive list of all available AI agents, tools, and automations.' 
   }
 ];
+
+// Industry categories for filtering
+export interface IndustryCategory {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export const industryCategories: IndustryCategory[] = [
+  { id: 'finance', name: 'Finance & Banking', description: 'Financial services, banking, and fintech solutions' },
+  { id: 'healthcare', name: 'Healthcare', description: 'Medical, pharmaceutical, and healthcare technology' },
+  { id: 'retail', name: 'Retail & E-commerce', description: 'Online retail, e-commerce, and consumer goods' },
+  { id: 'real-estate', name: 'Real Estate', description: 'Property management, real estate, and construction' },
+  { id: 'insurance', name: 'Insurance', description: 'Insurance carriers, claims processing, and risk management' },
+  { id: 'manufacturing', name: 'Manufacturing', description: 'Industrial manufacturing, supply chain, and logistics' },
+  { id: 'technology', name: 'Technology', description: 'Software, IT services, and technology companies' },
+  { id: 'marketing', name: 'Marketing & Media', description: 'Advertising, marketing, media, and communications' },
+  { id: 'hr', name: 'Human Resources', description: 'HR services, talent management, and workforce solutions' },
+  { id: 'general', name: 'General Business', description: 'Cross-industry and general business applications' }
+];
+
+// Legacy categories - kept for backward compatibility
+export const marketplaceCategories = customMarketplaceCategories;
 
 export const marketplaceProducts: MarketplaceProduct[] = [
   // Automation Ops
@@ -48,7 +80,8 @@ export const marketplaceProducts: MarketplaceProduct[] = [
     description: 'Orchestrate complex computational workflows and data processing pipelines with ease.',
     category: 'automation-ops',
     imageUrl: '/images/apache-airflow.png',
-    tags: ['Data Pipeline Automation', 'Task Scheduling', 'Workflow Orchestration']
+    tags: ['Data Pipeline Automation', 'Task Scheduling', 'Workflow Orchestration'],
+    isTrending: true
   },
   {
     id: 'advanced-web-automation',
@@ -80,7 +113,8 @@ export const marketplaceProducts: MarketplaceProduct[] = [
     description: 'Seamlessly integrate SAP systems with your automation infrastructure.',
     category: 'automation-ops',
     imageUrl: '/images/sap-connector.png',
-    tags: ['ERP Integration', 'Data Synchronization', 'Business Process Automation']
+    tags: ['ERP Integration', 'Data Synchronization', 'Business Process Automation'],
+    isTrending: true
   },
   {
     id: 'aws-glue-etl',
@@ -167,6 +201,7 @@ export const marketplaceProducts: MarketplaceProduct[] = [
     name: 'E-commerce Automation Template',
     description: 'Streamline e-commerce operations from order processing to customer notifications.',
     category: 'automation-ops',
+    industry: 'retail',
     imageUrl: '/images/ecommerce-automation.png',
     tags: ['Order Processing', 'Inventory Management', 'Customer Notifications']
   },
@@ -175,6 +210,7 @@ export const marketplaceProducts: MarketplaceProduct[] = [
     name: 'Digital Worker for Finance',
     description: 'Deploy digital workers for financial process automation.',
     category: 'automation-ops',
+    industry: 'finance',
     imageUrl: '/images/finance-worker.png',
     tags: ['Invoice Automation', 'Expense Management', 'Financial Reporting']
   },
@@ -183,6 +219,7 @@ export const marketplaceProducts: MarketplaceProduct[] = [
     name: 'Digital Worker for HR',
     description: 'Automate HR processes with intelligent digital workers.',
     category: 'automation-ops',
+    industry: 'hr',
     imageUrl: '/images/hr-worker.png',
     tags: ['Recruitment Automation', 'Employee Data Management', 'Compliance Tracking']
   },
@@ -217,8 +254,10 @@ export const marketplaceProducts: MarketplaceProduct[] = [
     name: 'Marketing Automation Workflow',
     description: 'Streamline marketing campaigns with automated email sequences and social scheduling.',
     category: 'assistant-tools',
+    industry: 'marketing',
     imageUrl: '/images/marketing-workflow.png',
-    tags: ['Campaign Management', 'Email Automation', 'Social Media Scheduling']
+    tags: ['Campaign Management', 'Email Automation', 'Social Media Scheduling'],
+    isTrending: true
   },
   {
     id: 'asana-workflow-automation',
@@ -759,6 +798,7 @@ export const marketplaceProducts: MarketplaceProduct[] = [
     name: 'Insurance Claims AI Agent',
     description: 'Claims Processing, Fraud Detection, Policy Management.',
     category: 'agent-catalog',
+    industry: 'insurance',
     imageUrl: '/images/insurance-agent.png',
     tags: ['Claims Processing', 'Fraud Detection', 'Policy Management']
   },
@@ -775,6 +815,7 @@ export const marketplaceProducts: MarketplaceProduct[] = [
     name: 'Property Management AI Agent',
     description: 'Lease Management, Maintenance Scheduling, Tenant Communication.',
     category: 'agent-catalog',
+    industry: 'real-estate',
     imageUrl: '/images/property-agent.png',
     tags: ['Lease Management', 'Maintenance Scheduling', 'Tenant Communication']
   },
@@ -783,6 +824,7 @@ export const marketplaceProducts: MarketplaceProduct[] = [
     name: 'Debt Collection AI Agent',
     description: 'Payment Reminders, Negotiation Support, Compliance Tracking.',
     category: 'agent-catalog',
+    industry: 'finance',
     imageUrl: '/images/debt-collection-agent.png',
     tags: ['Payment Reminders', 'Negotiation Support', 'Compliance Tracking']
   },

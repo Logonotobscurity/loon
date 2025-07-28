@@ -12,21 +12,25 @@ import { SimpleProductCard } from '../components/Marketplace/SimpleProductCard';
 import { ProductMarketplaceCard } from '../components/Marketplace/ProductMarketplaceCard';
 import { MarketplaceCard } from '../components/Marketplace/MarketplaceCard';
 import { ResponsiveModal } from '../components/Global/ResponsiveModal';
-import { marketplaceCategories, marketplaceProducts, MarketplaceProduct } from '../data/marketplaceData';
+import { marketplaceProducts, MarketplaceProduct, customMarketplaceCategories, industryCategories } from '../data/marketplaceData';
 import Meta from '../components/Meta';
 
 const Marketplace = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedIndustry, setSelectedIndustry] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [showCreatorModal, setShowCreatorModal] = useState<boolean>(false);
   const navigate = useNavigate();
 
+  const trendingProducts = marketplaceProducts.filter(product => product.isTrending);
+
   const filteredProducts = marketplaceProducts.filter(product => {
     const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+    const matchesIndustry = selectedIndustry === 'all' || product.industry === selectedIndustry;
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          product.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesCategory && matchesSearch;
+    return matchesCategory && matchesIndustry && matchesSearch;
   });
 
   const handleViewDetails = (productId: string) => {
@@ -35,19 +39,11 @@ const Marketplace = () => {
 
   const CreatorModal = () => (
     <motion.div
-      className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      onClick={() => setShowCreatorModal(false)}
+      className="bg-bg-dark-90 border border-border-white-20 rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+      initial={{ scale: 0.9, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0.9, opacity: 0 }}
     >
-      <motion.div
-        className="bg-bg-dark-90 border border-border-white-20 rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
-        onClick={(e) => e.stopPropagation()}
-      >
         <button
           onClick={() => setShowCreatorModal(false)}
           className="float-right text-text-white-60 hover:text-text-white transition-colors"
@@ -131,7 +127,6 @@ const Marketplace = () => {
             Our team will review your application and provide access to our developer toolkit and resources.
           </p>
         </form>
-      </motion.div>
     </motion.div>
   );
 
@@ -159,7 +154,7 @@ const Marketplace = () => {
               <CTAButton 
                 variant="primary" 
                 size="lg"
-                onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => document.getElementById('marketplace-products')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 Explore All Solutions
                 <ArrowRight className="w-5 h-5 ml-2" />
@@ -178,38 +173,7 @@ const Marketplace = () => {
               </p>
             </div>
             
-            <div className="grid md:grid-cols-3 gap-6 mb-16">
-              <motion.div
-                className="glass-card p-6 text-center group hover:border-primary/50 transition-all duration-300"
-                whileHover={{ y: -4 }}
-              >
-                <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/30 transition-colors">
-                  <Search className="w-8 h-8 text-primary" />
-                </div>
-                <h3 className="font-satoshi font-semibold text-xl text-text-white mb-3">Browse All Agents & Automations</h3>
-                <p className="text-text-white-70 mb-4">Dive into our full catalog of powerful tools.</p>
-                <button 
-                  onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="text-primary hover:text-primary-hover font-medium"
-                >
-                  Explore Now →
-                </button>
-              </motion.div>
-              
-              <motion.div
-                className="glass-card p-6 text-center group hover:border-primary/50 transition-all duration-300"
-                whileHover={{ y: -4 }}
-              >
-                <div className="w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-secondary/30 transition-colors">
-                  <Filter className="w-8 h-8 text-secondary" />
-                </div>
-                <h3 className="font-satoshi font-semibold text-xl text-text-white mb-3">Solutions by Industry</h3>
-                <p className="text-text-white-70 mb-4">Find tailored AI for Finance, HR, Logistics & more.</p>
-                <button className="text-secondary hover:text-secondary/80 font-medium">
-                  Browse Industries →
-                </button>
-              </motion.div>
-              
+            <div className="grid md:grid-cols-1 gap-6 mb-16">
               <motion.div
                 className="glass-card p-6 text-center group hover:border-primary/50 transition-all duration-300"
                 whileHover={{ y: -4 }}
@@ -219,7 +183,10 @@ const Marketplace = () => {
                 </div>
                 <h3 className="font-satoshi font-semibold text-xl text-text-white mb-3">See What's Trending</h3>
                 <p className="text-text-white-70 mb-4">Explore popular agents and community-contributed automations.</p>
-                <button className="text-primary hover:text-primary-hover font-medium">
+                <button 
+                  onClick={() => document.getElementById('trending-products')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="text-primary hover:text-primary-hover font-medium"
+                >
                   View Trending →
                 </button>
               </motion.div>
@@ -277,56 +244,54 @@ const Marketplace = () => {
             </div>
           </SectionWrapper>
 
-          {/* Featured Solutions by Category */}
-          <SectionWrapper className="py-16">
-            <div className="mb-12 text-center">
-              <h2 className="font-satoshi font-bold text-3xl md:text-4xl text-text-white mb-4">
-                Featured Solutions by Category
-              </h2>
-              <p className="text-text-white-70 max-w-2xl mx-auto">
-                Explore top solutions curated by industry, handpicked for innovation and impact.
-              </p>
-            </div>
+          {/* What's Trending Section */}
+          {trendingProducts.length > 0 && (
+            <SectionWrapper id="trending-products" className="py-16">
+              <div className="text-center mb-12">
+                <h2 className="font-satoshi font-bold text-3xl md:text-4xl text-text-white mb-4">
+                  What's Trending
+                </h2>
+                <p className="text-text-white-70 max-w-2xl mx-auto">
+                  Explore the most popular AI agents and automations trending in our marketplace.
+                </p>
+              </div>
+              
+              <div className="hidden lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {trendingProducts.map((product) => (
+                  <ProductMarketplaceCard
+                    key={product.id}
+                    product={product}
+                    onViewDetails={handleViewDetails}
+                  />
+                ))}
+              </div>
 
-            {marketplaceCategories.map((category) => (
-              <div key={category.id} className="mb-16">
-                <div className="mb-4">
-                  <h3 className="font-satoshi font-semibold text-2xl text-text-white mb-2">
-                    {category.title}
-                  </h3>
-                  <p className="text-text-white-70 max-w-3xl">
-                    {category.description}
-                  </p>
-                </div>
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {marketplaceProducts
-                    .filter((product) => product.categoryId === category.id)
-                    .slice(0, 4)
-                    .map((product) => (
-                      <MarketplaceCard key={product.id} product={product} />
+              <div className="lg:hidden">
+                <div className="overflow-x-auto scrollbar-hide">
+                  <div className="flex gap-4 pb-4" style={{ width: 'max-content' }}>
+                    {trendingProducts.map((product) => (
+                      <div key={product.id} className="flex-shrink-0 w-80">
+                        <ProductMarketplaceCard
+                          product={product}
+                          onViewDetails={handleViewDetails}
+                        />
+                      </div>
                     ))}
-                </div>
-                <div className="text-center mt-4">
-                  <button
-                    onClick={() => setSelectedCategory(category.id)}
-                    className="px-6 py-2 bg-primary text-bg-dark rounded-full font-medium transition-all hover:bg-primary-hover"
-                  >
-                    View All {category.name} ↗
-                  </button>
+                  </div>
                 </div>
               </div>
-            ))}
-          </SectionWrapper>
+            </SectionWrapper>
+          )}
 
-          {/* Products Section */}
-          <SectionWrapper id="products" className="py-16">
+          {/* All Agents & Automations Section */}
+          <SectionWrapper id="marketplace-products" className="py-16">
             <div className="mb-8">
               <h2 className="font-satoshi font-bold text-3xl md:text-4xl text-text-white mb-4 text-center">
                 Browse All Agents & Automations
               </h2>
               
               {/* Search and Filter */}
-              <div className="flex flex-col md:flex-row gap-4 mb-8">
+              <div className="flex flex-col lg:flex-row gap-4 mb-8">
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-white-40 w-5 h-5" />
                   <input
@@ -336,6 +301,20 @@ const Marketplace = () => {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full bg-bg-dark-90 border border-border-white-20 rounded-lg pl-10 pr-4 py-3 text-text-white placeholder-text-white-40 focus:border-primary focus:outline-none"
                   />
+                </div>
+                <div className="flex flex-col sm:flex-row gap-4 lg:w-auto">
+                  <select
+                    value={selectedIndustry}
+                    onChange={(e) => setSelectedIndustry(e.target.value)}
+                    className="bg-bg-dark-90 border border-border-white-20 rounded-lg px-4 py-3 text-text-white focus:border-primary focus:outline-none min-w-[200px]"
+                  >
+                    <option value="all">All Industries</option>
+                    {industryCategories.map((industry) => (
+                      <option key={industry.id} value={industry.id}>
+                        {industry.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
               
@@ -351,7 +330,7 @@ const Marketplace = () => {
                 >
                   All Categories
                 </button>
-                {marketplaceCategories.map((category) => (
+                {customMarketplaceCategories.map((category) => (
                   <button
                     key={category.id}
                     onClick={() => setSelectedCategory(category.id)}
@@ -370,7 +349,7 @@ const Marketplace = () => {
             {/* Category Description */}
             {selectedCategory !== 'all' && (
               <div className="text-center mb-8">
-                {marketplaceCategories
+                {customMarketplaceCategories
                   .filter(cat => cat.id === selectedCategory)
                   .map(category => (
                     <div key={category.id}>
@@ -385,15 +364,62 @@ const Marketplace = () => {
               </div>
             )}
 
-            {/* Debug Info */}
-            <div className="mb-4 text-center">
+            {/* Filter Status & Debug Info */}
+            <div className="mb-6 text-center">
+              <div className="flex flex-wrap items-center justify-center gap-2 mb-2">
+                {selectedCategory !== 'all' && (
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20">
+                    Category: {customMarketplaceCategories.find(cat => cat.id === selectedCategory)?.name}
+                    <button 
+                      onClick={() => setSelectedCategory('all')}
+                      className="ml-2 hover:text-primary-light"
+                    >
+                      ×
+                    </button>
+                  </span>
+                )}
+                {selectedIndustry !== 'all' && (
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-secondary/10 text-secondary border border-secondary/20">
+                    Industry: {industryCategories.find(ind => ind.id === selectedIndustry)?.name}
+                    <button 
+                      onClick={() => setSelectedIndustry('all')}
+                      className="ml-2 hover:text-secondary-light"
+                    >
+                      ×
+                    </button>
+                  </span>
+                )}
+                {searchQuery && (
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-accent-purple/10 text-accent-purple border border-accent-purple/20">
+                    Search: "{searchQuery}"
+                    <button 
+                      onClick={() => setSearchQuery('')}
+                      className="ml-2 hover:text-accent-purple-light"
+                    >
+                      ×
+                    </button>
+                  </span>
+                )}
+              </div>
               <p className="text-text-white-60 text-sm">
                 Showing {filteredProducts.length} of {marketplaceProducts.length} products
+                {(selectedCategory !== 'all' || selectedIndustry !== 'all' || searchQuery) && (
+                  <button 
+                    onClick={() => {
+                      setSelectedCategory('all');
+                      setSelectedIndustry('all');
+                      setSearchQuery('');
+                    }}
+                    className="ml-4 text-primary hover:text-primary-light text-xs underline"
+                  >
+                    Clear all filters
+                  </button>
+                )}
               </p>
             </div>
 
             {/* Products Grid - Desktop */}
-            <div className="hidden lg:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="hidden lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredProducts.map((product) => (
                 <ProductMarketplaceCard
                   key={product.id}
@@ -435,7 +461,11 @@ const Marketplace = () => {
         <Footer />
       </GridBackground>
       
-      {showCreatorModal && <CreatorModal />}
+      {showCreatorModal && (
+        <ResponsiveModal isOpen={showCreatorModal} onClose={() => setShowCreatorModal(false)}>
+          <CreatorModal />
+        </ResponsiveModal>
+      )}
     </>
   );
 };

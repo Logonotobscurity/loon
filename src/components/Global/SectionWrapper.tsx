@@ -11,10 +11,10 @@ export const SectionWrapper = ({ children, className = '', id }: SectionWrapperP
   return (
     <motion.section
       id={id}
-      className={`container px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20 lg:py-24 ${className}`}
+      className={`container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20 lg:py-24 ${className}`}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
+      viewport={{ once: true, amount: 0.1 }}
       transition={{ duration: 0.6 }}
     >
       {children}

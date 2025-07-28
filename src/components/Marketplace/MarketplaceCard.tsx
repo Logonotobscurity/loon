@@ -1,12 +1,18 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
+interface WorkflowItem {
+  name: string;
+  time: string;
+}
+
 interface MarketplaceCardProps {
   sectionLabel: string;
   title: string;
   subheading: string;
-  workflows: string[];
+  workflows: WorkflowItem[];
   backgroundImage?: string;
+  onClick?: () => void;
 }
 
 export const MarketplaceCard: React.FC<MarketplaceCardProps> = ({
@@ -37,13 +43,13 @@ export const MarketplaceCard: React.FC<MarketplaceCardProps> = ({
         <h3 className="marketplace-card-title">{title}</h3>
         <p className="marketplace-card-subheading">{subheading}</p>
         
-        <ul className="marketplace-card-workflows">
-          {workflows.map((workflow, index) => (
-            <li key={index} className="marketplace-card-workflow-item">
-              {workflow}
-            </li>
-          ))}
-        </ul>
+<ul className="marketplace-card-workflows">
+  {workflows.map((workflow, index) => (
+    <li key={index} className="marketplace-card-workflow-item">
+      {workflow.name} - {workflow.time}
+    </li>
+  ))}
+</ul>
       </div>
     </motion.div>
   );
