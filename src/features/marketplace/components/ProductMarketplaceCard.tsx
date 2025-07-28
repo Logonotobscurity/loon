@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { motion } from 'framer-motion';
 import { MarketplaceProduct } from '../../data/marketplaceData';
 
@@ -8,11 +8,11 @@ interface ProductMarketplaceCardProps {
   backgroundImage?: string;
 }
 
-export const ProductMarketplaceCard: React.FC<ProductMarketplaceCardProps> = ({
+export const ProductMarketplaceCard = memo(({
   product,
   onViewDetails,
   backgroundImage,
-}) => {
+}: ProductMarketplaceCardProps) => {
   const handleClick = () => {
     if (onViewDetails) {
       onViewDetails(product.id);
@@ -30,17 +30,21 @@ export const ProductMarketplaceCard: React.FC<ProductMarketplaceCardProps> = ({
 
   const sectionLabel = categoryLabels[product.category] || product.category.toUpperCase();
 
+  // Check if image exists, use gradient if not
+  const hasImage = backgroundImage || (product.imageUrl && product.imageUrl !== '/images/placeholder.png');
+  const imageUrl = backgroundImage || product.imageUrl;
+
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      className="marketplace-card cursor-pointer"
+      className="marketplace-card cursor-pointer flex-shrink-0 w-80 sm:w-96"
       style={{
-        backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
+        backgroundImage: hasImage ? `url(${imageUrl})` : undefined,
       }}
       onClick={handleClick}
     >
-      {/* Abstract gradient background */}
+      {/* Abstract gradient background - always present as fallback */}
       <div className="marketplace-card-gradient" />
       
       {/* Bottom overlay */}
@@ -62,4 +66,6 @@ export const ProductMarketplaceCard: React.FC<ProductMarketplaceCardProps> = ({
       </div>
     </motion.div>
   );
-};
+});
+
+ProductMarketplaceCard.displayName = 'ProductMarketplaceCard';

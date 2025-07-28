@@ -30,7 +30,7 @@
   
   body {
     @apply bg-bg-dark text-text-light font-inter text-base antialiased;
-    background-image: @apply bg-gradient-dark;
+    background-image: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
   }
   
   /* Typography hierarchy */
@@ -86,7 +86,7 @@
   /* Glass morphism card */
   .glass-card {
     @apply bg-bg-white-10 backdrop-blur-xl border border-border-white-10 rounded-2xl;
-    background-image: @apply bg-gradient-glass;
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
   }
   
   .glass-card-hover {
@@ -198,6 +198,15 @@
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
   }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
   
   .custom-scrollbar::-webkit-scrollbar {
     width: 7px;
@@ -248,14 +257,14 @@
   @apply relative overflow-hidden rounded-2xl border border-border-white-20 shadow-lg backdrop-blur-xl;
   /* Responsive width for different devices */
   width: 100%; /* Full width on mobile */
-  max-width: 260px; /* Max width constraint */
-  min-width: 240px; /* Minimum width for readability */
-  height: 380px; /* Consistent height */
+  max-width: 100%; /* Remove max-width constraint for mobile */
+  min-width: auto; /* Remove minimum width for mobile */
+  height: auto; /* Auto height for mobile */
+  min-height: 320px; /* Minimum height */
   background: rgba(9, 9, 11, 0.95);
   padding: 16px;
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -265,11 +274,21 @@
   transform: translateY(-4.5px) scale(1.015);
 }
 
+/* Mobile first - small screens */
+@media (max-width: 639px) {
+  .marketplace-card {
+    min-height: 280px;
+    padding: 12px;
+  }
+}
+
 /* Tablet and larger */
 @media (min-width: 640px) {
   .marketplace-card {
     width: 280px; /* Fixed width on larger screens */
     height: 400px; /* Consistent height */
+    max-width: 280px;
+    min-width: 280px;
     padding: 20px;
   }
 }
@@ -277,9 +296,21 @@
 /* Desktop optimization */
 @media (min-width: 1024px) {
   .marketplace-card {
-    width: 290px; /* Slightly larger on desktop but reduced from original */
+    width: 290px; /* Slightly larger on desktop */
     height: 420px;
+    max-width: 290px;
+    min-width: 290px;
     padding: 22px;
+  }
+}
+
+/* Large desktop */
+@media (min-width: 1280px) {
+  .marketplace-card {
+    width: 300px;
+    height: 440px;
+    max-width: 300px;
+    min-width: 300px;
   }
 }
 

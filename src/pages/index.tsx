@@ -2,6 +2,7 @@ import React from 'react';
 import { AppHeader } from '../components/Header/AppHeader';
 import { HeroSection } from '../components/Hero/HeroSection';
 import { CapabilitiesSection } from '../components/Capabilities/CapabilitiesSection';
+
 import { MarketplaceSection } from '../components/Marketplace/MarketplaceSection';
 import { BusinessAssessmentSection } from '../components/BusinessAssessment/BusinessAssessmentSection';
 import { MergedUseCasesSection } from '../components/UseCases/MergedUseCasesSection';

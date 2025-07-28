@@ -10,95 +10,25 @@ export interface MarketplaceProduct {
 }
 
 export interface MarketplaceCategory {
-  id: string;
-  name: string;
-  title: string;
-  description: string;
+  value: string;
+  label: string;
 }
 
 export const customMarketplaceCategories: MarketplaceCategory[] = [
-  { 
-    id: 'automation-ops', 
-    name: 'Automation Ops', 
-    title: 'Automation Operations', 
-    description: 'Streamline your workflows and business processes with intelligent automation agents.' 
-  },
-  { 
-    id: 'assistant-tools', 
-    name: 'Assistant Tools', 
-    title: 'AI Assistant Tools', 
-    description: 'Enhance productivity and decision-making with smart AI assistants for various tasks.' 
-  },
-  { 
-    id: 'process-mining', 
-    name: 'Process Mining', 
-    title: 'Process Mining Solutions', 
-    description: 'Uncover bottlenecks and optimize your operational efficiency by analyzing business processes.' 
-  },
-  { 
-    id: 'integration-services', 
-    name: 'Integration Services', 
-    title: 'Integration Services', 
-    description: 'Seamlessly connect your existing systems and applications with powerful integrations.' 
-  },
-  { 
-    id: 'agent-catalog', 
-    name: 'Agent Catalog', 
-    title: 'Full Agent Catalog', 
-    description: 'Explore a comprehensive list of all available AI agents, tools, and automations.' 
-  }
+  { value: 'automation-ops', label: 'Automation Ops' },
+  { value: 'assistant-tools', label: 'Assistant Tools' },
+  { value: 'process-mining', label: 'Process Mining' },
+  { value: 'integration-services', label: 'Integration Services' },
 ];
 
-// Industry categories for filtering
-export interface IndustryCategory {
-  id: string;
-  name: string;
-  description: string;
-}
-
-export const industryCategories: IndustryCategory[] = [
-  { id: 'finance', name: 'Finance & Banking', description: 'Financial services, banking, and fintech solutions' },
-  { id: 'healthcare', name: 'Healthcare', description: 'Medical, pharmaceutical, and healthcare technology' },
-  { id: 'retail', name: 'Retail & E-commerce', description: 'Online retail, e-commerce, and consumer goods' },
-  { id: 'real-estate', name: 'Real Estate', description: 'Property management, real estate, and construction' },
-  { id: 'insurance', name: 'Insurance', description: 'Insurance carriers, claims processing, and risk management' },
-  { id: 'manufacturing', name: 'Manufacturing', description: 'Industrial manufacturing, supply chain, and logistics' },
-  { id: 'technology', name: 'Technology', description: 'Software, IT services, and technology companies' },
-  { id: 'marketing', name: 'Marketing & Media', description: 'Advertising, marketing, media, and communications' },
-  { id: 'hr', name: 'Human Resources', description: 'HR services, talent management, and workforce solutions' },
-  { id: 'general', name: 'General Business', description: 'Cross-industry and general business applications' }
+export const industryCategories: MarketplaceCategory[] = [
+  { value: 'finance', label: 'Finance' },
+  { value: 'hr', label: 'Human Resources' },
+  { value: 'retail', label: 'Retail' },
+  { value: 'marketing', label: 'Marketing' },
 ];
-
-// Legacy categories - kept for backward compatibility
-export const marketplaceCategories = customMarketplaceCategories;
 
 export const marketplaceProducts: MarketplaceProduct[] = [
-  // Automation Ops
-  {
-    id: 'apache-airflow',
-    name: 'Apache Airflow Workflow Template',
-    description: 'Orchestrate complex computational workflows and data processing pipelines with ease.',
-    category: 'automation-ops',
-    imageUrl: '/images/apache-airflow.png',
-    tags: ['Data Pipeline Automation', 'Task Scheduling', 'Workflow Orchestration'],
-    isTrending: true
-  },
-  {
-    id: 'advanced-web-automation',
-    name: 'Advanced Web Automation Template',
-    description: 'Automate complex web-based tasks and browser interactions at scale.',
-    category: 'automation-ops',
-    imageUrl: '/images/web-automation.png',
-    tags: ['Browser Automation', 'Data Collection', 'Task Scheduling']
-  },
-  {
-    id: 'crm-automation-accelerator',
-    name: 'CRM Automation Accelerator',
-    description: 'Streamline customer relationship management with intelligent automation.',
-    category: 'automation-ops',
-    imageUrl: '/images/crm-automation.png',
-    tags: ['Customer Management', 'Lead Tracking', 'Sales Automation']
-  },
   {
     id: 'hr-process-automation',
     name: 'HR Process Automation Accelerator',

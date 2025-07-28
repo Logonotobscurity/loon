@@ -1,109 +1,42 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { marketplaceProducts } from '../../features/marketplace/data/marketplaceData';
+import { ProductMarketplaceCard } from '../../features/marketplace/components/ProductMarketplaceCard';
 import { SectionWrapper } from '../Global/SectionWrapper';
-import { MarketplaceCard } from './MarketplaceCard';
 import { CTAButton } from '../Global/CTAButton';
-import { ArrowRight } from 'lucide-react';
-
-// Random products for carousel - expanded list
-const randomProducts = [
-  {
-    sectionLabel: 'Automation Ops',
-    title: 'Sales Pipeline Bot',
-    subheading: 'WORKFLOWS',
-    workflows: ['Lead Scoring', 'CRM Sync', 'Follow-up Automation', 'Email Sequences'],
-  },
-  {
-    sectionLabel: 'Assistant Tools',
-    title: 'Meeting Summarizer AI',
-    subheading: 'WORKFLOWS',
-    workflows: ['Transcript Analysis', 'Action Item Extraction', 'Calendar Integration', 'Team Notifications'],
-  },
-  {
-    sectionLabel: 'Analytics & Insights',
-    title: 'Performance Dashboard',
-    subheading: 'WORKFLOWS',
-    workflows: ['Real-time Metrics', 'Predictive Analytics', 'Custom Reports', 'Data Export'],
-  },
-  {
-    sectionLabel: 'Customer Experience',
-    title: 'Support Agent Pro',
-    subheading: 'WORKFLOWS',
-    workflows: ['Ticket Routing', 'Sentiment Analysis', '24/7 Response', 'Multi-language Support'],
-  },
-  {
-    sectionLabel: 'Security & Compliance',
-    title: 'Data Privacy Guardian',
-    subheading: 'WORKFLOWS',
-    workflows: ['GDPR Compliance', 'Access Control', 'Audit Trails', 'Encryption Management'],
-  },
-  {
-    sectionLabel: 'Marketing Automation',
-    title: 'Campaign Orchestrator',
-    subheading: 'WORKFLOWS',
-    workflows: ['A/B Testing', 'Audience Segmentation', 'Content Personalization', 'ROI Tracking'],
-  },
-  {
-    sectionLabel: 'HR & Recruiting',
-    title: 'Talent Scout AI',
-    subheading: 'WORKFLOWS',
-    workflows: ['Resume Screening', 'Interview Scheduling', 'Skill Matching', 'Onboarding Automation'],
-  },
-  {
-    sectionLabel: 'Finance & Accounting',
-    title: 'Invoice Processing Bot',
-    subheading: 'WORKFLOWS',
-    workflows: ['OCR Extraction', 'Payment Reconciliation', 'Expense Categorization', 'Tax Compliance'],
-  },
-  {
-    sectionLabel: 'IT Operations',
-    title: 'System Monitor Pro',
-    subheading: 'WORKFLOWS',
-    workflows: ['Uptime Monitoring', 'Alert Management', 'Log Analysis', 'Performance Optimization'],
-  },
-  {
-    sectionLabel: 'Content Management',
-    title: 'Content Publisher AI',
-    subheading: 'WORKFLOWS',
-    workflows: ['SEO Optimization', 'Multi-channel Publishing', 'Version Control', 'Editorial Calendar'],
-  },
-];
 
 export const MarketplaceSection = () => {
+  const navigate = useNavigate();
+  const randomProducts = [...marketplaceProducts].sort(() => 0.5 - Math.random()).slice(0, 4);
+
+  const handleViewDetails = (productId: string) => {
+    navigate(`/marketplace/products/${productId}`);
+  };
+
   return (
-    <SectionWrapper id="marketplace" className="relative">
-      <div className="text-center mb-8 sm:mb-12">
-        <h2 className="font-satoshi font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-tight mb-3 sm:mb-4 px-4 sm:px-0">
-          Pay What Your Economy Can Afford
+    <SectionWrapper>
+      <div className="text-center mb-12">
+        <h2 className="font-satoshi font-bold text-3xl md:text-4xl text-text-white mb-4">
+          Explore Our AI Marketplace
         </h2>
-        <p className="max-w-3xl mx-auto font-inter text-base sm:text-lg text-text-white-80 px-4 sm:px-6 lg:px-0 mb-6">
-          Access enterprise-grade AI agents with regional pricing. Explore our marketplace of pre-built solutions tailored to your needs.
+        <p className="text-text-white-70 max-w-2xl mx-auto">
+          Discover powerful agents and automations built by our creator community.
         </p>
-        <Link to="/marketplace">
-          <CTAButton variant="primary" size="lg" className="mt-4">
-            Explore Marketplace
-            <ArrowRight className="w-5 h-5 ml-2" />
-          </CTAButton>
-        </Link>
       </div>
-
-      {/* Random Products Carousel */}
-      <div>
-        <h3 className="text-xl font-satoshi font-semibold text-text-white mb-6">Featured Products</h3>
-        <div className="marketplace-carousel">
-          {randomProducts.map((product, index) => (
-            <MarketplaceCard
-              key={index}
-              sectionLabel={product.sectionLabel}
-              title={product.title}
-              subheading={product.subheading}
-              workflows={product.workflows}
-            />
-          ))}
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {randomProducts.map((product) => (
+          <ProductMarketplaceCard
+            key={product.id}
+            product={product}
+            onViewDetails={handleViewDetails}
+          />
+        ))}
       </div>
-
+      <div className="text-center mt-12">
+        <CTAButton variant="primary" onClick={() => navigate('/marketplace')}>
+          View Full Marketplace
+        </CTAButton>
+      </div>
     </SectionWrapper>
   );
 };

@@ -7,7 +7,7 @@ import { Footer } from '../components/Footer/Footer';
 import { GridBackground } from '../components/Global/GridBackground';
 import { SectionWrapper } from '../components/Global/SectionWrapper';
 import { CTAButton } from '../components/Global/CTAButton';
-import { marketplaceProducts, marketplaceCategories } from '../data/marketplaceData';
+import { marketplaceProducts, customMarketplaceCategories } from '../features/marketplace/data/marketplaceData';
 import Meta from '../components/Meta';
 
 const ProductDetails = () => {
@@ -15,7 +15,7 @@ const ProductDetails = () => {
   const navigate = useNavigate();
   
   const product = marketplaceProducts.find(p => p.id === id);
-  const category = marketplaceCategories.find(c => c.id === product?.category);
+  const category = customMarketplaceCategories.find(c => c.value === product?.category);
   
   if (!product) {
     return (
