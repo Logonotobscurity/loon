@@ -10,6 +10,7 @@ import { CTAButton } from '../components/Global/CTAButton';
 import { EnhancedProductCard } from '../components/Marketplace/EnhancedProductCard';
 import { SimpleProductCard } from '../components/Marketplace/SimpleProductCard';
 import { ProductMarketplaceCard } from '../components/Marketplace/ProductMarketplaceCard';
+import { MarketplaceCard } from '../components/Marketplace/MarketplaceCard';
 import { ResponsiveModal } from '../components/Global/ResponsiveModal';
 import { marketplaceCategories, marketplaceProducts, MarketplaceProduct } from '../data/marketplaceData';
 import Meta from '../components/Meta';
@@ -274,6 +275,47 @@ const Marketplace = () => {
                 </CTAButton>
               </motion.div>
             </div>
+          </SectionWrapper>
+
+          {/* Featured Solutions by Category */}
+          <SectionWrapper className="py-16">
+            <div className="mb-12 text-center">
+              <h2 className="font-satoshi font-bold text-3xl md:text-4xl text-text-white mb-4">
+                Featured Solutions by Category
+              </h2>
+              <p className="text-text-white-70 max-w-2xl mx-auto">
+                Explore top solutions curated by industry, handpicked for innovation and impact.
+              </p>
+            </div>
+
+            {marketplaceCategories.map((category) => (
+              <div key={category.id} className="mb-16">
+                <div className="mb-4">
+                  <h3 className="font-satoshi font-semibold text-2xl text-text-white mb-2">
+                    {category.title}
+                  </h3>
+                  <p className="text-text-white-70 max-w-3xl">
+                    {category.description}
+                  </p>
+                </div>
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {marketplaceProducts
+                    .filter((product) => product.categoryId === category.id)
+                    .slice(0, 4)
+                    .map((product) => (
+                      <MarketplaceCard key={product.id} product={product} />
+                    ))}
+                </div>
+                <div className="text-center mt-4">
+                  <button
+                    onClick={() => setSelectedCategory(category.id)}
+                    className="px-6 py-2 bg-primary text-bg-dark rounded-full font-medium transition-all hover:bg-primary-hover"
+                  >
+                    View All {category.name} ↗
+                  </button>
+                </div>
+              </div>
+            ))}
           </SectionWrapper>
 
           {/* Products Section */}
