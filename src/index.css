@@ -6,11 +6,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom font imports for Satoshi */
-@font-face {
-  font-family: 'Satoshi';
-  src: url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap');
-}
+/* Custom font imports for Satoshi - using Inter as fallback for now */
+/* TODO: Add Satoshi font files locally to avoid parser issues */
 
 /* Root variables for design system */
 :root {
@@ -203,20 +200,20 @@
   }
   
   .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
+    width: 7px;
+    height: 7px;
   }
   
   .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
+    @apply bg-bg-dark;
   }
   
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 3px;
+    @apply bg-bg-white-15 rounded-full;
   }
   
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(255, 255, 255, 0.3);
+    @apply bg-bg-white-30;
   }
   
   @keyframes animateIn {
@@ -235,24 +232,6 @@
     @apply transition-transform duration-300 hover:-translate-y-1;
   }
   
-  /* Custom scrollbar */
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-track {
-    @apply bg-bg-dark;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-bg-white-12 rounded-full;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    @apply bg-bg-white-12;
-  }
-  
   /* Hide scrollbar utility */
   .scrollbar-hide {
     -ms-overflow-style: none;
@@ -262,141 +241,6 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
-  
-  /* Modal and popup responsive utilities */
-  .modal-overlay {
-    @apply fixed inset-0 z-50 flex items-center justify-center p-4;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(8px);
-  }
-  
-  .modal-content {
-    @apply relative max-w-full max-h-full overflow-auto bg-bg-dark border border-border-white-20 rounded-2xl;
-    @apply w-full sm:w-auto sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl;
-    @apply max-h-[90vh] sm:max-h-[85vh];
-  }
-  
-  .modal-content-large {
-    @apply relative max-w-full max-h-full overflow-auto bg-bg-dark border border-border-white-20 rounded-2xl;
-    @apply w-full sm:w-auto sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-6xl;
-    @apply max-h-[95vh] sm:max-h-[90vh];
-  }
-  
-  .popup-content {
-    @apply bg-bg-dark border border-border-white-20 rounded-xl shadow-2xl backdrop-blur-xl;
-    @apply max-w-xs sm:max-w-sm md:max-w-md;
-    @apply max-h-[80vh] overflow-auto;
-  }
-  
-  /* Form responsive utilities */
-  .form-grid {
-    @apply grid gap-4;
-    @apply grid-cols-1 sm:grid-cols-2;
-  }
-  
-  .form-grid-full {
-    @apply col-span-1 sm:col-span-2;
-  }
-  
-  /* Button responsive utilities */
-  .btn-responsive {
-    @apply w-full sm:w-auto;
-    @apply text-sm sm:text-base;
-    @apply px-4 py-2 sm:px-6 sm:py-3;
-  }
-  
-  .btn-group-responsive {
-    @apply flex flex-col sm:flex-row gap-2 sm:gap-4;
-  }
-  
-  /* Card responsive utilities */
-  .card-grid {
-    @apply grid gap-4 sm:gap-6;
-    @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
-  }
-  
-  .card-responsive {
-    @apply w-full max-w-sm mx-auto sm:mx-0;
-    @apply min-h-[300px] sm:min-h-[350px];
-  }
-  
-  /* Text responsive utilities */
-  .text-responsive-lg {
-    @apply text-lg sm:text-xl md:text-2xl;
-  }
-  
-  .text-responsive-xl {
-    @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl;
-  }
-  
-  /* Spacing responsive utilities */
-  .section-padding {
-    @apply px-4 sm:px-6 lg:px-8;
-    @apply py-8 sm:py-12 lg:py-16;
-  }
-  
-  .container-responsive {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-  }
-  
-  /* Navigation responsive utilities */
-  .nav-mobile-only {
-    @apply block lg:hidden;
-  }
-  
-  .nav-desktop-only {
-    @apply hidden lg:block;
-  }
-  
-  /* Image responsive utilities */
-  .img-responsive {
-    @apply w-full h-auto object-cover;
-    @apply max-w-full max-h-full;
-  }
-  
-  /* Flex responsive utilities */
-  .flex-responsive {
-    @apply flex flex-col sm:flex-row;
-  }
-  
-  .flex-responsive-reverse {
-    @apply flex flex-col-reverse sm:flex-row;
-  }
-  
-  /* Gap responsive utilities */
-  .gap-responsive {
-    @apply gap-2 sm:gap-4 md:gap-6;
-  }
-  
-  /* Hide/show on mobile */
-  .mobile-hidden {
-    @apply hidden sm:block;
-  }
-  
-  .mobile-only {
-    @apply block sm:hidden;
-  }
-  
-  /* Product detail responsive layout */
-  .product-detail-grid {
-    @apply grid gap-6 lg:gap-8;
-    @apply grid-cols-1 lg:grid-cols-2;
-  }
-  
-  .product-detail-content {
-    @apply space-y-4 sm:space-y-6;
-  }
-  
-  /* Marketplace filter responsive */
-  .filter-grid {
-    @apply grid gap-2 sm:gap-3;
-    @apply grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6;
-  }
-  
-  /* Search responsive */
-  .search-container {
-    @apply w-full max-w-xs sm:max-w-sm md:max-w-md;
-  }
 }
 
 /* Marketplace Card Styles */
@@ -404,8 +248,8 @@
   @apply relative overflow-hidden rounded-2xl border border-border-white-20 shadow-lg backdrop-blur-xl;
   /* Responsive width for different devices */
   width: 100%; /* Full width on mobile */
-  max-width: 280px; /* Max width constraint */
-  min-width: 260px; /* Minimum width for readability */
+  max-width: 260px; /* Max width constraint */
+  min-width: 240px; /* Minimum width for readability */
   height: 380px; /* Consistent height */
   background: rgba(9, 9, 11, 0.95);
   padding: 16px;
@@ -418,7 +262,7 @@
 
 .marketplace-card:hover {
   @apply border-primary shadow-glass;
-  transform: translateY(-4px) scale(1.01);
+  transform: translateY(-4.5px) scale(1.015);
 }
 
 /* Tablet and larger */
@@ -433,9 +277,9 @@
 /* Desktop optimization */
 @media (min-width: 1024px) {
   .marketplace-card {
-    width: 300px; /* Slightly larger on desktop */
+    width: 290px; /* Slightly larger on desktop but reduced from original */
     height: 420px;
-    padding: 24px;
+    padding: 22px;
   }
 }
 
@@ -532,14 +376,14 @@
   font-weight: 400;
   color: #ffffff;
   background: rgba(0, 0, 0, 0.7);
-  padding: 6px 8px;
-  border-radius: 8px;
-  min-height: 32px;
+  padding: 8px 9px;
+  border-radius: 10px;
+  min-height: 34px;
   display: flex;
   align-items: center;
   white-space: normal;
   overflow: hidden;
-  line-height: 1.2;
+  line-height: 1.25;
   text-overflow: ellipsis;
 }
 

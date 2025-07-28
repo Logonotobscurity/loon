@@ -5,7 +5,6 @@ import { Menu as MenuIcon, X } from 'lucide-react';
 import { Logo } from '../Global/Logo';
 import { CTAButton } from '../Global/CTAButton';
 import { EnhancedDropdownMenu } from './EnhancedDropdownMenu';
-import { MarketplaceMenu } from './MarketplaceMenu';
 import { navigationConfig } from '../../config/navigation';
 
 export const AppHeader = () => {
@@ -32,12 +31,11 @@ export const AppHeader = () => {
               sections={navigationConfig.solutions.sections}
               highlight={navigationConfig.solutions.highlight}
             />
-            <MarketplaceMenu 
-              title={navigationConfig.marketplace.label}
-              href={navigationConfig.marketplace.href}
-              sections={navigationConfig.marketplace.sections}
-              highlight={navigationConfig.marketplace.highlight}
-            />
+                <EnhancedDropdownMenu 
+                  title={navigationConfig.marketplace.label}
+                  sections={navigationConfig.marketplace.sections}
+                  highlight={navigationConfig.marketplace.highlight}
+                />
             <EnhancedDropdownMenu 
               title={navigationConfig.developers.label}
               sections={navigationConfig.developers.sections}

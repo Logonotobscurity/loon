@@ -42,6 +42,8 @@ export default {
         'dark-95': '#0a0a0bf2',
         darker: '#000000',
         'dark-overlay': '#00000033',
+        'white-15': 'rgba(255, 255, 255, 0.15)',
+        'white-30': 'rgba(255, 255, 255, 0.30)',
         gray: '#3b3b3b',
         'gray-light': '#72768b29',
       },
@@ -167,7 +169,5 @@ export default {
       },
     },
   },
-  plugins: [
-    require('@tailwindcss/line-clamp'),
-  ],
+  plugins: [],
 }
