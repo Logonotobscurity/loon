@@ -202,10 +202,11 @@ export const LeadGenerationModal: React.FC<LeadGenerationModalProps> = ({ isOpen
                   {/* Submit button */}
                   <div className="flex gap-4 pt-4">
                     <CTAButton 
-                      type="submit" 
-                      variant="primary"
-                      className="flex-1"
-                    >
+                type="submit" 
+                variant="primary"
+                className="flex-1"
+                disabled={isLoading}
+              >
                       Get Started
                     </CTAButton>
                     <CTAButton 

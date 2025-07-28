@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { motion } from 'framer-motion';
-import { MarketplaceProduct } from '../../data/marketplaceData';
+import { MarketplaceProduct } from '../data/marketplaceData';
 
 interface ProductMarketplaceCardProps {
   product: MarketplaceProduct;
@@ -38,7 +38,7 @@ export const ProductMarketplaceCard = memo(({
     <motion.div
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      className="marketplace-card cursor-pointer flex-shrink-0 w-80 sm:w-96"
+      className="marketplace-card cursor-pointer flex-shrink-0 w-80 sm:w-96 mr-6"
       style={{
         backgroundImage: hasImage ? `url(${imageUrl})` : undefined,
       }}

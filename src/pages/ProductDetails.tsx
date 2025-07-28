@@ -78,6 +78,7 @@ const ProductDetails = () => {
               <button
                 onClick={() => navigate('/marketplace')}
                 className="flex items-center gap-2 text-text-white-60 hover:text-primary transition-colors mb-6"
+                aria-label="Back to Marketplace"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Back to Marketplace

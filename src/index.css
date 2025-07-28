@@ -7,7 +7,6 @@
 @tailwind utilities;
 
 /* Custom font imports for Satoshi - using Inter as fallback for now */
-/* TODO: Add Satoshi font files locally to avoid parser issues */
 
 /* Root variables for design system */
 :root {
@@ -85,6 +84,9 @@
 @layer components {
   /* Glass morphism card */
   .glass-card {
+    @apply p-4 md:p-6; /* Responsive padding */
+    @apply text-sm md:text-base lg:text-lg; /* Scalable typography */
+    @apply max-w-full; /* Prevent overflow */
     @apply bg-bg-white-10 backdrop-blur-xl border border-border-white-10 rounded-2xl;
     background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
   }

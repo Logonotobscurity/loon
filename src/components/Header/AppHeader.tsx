@@ -18,13 +18,15 @@ export const AppHeader = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
       <motion.div
-        className="glass-card glass-card-hover border-0 border-b border-border-white-10 rounded-none"
+        className="bg-transparent border-b border-transparent transition-all duration-300"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: 'spring', stiffness: 100, damping: 20 }}
       >
-        <div className="container px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 sm:h-20">
-          <Logo />
+        <div className="container px-4 sm:px-6 lg:px-8 flex items-center justify-between h-14 sm:h-16">
+          <Link to="/">
+            <Logo />
+          </Link>
           <nav className="hidden md:flex items-center gap-6">
             <EnhancedDropdownMenu 
               title={navigationConfig.solutions.label}

@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { marketplaceProducts } from '../../features/marketplace/data/marketplaceData';
-import { ProductMarketplaceCard } from '../../features/marketplace/components/ProductMarketplaceCard';
-import { SectionWrapper } from '../Global/SectionWrapper';
-import { CTAButton } from '../Global/CTAButton';
+import { marketplaceProducts } from '../data/marketplaceData';
+import { ProductMarketplaceCard } from './ProductMarketplaceCard';
+import { SectionWrapper } from '../../../components/Global/SectionWrapper';
+import { CTAButton } from '../../../components/Global/CTAButton';
 
 export const MarketplaceSection = () => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ export const MarketplaceSection = () => {
           Discover powerful agents and automations built by our creator community.
         </p>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="flex overflow-x-auto scrollbar-hide pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
         {randomProducts.map((product) => (
           <ProductMarketplaceCard
             key={product.id}

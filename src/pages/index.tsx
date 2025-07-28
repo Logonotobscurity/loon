@@ -3,9 +3,10 @@ import { AppHeader } from '../components/Header/AppHeader';
 import { HeroSection } from '../components/Hero/HeroSection';
 import { CapabilitiesSection } from '../components/Capabilities/CapabilitiesSection';
 
-import { MarketplaceSection } from '../components/Marketplace/MarketplaceSection';
+import { MarketplaceSection } from '../features/marketplace/components/MarketplaceSection';
 import { BusinessAssessmentSection } from '../components/BusinessAssessment/BusinessAssessmentSection';
 import { MergedUseCasesSection } from '../components/UseCases/MergedUseCasesSection';
+import { InnovateSection } from '../components/Community/InnovateSection';
 import { CommunitySection } from '../components/Community/CommunitySection';
 import { TextMarquee } from '../components/Global/TextMarquee';
 import { MobileFooterCTA } from '../components/Footer/MobileFooterCTA';
@@ -25,6 +26,7 @@ const LandingPage = () => {
         <MarketplaceSection />
         <BusinessAssessmentSection />
         <MergedUseCasesSection />
+        <InnovateSection />
         <CommunitySection />
         <TextMarquee 
           text="Converse, Convert, Conquer: The Power of Voice-First Business Intelligence • "
