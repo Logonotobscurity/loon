@@ -1,0 +1,654 @@
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/700.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom font imports for Satoshi */
+@font-face {
+  font-family: 'Satoshi';
+  src: url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap');
+}
+
+/* Root variables for design system */
+:root {
+  --font-times: 'Times New Roman', serif;
+  --font-sans: sans-serif;
+  --font-satoshi: 'Satoshi', 'Satoshi Placeholder', sans-serif;
+  --font-inter: 'Inter', 'Inter Placeholder', sans-serif;
+  
+  /* Smooth transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base styles */
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+  
+  body {
+    @apply bg-bg-dark text-text-light font-inter text-base antialiased;
+    background-image: @apply bg-gradient-dark;
+  }
+  
+  /* Typography hierarchy */
+  h1, .h1 {
+    @apply font-satoshi font-bold text-5xl md:text-6xl lg:text-7xl leading-tight tracking-tight;
+  }
+  
+  h2, .h2 {
+    @apply font-satoshi font-bold text-3xl md:text-4xl lg:text-5xl leading-tight;
+  }
+  
+  h3, .h3 {
+    @apply font-satoshi font-medium text-2xl md:text-3xl leading-snug;
+  }
+  
+  h4, .h4 {
+    @apply font-inter font-semibold text-xl md:text-2xl;
+  }
+  
+  h5, .h5 {
+    @apply font-inter font-medium text-lg md:text-xl;
+  }
+  
+  h6, .h6 {
+    @apply font-inter font-medium text-base md:text-lg;
+  }
+  
+  p {
+    @apply font-inter text-base leading-relaxed;
+  }
+  
+  .body-large {
+    @apply font-inter text-lg leading-relaxed;
+  }
+  
+  .body-small {
+    @apply font-sans text-xs;
+  }
+  
+  /* Times New Roman for special content */
+  .serif-text {
+    @apply font-times text-base;
+  }
+  
+  /* Focus styles */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-bg-dark;
+  }
+}
+
+/* Component styles */
+@layer components {
+  /* Glass morphism card */
+  .glass-card {
+    @apply bg-bg-white-10 backdrop-blur-xl border border-border-white-10 rounded-2xl;
+    background-image: @apply bg-gradient-glass;
+  }
+  
+  .glass-card-hover {
+    @apply hover:bg-bg-white-12 hover:border-border-white-20 hover:shadow-glass transition-all duration-300;
+  }
+  
+  /* Primary button with new color scheme */
+  .btn-primary {
+    @apply bg-primary hover:bg-primary-dark text-text-white font-inter font-medium;
+    @apply px-6 py-3 rounded-lg transition-all duration-300;
+    @apply hover:shadow-glow hover:-translate-y-0.5;
+    @apply focus:ring-4 focus:ring-primary/20;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0;
+  }
+  
+  /* Secondary button */
+  .btn-secondary {
+    @apply bg-bg-white-10 hover:bg-bg-white-12 text-text-white font-inter font-medium;
+    @apply px-6 py-3 rounded-lg backdrop-blur-sm border border-border-white-20;
+    @apply hover:border-border-white-60 transition-all duration-300;
+    @apply focus:ring-4 focus:ring-bg-white-10;
+  }
+  
+  /* Ghost button */
+  .btn-ghost {
+    @apply text-text-white-90 hover:text-text-white font-inter font-medium;
+    @apply px-6 py-3 rounded-lg transition-all duration-300;
+    @apply hover:bg-bg-white-5 focus:ring-4 focus:ring-bg-white-10;
+  }
+  
+  /* Text link styles */
+  .link {
+    @apply text-primary hover:text-primary-light transition-colors duration-200;
+    @apply underline-offset-2 hover:underline;
+  }
+  
+  .link-light {
+    @apply text-text-white-80 hover:text-text-white transition-colors duration-200;
+    @apply underline-offset-2 hover:underline;
+  }
+  
+  /* Input styles */
+  .input {
+    @apply w-full px-4 py-3 rounded-lg font-inter text-base;
+    @apply bg-bg-white-5 border border-border-white-10;
+    @apply text-text-white placeholder:text-text-white-60;
+    @apply focus:bg-bg-white-10 focus:border-primary focus:ring-2 focus:ring-primary/20;
+    @apply transition-all duration-200;
+  }
+  
+  /* Section styles */
+  .section-dark {
+    @apply bg-bg-dark text-text-white;
+  }
+  
+  .section-light {
+    @apply bg-bg-light text-text-dark;
+  }
+  
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary via-accent-blue to-accent-purple;
+    @apply bg-clip-text text-transparent;
+  }
+  
+  /* Badge styles */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+    @apply bg-bg-white-10 text-text-white-90 border border-border-white-10;
+    @apply backdrop-blur-sm;
+  }
+  
+  .badge-primary {
+    @apply bg-primary/10 text-primary border-primary/20;
+  }
+  
+  .badge-accent {
+    @apply bg-accent-purple/10 text-accent-purple border-accent-purple/20;
+  }
+}
+
+/* Utility classes */
+@layer utilities {
+  /* Glassmorphism utilities */
+  .glass-light {
+    @apply bg-bg-white-5 backdrop-blur-md;
+  }
+  
+  .glass-medium {
+    @apply bg-bg-white-10 backdrop-blur-lg;
+  }
+  
+  .glass-heavy {
+    @apply bg-bg-white-12 backdrop-blur-xl;
+  }
+  
+  /* Text utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* Animation utilities */
+  .animate-in {
+    animation: animateIn 0.5s ease-out;
+  }
+  
+  /* Custom scrollbar */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  @keyframes animateIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Hover lift effect */
+  .hover-lift {
+    @apply transition-transform duration-300 hover:-translate-y-1;
+  }
+  
+  /* Custom scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-bg-dark;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-bg-white-12 rounded-full;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-bg-white-12;
+  }
+  
+  /* Hide scrollbar utility */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Modal and popup responsive utilities */
+  .modal-overlay {
+    @apply fixed inset-0 z-50 flex items-center justify-center p-4;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+  }
+  
+  .modal-content {
+    @apply relative max-w-full max-h-full overflow-auto bg-bg-dark border border-border-white-20 rounded-2xl;
+    @apply w-full sm:w-auto sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl;
+    @apply max-h-[90vh] sm:max-h-[85vh];
+  }
+  
+  .modal-content-large {
+    @apply relative max-w-full max-h-full overflow-auto bg-bg-dark border border-border-white-20 rounded-2xl;
+    @apply w-full sm:w-auto sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-6xl;
+    @apply max-h-[95vh] sm:max-h-[90vh];
+  }
+  
+  .popup-content {
+    @apply bg-bg-dark border border-border-white-20 rounded-xl shadow-2xl backdrop-blur-xl;
+    @apply max-w-xs sm:max-w-sm md:max-w-md;
+    @apply max-h-[80vh] overflow-auto;
+  }
+  
+  /* Form responsive utilities */
+  .form-grid {
+    @apply grid gap-4;
+    @apply grid-cols-1 sm:grid-cols-2;
+  }
+  
+  .form-grid-full {
+    @apply col-span-1 sm:col-span-2;
+  }
+  
+  /* Button responsive utilities */
+  .btn-responsive {
+    @apply w-full sm:w-auto;
+    @apply text-sm sm:text-base;
+    @apply px-4 py-2 sm:px-6 sm:py-3;
+  }
+  
+  .btn-group-responsive {
+    @apply flex flex-col sm:flex-row gap-2 sm:gap-4;
+  }
+  
+  /* Card responsive utilities */
+  .card-grid {
+    @apply grid gap-4 sm:gap-6;
+    @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+  }
+  
+  .card-responsive {
+    @apply w-full max-w-sm mx-auto sm:mx-0;
+    @apply min-h-[300px] sm:min-h-[350px];
+  }
+  
+  /* Text responsive utilities */
+  .text-responsive-lg {
+    @apply text-lg sm:text-xl md:text-2xl;
+  }
+  
+  .text-responsive-xl {
+    @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl;
+  }
+  
+  /* Spacing responsive utilities */
+  .section-padding {
+    @apply px-4 sm:px-6 lg:px-8;
+    @apply py-8 sm:py-12 lg:py-16;
+  }
+  
+  .container-responsive {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  /* Navigation responsive utilities */
+  .nav-mobile-only {
+    @apply block lg:hidden;
+  }
+  
+  .nav-desktop-only {
+    @apply hidden lg:block;
+  }
+  
+  /* Image responsive utilities */
+  .img-responsive {
+    @apply w-full h-auto object-cover;
+    @apply max-w-full max-h-full;
+  }
+  
+  /* Flex responsive utilities */
+  .flex-responsive {
+    @apply flex flex-col sm:flex-row;
+  }
+  
+  .flex-responsive-reverse {
+    @apply flex flex-col-reverse sm:flex-row;
+  }
+  
+  /* Gap responsive utilities */
+  .gap-responsive {
+    @apply gap-2 sm:gap-4 md:gap-6;
+  }
+  
+  /* Hide/show on mobile */
+  .mobile-hidden {
+    @apply hidden sm:block;
+  }
+  
+  .mobile-only {
+    @apply block sm:hidden;
+  }
+  
+  /* Product detail responsive layout */
+  .product-detail-grid {
+    @apply grid gap-6 lg:gap-8;
+    @apply grid-cols-1 lg:grid-cols-2;
+  }
+  
+  .product-detail-content {
+    @apply space-y-4 sm:space-y-6;
+  }
+  
+  /* Marketplace filter responsive */
+  .filter-grid {
+    @apply grid gap-2 sm:gap-3;
+    @apply grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6;
+  }
+  
+  /* Search responsive */
+  .search-container {
+    @apply w-full max-w-xs sm:max-w-sm md:max-w-md;
+  }
+}
+
+/* Marketplace Card Styles */
+.marketplace-card {
+  @apply relative overflow-hidden rounded-2xl border border-border-white-20 shadow-lg backdrop-blur-xl;
+  /* Responsive width for different devices */
+  width: 240px; /* Mobile - reduced */
+  height: 380px; /* Mobile - reduced */
+  background: rgba(9, 9, 11, 0.95);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.marketplace-card:hover {
+  @apply border-primary shadow-glass;
+  transform: translateY(-5px) scale(1.02);
+}
+
+/* Tablet and larger */
+@media (min-width: 640px) {
+  .marketplace-card {
+    width: 280px; /* Reduced from 320px */
+    height: 420px; /* Reduced from 500px */
+    padding: 18px;
+  }
+}
+
+.marketplace-card-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(147, 103, 222, 0.5), rgba(71, 203, 237, 0.5));
+  z-index: -2;
+}
+
+.marketplace-card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.8) 80%);
+  z-index: -1;
+}
+
+.marketplace-card-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.marketplace-card-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+@media (min-width: 640px) {
+  .marketplace-card-label {
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+}
+
+.marketplace-card-title {
+  font-family: 'Satoshi', 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+  line-height: 1.2;
+}
+
+@media (min-width: 640px) {
+  .marketplace-card-title {
+    font-size: 18px;
+    margin: 0 0 12px 0;
+  }
+}
+
+.marketplace-card-subheading {
+  font-family: 'Satoshi', 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  color: #cccccc;
+  text-transform: uppercase;
+  margin: 0 0 12px 0;
+}
+
+@media (min-width: 640px) {
+  .marketplace-card-subheading {
+    font-size: 12px;
+    margin: 0 0 16px 0;
+  }
+}
+
+.marketplace-card-workflows {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.marketplace-card-workflow-item {
+  font-family: 'Satoshi', 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 8px 10px;
+  border-radius: 12px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  white-space: normal;
+  overflow: hidden;
+  line-height: 1.3;
+}
+
+@media (min-width: 640px) {
+  .marketplace-card-workflow-item {
+    font-size: 13px;
+    padding: 10px 14px;
+    min-height: 42px;
+  }
+}
+
+/* Carousel styles for capabilities section */
+.capabilities-carousel {
+  @apply overflow-x-auto scrollbar-hide;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.capabilities-carousel-wrapper {
+  @apply flex gap-4 pb-4;
+}
+
+.capabilities-carousel-item {
+  scroll-snap-align: center;
+  flex: 0 0 85%;
+}
+
+@media (min-width: 640px) {
+  .capabilities-carousel-item {
+    flex: 0 0 auto;
+  }
+}
+
+/* Marketplace carousel styles */
+.marketplace-carousel {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  display: flex;
+  gap: 16px;
+  padding: 0 16px 20px 16px;
+  margin: 0 -16px;
+}
+
+/* Microchip visualization styles */
+.microchip-container {
+  position: relative;
+  width: 250px;
+  height: 250px;
+  overflow: hidden;
+}
+
+.microchip-pcb {
+  width: 100%;
+  height: 100%;
+}
+
+.chip-glow {
+  animation: chip-glow 2s infinite alternate;
+}
+
+@keyframes chip-glow {
+  from {
+    opacity: 0.7;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.signal-node {
+  animation: node-blink 1.5s infinite;
+}
+
+@keyframes node-blink {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (min-width: 640px) {
+  .marketplace-carousel {
+    gap: 20px;
+    padding: 0 20px 20px 20px;
+    margin: 0 -20px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .marketplace-carousel {
+    gap: 24px;
+    padding: 0 0 20px 0;
+    margin: 0;
+  }
+}
+
+.marketplace-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.marketplace-carousel {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Text Marquee styles */
+.marquee-container {
+  @apply relative overflow-hidden py-8 sm:py-12;
+}
+
+.marquee-line {
+  @apply relative w-full overflow-hidden;
+}
+
+.marquee-content {
+  @apply flex whitespace-nowrap;
+}
+
+.marquee-text {
+  @apply inline-block font-satoshi font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-text-white px-8;
+}

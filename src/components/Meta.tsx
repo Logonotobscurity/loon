@@ -1,0 +1,95 @@
+import React from 'react';
+import { Helmet } from 'react-helmet-async';
+
+interface MetaProps {
+  title?: string;
+  description?: string;
+  keywords?: string;
+  canonical?: string;
+  ogImage?: string;
+}
+
+const Meta: React.FC<MetaProps> = ({
+  title = "LOG_ON - AI Agent Marketplace | Voice-First Business Intelligence",
+  description = "Deploy autonomous AI agents with LOG_ON to automate workflows, accelerate growth & transform your business. Enterprise-grade infrastructure for voice-first business intelligence.",
+  keywords = "AI agents, business automation, voice AI, autonomous agents, workflow automation, enterprise AI, business intelligence, Developer Ecosystem, AI infrastructure, LOG_ON",
+  canonical = "https://www.log-on.io",
+  ogImage = "https://www.log-on.io/og-image.png"
+}) => {
+  const siteName = "LOG_ON";
+  const twitterHandle = "@log_on_ai";
+
+  return (
+    <Helmet>
+      <title>{title}</title>
+      <meta name="description" content={description} />
+      <meta name="keywords" content={keywords} />
+      <link rel="canonical" href={canonical} />
+
+      {/* Open Graph Tags */}
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:url" content={canonical} />
+      <meta property="og:image" content={ogImage} />
+      <meta property="og:type" content="website" />
+      <meta property="og:site_name" content={siteName} />
+
+      {/* Twitter Card Tags */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:site" content={twitterHandle} />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={ogImage} />
+
+      {/* Additional SEO Tags */}
+      <meta name="robots" content="index, follow" />
+      <meta name="author" content={siteName} />
+
+      {/* Schema.org Structured Data */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": siteName,
+          "url": canonical,
+          "logo": ogImage,
+          "description": description,
+          "sameAs": [
+            "https://twitter.com/log_on_ai",
+            "https://linkedin.com/company/log-on-ai",
+            "https://github.com/log-on-ai"
+          ],
+          "founder": {
+            "@type": "Person",
+            "name": "LOG_ON Team"
+          },
+          "foundingDate": "2024",
+          "slogan": "Voice-First Business Intelligence",
+          "offers": {
+            "@type": "AggregateOffer",
+            "name": "AI Agent Marketplace",
+            "description": "Deploy autonomous AI agents to automate workflows and accelerate growth"
+          }
+        })}
+      </script>
+
+      {/* BreadcrumbList Schema */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": canonical
+            }
+          ]
+        })}
+      </script>
+    </Helmet>
+  );
+};
+
+export default Meta;
