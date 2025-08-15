@@ -10,6 +10,7 @@ import { MobileFooterCTA } from '../components/Footer/MobileFooterCTA';
 import { Footer } from '../components/Footer/Footer';
 import { GridBackground } from '../components/Global/GridBackground';
 import Meta from '../components/Meta';
+import ConversationDialogue from '../features/conversation/ConversationDialogue';
 
 const LandingPage = () => {
   return (
@@ -30,6 +31,7 @@ const LandingPage = () => {
         </main>
         <Footer />
         <MobileFooterCTA />
+        <ConversationDialogue />
       </GridBackground>
     </>
   );

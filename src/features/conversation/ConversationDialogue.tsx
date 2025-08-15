@@ -2,11 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import './conversation.css'; // Import the CSS file
 import useMicrophoneState from './useMicrophoneState'; // Import the custom microphone hook
 import useConversationState, { Message } from './useConversationState'; // Import the custom conversation hook and Message type
-
-import useSpeechRecognition from '/home/user/loon/src/features/conversation/useSpeechRecognition'; // Import the speech recognition hook
-import MobileInputArea from '/home/user/loon/src/features/conversation/MobileInputArea.tsx';
-import MessageList from '/home/user/loon/src/features/conversation/MessageList.tsx';
-import DesktopInputArea from '/home/user/loon/src/features/conversation/DesktopInputArea.tsx';
+import useSpeechRecognition from './useSpeechRecognition'; // Import the speech recognition hook
+import { MobileInputArea } from './MobileInputArea';
+import { MessageList } from './MessageList';
+import { DesktopInputArea } from './DesktopInputArea';
 // Import the GoogleGenerativeAI class
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -46,10 +45,13 @@ const ConversationDialogue: React.FC = () => {
   const [isDraggingOver, setIsDraggingOver] = useState(false); // State for drag-over effect for drag and drop
 
   const ERROR_DISPLAY_DURATION = 5000; // milliseconds to display error messages
+  const SPEECH_TIMEOUT = 2000; // milliseconds to wait before processing speech
+  const [error, setError] = useState<string | null>(null);
 
   // Function to clear the error message
   const clearError = () => {
     setGeneralError(null);
+    setError(null);
   };
 
 
@@ -119,7 +121,7 @@ const ConversationDialogue: React.FC = () => {
       }
 
       setInputText(''); // Clear input after sending
-      setTranscript(''); // Clear transcript after sending
+      // transcript is managed by the useSpeechRecognition hook
       setAttachedImage(null); // Clear attached image after sending
     }
   };
@@ -151,7 +153,7 @@ const ConversationDialogue: React.FC = () => {
       (recognitionRef.current as any).onstart = () => {
         setListening();
         console.log('Speech recognition started');
-        setTranscript(''); // Clear transcript on start
+        // transcript is managed by the useSpeechRecognition hook
       };
 
       (recognitionRef.current as any).onresult = (event: SpeechRecognitionEvent) => {
@@ -160,7 +162,8 @@ const ConversationDialogue: React.FC = () => {
           currentTranscript += event.results[i][0].transcript;
         }
 
-        setTranscript(currentTranscript); // Update transcript state with current result
+        // transcript is managed by the useSpeechRecognition hook
+        // We need to update it through the hook if available
 
         // Clear any existing timeout
         if (listeningTimeoutRef.current) {
@@ -183,10 +186,10 @@ const ConversationDialogue: React.FC = () => {
         // We rely on the transcript state being updated by onresult for simplicity here, but a more robust approach might store final results during onresult
          if (transcript.trim()) {
            // Call handleSendMessage directly with the current transcript state
-           handleSendMessage(transcript); // Pass transcript directly
+           handleSendMessage(); // handleSendMessage uses transcript from closure
         }
         setIdle(); // Revert to idle after processing (or after sending message)
-        setTranscript(''); // Clear interim transcript state
+        // transcript is managed by the useSpeechRecognition hook
       };
       (recognitionRef.current as any).onerror = (event: any) => {
         setTimeout(clearError, ERROR_DISPLAY_DURATION);
@@ -206,12 +209,14 @@ const ConversationDialogue: React.FC = () => {
         clearTimeout(listeningTimeoutRef.current);
       }
     };
-  }, [setIdle, setListening, setProcessing, handleSendMessage, transcript, clearError, setError]); // Added handleSendMessage and transcript to dependencies
+  }, [setIdle, setListening, setProcessing, transcript]); // Updated dependencies
 
   // Effect for drag and drop functionality
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault(); // Prevent default to allow drop
     setIsDraggingOver(true);
+  };
+  
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault(); // Prevent default browser behavior
     setIsDraggingOver(false);
@@ -282,7 +287,7 @@ const ConversationDialogue: React.FC = () => {
         // If not idle, stop listening
         (recognitionRef.current as any).stop(); // Cast to any
     }
-  };
+  }
 };
   // Handle image attachment button click
   const handleAttachImageClick = () => {
@@ -326,17 +331,17 @@ const ConversationDialogue: React.FC = () => {
   };
 
   return (
-    <div ref={conversationDialogueRef}
-      className={
-        `fixed bottom-5 left-1/2 -translate-x-1/2 z-[1000] p-2.5 bg-white border border-gray-300 rounded-lg shadow-md
-        ${isMobile ? 'sm:bottom-2.5' : ''}
-        ${isDraggingOver ? 'border-blue-500 shadow-blue-500' : ''}
-        `
-      }
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
+    <div 
       ref={conversationDialogueRef}
       className={`conversation-dialogue ${isMobile ? 'mobile' : 'desktop'} ${isDraggingOver ? 'dragging-over' : ''}`}
+      style={{
+        position: 'fixed',
+        bottom: '24px',
+        right: '24px',
+        zIndex: 9999,
+        minWidth: '380px',
+        maxWidth: '480px'
+      }}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}>
@@ -407,7 +412,7 @@ const ConversationDialogue: React.FC = () => {
            </button>
           <input
             type="text"
-            placeholder="Type your message or click the mic to speak..."
+            placeholder="Ask me anything about business strategy, automation, or share your ideas. I'm here to help transform your vision into reality..."
             className="message-input"
             value={inputText || transcript} // Display interim transcript while listening
             onChange={handleInputChange}

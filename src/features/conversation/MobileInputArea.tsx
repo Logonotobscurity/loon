@@ -1,5 +1,5 @@
 import React, { RefObject } from 'react';
-import { MicrophoneState } from '../useMicrophoneState';
+import { MicrophoneState } from './useMicrophoneState';
 
 interface MobileInputAreaProps {
   microphoneState: MicrophoneState;

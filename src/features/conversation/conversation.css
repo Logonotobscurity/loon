@@ -1,24 +1,27 @@
 
 /* Position the main conversation dialogue container */
 .conversation-dialogue {
-  position: fixed; /* Make the element sticky */
-  bottom: 20px; /* Adjust the distance from the bottom as needed */
-  /* Choose either bottom-center or bottom-right positioning */
-  /* Bottom-center: */
-  left: 50%;
-  transform: translateX(-50%);
-  /* Bottom-right: */
-  /* right: 20px; */
-  /* left: unset; */
-  /* transform: unset; */
+  /* Glass morphism effect matching the design system */
+  background: rgba(9, 9, 11, 0.95); /* bg-dark with opacity */
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.1); /* border-white-10 */
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), /* glass shadow */
+              0 0 40px rgba(26, 102, 255, 0.1); /* subtle glow */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-  z-index: 1000; /* Ensure the dialogue is on top of other content */
-  /* Add padding, background, border, and box-shadow for styling */
-  padding: 10px;
-  background-color: #fff; /* Example background color */
-  border: 1px solid #ccc; /* Example border */
-  border-radius: 8px; /* Example border radius */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Example box shadow */
+.conversation-dialogue:hover {
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37),
+              0 0 60px rgba(26, 102, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.conversation-dialogue.dragging-over {
+  border-color: #1a66ff; /* primary color */
+  box-shadow: 0 0 40px rgba(26, 102, 255, 0.4);
 }
 
 /* Hide desktop input area on mobile */
@@ -33,25 +36,96 @@
 
 /* Basic styling for desktop input area */
 .desktop-input-area {
-  display: flex; /* Arrange input and button in a row */
+  display: flex;
   align-items: center;
-  gap: 10px; /* Space between input and button */
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.05); /* bg-white-5 */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* border-white-10 */
+  border-radius: 12px;
+  padding: 4px;
+  transition: all 0.3s ease;
+}
+
+.desktop-input-area:focus-within {
+  border-color: rgba(26, 102, 255, 0.5); /* primary with opacity */
+  box-shadow: 0 0 0 4px rgba(26, 102, 255, 0.1);
 }
 
 .desktop-input-area .message-input {
-  flex-grow: 1; /* Allow input to take up available space */
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  flex-grow: 1;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: #ffffff; /* text-white */
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  outline: none;
+  transition: background-color 0.2s;
 }
 
-.desktop-input-area .microphone-button {
-  /* Style for desktop microphone button */
-  padding: 8px;
+.desktop-input-area .message-input::placeholder {
+  color: rgba(255, 255, 255, 0.4); /* text-white-40 */
+  font-size: 14px;
+}
+
+.desktop-input-area .message-input:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.desktop-input-area .message-input:focus {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.desktop-input-area .microphone-button,
+.desktop-input-area .image-attach-button {
+  /* Style for desktop buttons */
+  width: 40px;
+  height: 40px;
+  padding: 0;
   border: none;
-  background-color: transparent;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 1.2em; /* Adjust icon size */
+  font-size: 1.2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.desktop-input-area .microphone-button:hover,
+.desktop-input-area .image-attach-button:hover {
+  background: rgba(26, 102, 255, 0.2);
+  color: #1a66ff;
+  transform: scale(1.05);
+}
+
+.desktop-input-area .microphone-button:active,
+.desktop-input-area .image-attach-button:active {
+  transform: scale(0.95);
+}
+
+.desktop-input-area .microphone-button:disabled,
+.desktop-input-area .image-attach-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.desktop-input-area .microphone-button.listening {
+  background: rgba(26, 102, 255, 0.2);
+  color: #1a66ff;
+}
+
+.desktop-input-area .microphone-button.processing {
+  background: rgba(241, 100, 52, 0.2);
+  color: #f16434;
+}
+
+.desktop-input-area .microphone-button.success {
+  background: rgba(40, 167, 69, 0.2);
+  color: #28a745;
 }
 
 /* Basic styling for mobile microphone button area */
@@ -156,56 +230,100 @@
 
 /* Conversation Display Area */
 .conversation-display {
-    flex-grow: 1; /* Allow conversation area to take up available space */
-    overflow-y: auto; /* Enable vertical scrolling */
-    padding: 10px;
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 16px;
     display: flex;
-    flex-direction: column; /* Stack messages vertically */
-    gap: 10px; /* Space between message bubbles */
-    /* Adjust max-height as needed to control the size of the conversation area */
-    max-height: 300px; /* Example max height */
-  }
+    flex-direction: column;
+    gap: 16px;
+    max-height: 400px;
+    min-height: 200px;
+    margin-bottom: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.conversation-display::-webkit-scrollbar {
+    width: 6px;
+}
+
+.conversation-display::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.conversation-display::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.conversation-display::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
   
   /* Message Bubble */
   .message-bubble {
-    max-width: 80%; /* Limit bubble width */
-    padding: 8px 12px;
-    border-radius: 18px; /* Rounded corners */
-    position: relative; /* Needed for timestamp positioning */
-    word-wrap: break-word; /* Prevent long words from overflowing */
+    max-width: 85%;
+    padding: 12px 16px;
+    border-radius: 16px;
+    position: relative;
+    word-wrap: break-word;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    animation: fadeInUp 0.3s ease-out;
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   
   .message-bubble p {
-      margin: 0; /* Remove default paragraph margin */
+      margin: 0;
   }
   
-  /* User message bubble (align right, different background) */
+  /* User message bubble */
   .message-bubble.user {
-    align-self: flex-end; /* Align to the right */
-    background-color: #007bff; /* Example user bubble color */
-    color: white; /* Example text color */
-    border-bottom-right-radius: 4px; /* Slightly less rounded corner at the bottom right */
+    align-self: flex-end;
+    background: linear-gradient(135deg, #1a66ff 0%, #0061ff 100%); /* primary gradient */
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 2px 8px rgba(26, 102, 255, 0.3);
   }
   
-  /* AI message bubble (align left, different background) */
+  /* AI message bubble */
   .message-bubble.ai {
-    align-self: flex-start; /* Align to the left */
-    background-color: #e9e9eb; /* Example AI bubble color */
-    color: #333; /* Example text color */
-    border-bottom-left-radius: 4px; /* Slightly less rounded corner at the bottom left */
+    align-self: flex-start;
+    background: rgba(255, 255, 255, 0.08); /* glass effect */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+    border-bottom-left-radius: 4px;
+    backdrop-filter: blur(10px);
   }
   
   /* Timestamp */
   .message-bubble .timestamp {
-    display: block; /* Display timestamp on a new line */
-    font-size: 0.7em; /* Smaller font size */
-    color: rgba(0, 0, 0, 0.5); /* Example muted color */
-    margin-top: 5px; /* Space above timestamp */
-    text-align: right; /* Align timestamp to the right within the bubble */
+    display: block;
+    font-size: 11px;
+    margin-top: 4px;
+    text-align: right;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+  }
+  
+  .message-bubble.user .timestamp {
+    color: rgba(255, 255, 255, 0.7);
   }
   
   .message-bubble.ai .timestamp {
-      text-align: left; /* Align AI timestamp to the left */
+    text-align: left;
+    color: rgba(255, 255, 255, 0.5);
   }
   
   
@@ -218,26 +336,89 @@
   
   /* Styling for loading indicator bubble */
   .message-bubble.ai.loading {
-      /* Style for the loading bubble */
       align-self: flex-start;
-      background-color: #e9e9eb;
-      color: #333;
-      font-style: italic;
-  }
-  
-  .conversation-dialogue.dragging-over {
-    border-color: #007bff; /* Example highlight color */
-    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* Example glow effect */
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.6);
+      font-style: normal;
   }
 
 /* Styling for the loading indicator animation */
 .loading-indicator-animation {
-    display: inline-block; /* Ensure it takes up space based on content */
-    animation: pulse 1.5s infinite ease-in-out; /* Apply a pulsing animation */
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
-/* You can add more complex loading animations here if needed */
-/* For example, keyframes for blinking dots: */
-/* @keyframes blinking-dots { ... } */
-/* Or keyframes for a spinning icon: */
-/* @keyframes spinning-icon { ... } */
+.loading-indicator-animation::after {
+    content: '...';
+    display: inline-block;
+    animation: ellipsis 1.5s steps(4, end) infinite;
+    width: 20px;
+    text-align: left;
+}
+
+@keyframes ellipsis {
+    0% { content: ''; }
+    25% { content: '.'; }
+    50% { content: '..'; }
+    75% { content: '...'; }
+    100% { content: ''; }
+}
+
+/* Error message styling */
+.error-message {
+    background: rgba(229, 86, 73, 0.1);
+    border: 1px solid rgba(229, 86, 73, 0.3);
+    color: #e55649;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Image preview styling */
+.image-preview {
+    position: relative;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 8px;
+}
+
+.image-preview img {
+    max-width: 100%;
+    max-height: 120px;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.remove-image-button {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 24px;
+    height: 24px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.remove-image-button:hover {
+    background: #e55649;
+    transform: scale(1.1);
+}
