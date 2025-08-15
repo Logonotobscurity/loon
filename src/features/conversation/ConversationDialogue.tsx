@@ -23,7 +23,7 @@ const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); // Choose your model
 
 const ConversationDialogue: React.FC = () => {
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // Example breakpoint
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 640); // Use Tailwind's sm breakpoint (640px)
   const { microphoneState, setIdle, setListening, setProcessing, setSuccess } = useMicrophoneState(); // Use the microphone hook
   const { messages, addMessage } = useConversationState(); // Use the conversation hook
 
@@ -130,7 +130,7 @@ const ConversationDialogue: React.FC = () => {
   // Handle window resize to determine mobile/desktop view
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768); // Example breakpoint
+      setIsMobile(window.innerWidth < 640); // Use Tailwind's sm breakpoint (640px)
     };
 
     window.addEventListener('resize', handleResize);
@@ -333,7 +333,11 @@ const ConversationDialogue: React.FC = () => {
   return (
     <div 
       ref={conversationDialogueRef}
-      className={`fixed z-[9999] ${isMobile ? 'bottom-4 left-4 right-4' : 'bottom-6 right-6 w-[440px]'} 
+      className={`fixed z-[9999] 
+        ${isMobile 
+          ? 'bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-[400px]' 
+          : 'bottom-6 right-6 w-[440px]'
+        } 
         bg-bg-dark-95 backdrop-blur-2xl border border-border-white-10 rounded-3xl shadow-glass 
         transition-all duration-300 hover:border-border-white-20 ${isDraggingOver ? 'border-primary shadow-glow' : ''}`}
       onDragOver={handleDragOver}
@@ -344,7 +348,7 @@ const ConversationDialogue: React.FC = () => {
       <div className="flex items-center justify-between px-6 py-4 border-b border-border-white-5">
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-          <h3 className="font-satoshi font-medium text-text-white">AI Assistant</h3>
+          <h3 className="font-satoshi font-medium text-text-white">Business Intelligence Agent</h3>
         </div>
         <span className="text-xs text-text-white-60">Powered by Gemini</span>
       </div>

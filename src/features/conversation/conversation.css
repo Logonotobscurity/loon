@@ -125,16 +125,7 @@
   cursor: pointer;
 }
 
-/* Media query for mobile devices */
-@media (max-width: 768px) { /* Example breakpoint */
-  .conversation-dialogue {
-    /* Adjust positioning for mobile if needed */
-    bottom: 10px; /* Closer to the bottom on mobile */
-    left: 50%;
-    transform: translateX(-50%);
-    right: unset; /* Ensure left/transform take precedence */
-  }
-}
+/* Media queries removed - using Tailwind responsive classes instead */
 
 /* Styles for microphone button states */
 .microphone-button.idle,

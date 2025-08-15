@@ -1,4 +1,4 @@
-import React, { RefObject } from 'react';
+import React, { RefObject, useState } from 'react';
 import { MicrophoneState } from './useMicrophoneState';
 import { IconButton } from '../../components/Global/IconButton';
 
@@ -21,6 +21,34 @@ export const MobileInputArea: React.FC<MobileInputAreaProps> = ({
   isLoadingAIResponse,
   getMicrophoneIcon,
 }) => {
+  const [currentSlide, setCurrentSlide] = useState(1); // 0: file, 1: voice, 2: text
+  const [inputText, setInputText] = useState('');
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  // Minimum swipe distance (in px)
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => setTouchEnd(e.targetTouches[0].clientX);
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    
+    if (isLeftSwipe && currentSlide < 2) {
+      setCurrentSlide(currentSlide + 1);
+    }
+    if (isRightSwipe && currentSlide > 0) {
+      setCurrentSlide(currentSlide - 1);
+    }
+  };
   return (
     <div className="flex items-center justify-center gap-4 px-4 py-3 bg-bg-white-5 border border-border-white-10 rounded-2xl backdrop-blur-xl">
       {/* Hidden file input */}

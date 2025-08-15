@@ -57,7 +57,7 @@ export const MessageList: React.FC<MessageListProps> = ({ messages, conversation
                 <span className="w-2 h-2 bg-text-white-40 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
                 <span className="w-2 h-2 bg-text-white-40 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
               </div>
-              <span className="text-sm">AI is thinking</span>
+              <span className="text-sm">Agent is thinking</span>
             </div>
           </div>
         </div>
