@@ -1,4 +1,10 @@
 export const navigationConfig = {
+  biGpt: {
+    label: '🤖 BI-GPT Elite',
+    href: '/bi-gpt',
+    isHighlighted: true,
+    description: 'Talk to our AI Business Intelligence Expert'
+  },
   solutions: {
     label: 'Solutions',
     sections: [

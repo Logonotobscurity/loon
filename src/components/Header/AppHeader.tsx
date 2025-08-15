@@ -28,6 +28,17 @@ export const AppHeader = () => {
             <Logo />
           </Link>
           <nav className="hidden md:flex items-center gap-6">
+            <Link 
+              to="/bi-gpt"
+              className="relative px-4 py-2 text-text-white font-medium hover:text-primary transition-colors duration-200 group"
+            >
+              <span className="flex items-center gap-2">
+                <span className="text-lg">🤖</span>
+                BI-GPT Elite
+                <span className="absolute -top-1 -right-1 text-xs bg-accent-orange text-text-white px-1.5 py-0.5 rounded-full animate-pulse">AI</span>
+              </span>
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+            </Link>
             <EnhancedDropdownMenu 
               title={navigationConfig.solutions.label}
               sections={navigationConfig.solutions.sections}
@@ -77,6 +88,15 @@ export const AppHeader = () => {
                 </button>
               </div>
               <nav className="flex flex-col items-center gap-6 sm:gap-8 mt-12 sm:mt-16">
+                <Link 
+                  to="/bi-gpt" 
+                  className="text-2xl font-satoshi font-medium text-text-white hover:text-primary transition-colors duration-200 flex items-center gap-2"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <span className="text-2xl">🤖</span>
+                  BI-GPT Elite
+                  <span className="text-xs bg-accent-orange text-text-white px-2 py-1 rounded-full animate-pulse">AI</span>
+                </Link>
                 <a href="#" className="text-2xl font-satoshi font-medium text-text-white hover:text-primary transition-colors duration-200">
                   Solutions
                 </a>

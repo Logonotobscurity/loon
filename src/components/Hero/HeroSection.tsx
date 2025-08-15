@@ -1,10 +1,9 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Sphere, MeshDistortMaterial } from '@react-three/drei';
 import { motion } from 'framer-motion';
 import { SectionWrapper } from '../Global/SectionWrapper';
-import { CTAButton } from '../Global/CTAButton';
-import { LeadGenerationModal } from './LeadGenerationModal';
+import ConversationDialogue from '../../features/conversation/ConversationDialogue';
 import { copy } from '../../copy';
 
 const AnimatedBlob = () => {
@@ -30,7 +29,10 @@ const AnimatedBlob = () => {
 };
 
 export const HeroSection = () => {
-  const [isModalOpen, setModalOpen] = React.useState(false);
+  useEffect(() => {
+    // Seed RAG on hero mount so context is available early
+    import('../../features/conversation/seedRag').then(m => m.seedRagKnowledgeBase()).catch(() => {});
+  }, []);
 
   return (
     <SectionWrapper id="hero" className="relative overflow-hidden min-h-[100dvh] flex flex-col items-center justify-center pt-16 sm:pt-20">
@@ -55,33 +57,17 @@ export const HeroSection = () => {
         >
           {copy.hero.subheadline}
         </motion.h2>
+        
+        {/* BI-GPT Conversation integrated in hero */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0"
+          className="mt-8 sm:mt-12"
         >
-          <CTAButton 
-            variant="primary" 
-            className="w-full sm:w-auto !px-6 sm:!px-8 !py-3 sm:!py-4 text-sm sm:text-base"
-            onClick={() => setModalOpen(true)}
-            aria-label="Deploy your first AI agent"
-          >
-            {copy.hero.cta}
-          </CTAButton>
-          <CTAButton 
-            variant="secondary" 
-            className="w-full sm:w-auto !px-6 sm:!px-8 !py-3 sm:!py-4 text-sm sm:text-base"
-            onClick={() => setModalOpen(true)}
-            aria-label="Request a demo of LOG_ON AI platform"
-          >
-            Request a Demo
-          </CTAButton>
+          <ConversationDialogue startInHero={true} className="max-w-3xl mx-auto" />
         </motion.div>
       </div>
-
-      {/* Lead Generation Modal */}
-      <LeadGenerationModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
     </SectionWrapper>
   );
 };

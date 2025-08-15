@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './conversation.css'; // Import the CSS file
-import useMicrophoneState from './useMicrophoneState'; // Import the custom microphone hook
-import useConversationState, { Message } from './useConversationState'; // Import the custom conversation hook and Message type
-import useSpeechRecognition from './useSpeechRecognition'; // Import the speech recognition hook
+import './conversation.css';
+import useMicrophoneState from './useMicrophoneState';
+import useConversationState, { Message } from './useConversationState';
+import useSpeechRecognition from './useSpeechRecognition';
 import { MobileInputArea } from './MobileInputArea';
 import { MessageList } from './MessageList';
 import { DesktopInputArea } from './DesktopInputArea';
-// Import the GoogleGenerativeAI class
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { motion, AnimatePresence } from 'framer-motion';
+import { Minimize2, Maximize2, X } from 'lucide-react';
+import { findMatchingAgent, calculateROI, analyzeSentiment, TONE_CONFIGS, BI_GPT_IDENTITY_PROMPT } from './biGptConfig';
 
 // Declare the SpeechRecognition and webkitSpeechRecognition types (keep this for broader compatibility)
 declare global {
@@ -20,15 +22,42 @@ declare global {
 // Initialize the Gemini API using the environment variable
 const API_KEY = import.meta.env.VITE_GOOGLE_GENERATIVE_AI_API_KEY;
 const genAI = new GoogleGenerativeAI(API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); // Choose your model
 
-const ConversationDialogue: React.FC = () => {
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // Example breakpoint
-  const { microphoneState, setIdle, setListening, setProcessing, setSuccess } = useMicrophoneState(); // Use the microphone hook
-  const { messages, addMessage } = useConversationState(); // Use the conversation hook
+// BI-GPT system instruction is provided centrally via biGptConfig
+
+const model = genAI.getGenerativeModel({ 
+  model: "gemini-1.5-flash",
+  systemInstruction: BI_GPT_IDENTITY_PROMPT
+});
+
+interface ConversationDialogueProps {
+  startInHero?: boolean;
+  className?: string;
+}
+
+const ConversationDialogue: React.FC<ConversationDialogueProps> = ({ 
+  startInHero = false,
+  className = '' 
+}) => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isMinimized, setIsMinimized] = useState(false);
+const isSticky = false;
+  const [isExpanded, setIsExpanded] = useState(startInHero);
+  const [showChat, setShowChat] = useState(true);
+  
+  const { microphoneState, setIdle, setListening, setProcessing, setSuccess } = useMicrophoneState();
+  const { messages, addMessage, clearConversation } = useConversationState();
 
   // Use the speech recognition hook
   const { isListening: isHookListening, transcript, error: speechError, startRecognition, stopRecognition } = useSpeechRecognition();
+  
+  // Debug logging for voice functionality
+  useEffect(() => {
+    console.log('[Voice Debug] Microphone State:', microphoneState);
+    console.log('[Voice Debug] Transcript:', transcript);
+    console.log('[Voice Debug] Speech Error:', speechError);
+    console.log('[Voice Debug] Is Hook Listening:', isHookListening);
+  }, [microphoneState, transcript, speechError, isHookListening]);
 
   // State for input
   const [inputText, setInputText] = useState('');
@@ -82,8 +111,19 @@ const ConversationDialogue: React.FC = () => {
 
         // Scroll to the bottom after adding the user message
       try {
-        // Prepare content for the API
+        // Prepare content for the API with adaptive RAG context
         const parts = [];
+        // Attempt to retrieve RAG context
+        try {
+          const { retrieveContext } = await import('./rag');
+          const ctxSnippets = retrieveContext(messageToSend, 3);
+          if (ctxSnippets.length) {
+            const ragContext = `Context (top matches):\n${ctxSnippets.map((c, i) => `(${i+1}) ${c}`).join('\n---\n')}`;
+            parts.push({ text: ragContext });
+          }
+        } catch (e) {
+          console.warn('RAG retrieval unavailable:', e);
+        }
         if (messageToSend) {
           parts.push({ text: messageToSend });
         }
@@ -97,6 +137,14 @@ const ConversationDialogue: React.FC = () => {
           contents: [{ role: "user", parts: parts }],
         });
 
+        // Record interaction for adaptive learning
+        try {
+          const { recordInteraction } = await import('./rag');
+          recordInteraction(messageToSend);
+        } catch (e) {
+          console.warn('RAG record unavailable:', e);
+        }
+
         const response = result.response;
         const aiText = response.text();
         console.log("Received AI response:", aiText);
@@ -109,6 +157,14 @@ const ConversationDialogue: React.FC = () => {
           timestamp: Date.now(),
         };
         addMessage(aiMessage); // Add AI message to conversation history
+
+        // Store AI response into RAG KB
+        try {
+          const { upsertDocuments } = await import('./rag');
+          upsertDocuments([{ id: `resp_${Date.now()}`, text: aiText }]);
+        } catch (e) {
+          console.warn('RAG upsert unavailable:', e);
+        }
 
         setSuccess(); // Indicate success after receiving AI response
 
@@ -130,7 +186,7 @@ const ConversationDialogue: React.FC = () => {
   // Handle window resize to determine mobile/desktop view
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768); // Example breakpoint
+      setIsMobile(window.innerWidth <= 768);
     };
 
     window.addEventListener('resize', handleResize);
@@ -138,6 +194,8 @@ const ConversationDialogue: React.FC = () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+
 
   // Initialize SpeechRecognition
   useEffect(() => {
@@ -152,7 +210,8 @@ const ConversationDialogue: React.FC = () => {
       // Event handlers for recognition
       (recognitionRef.current as any).onstart = () => {
         setListening();
-        console.log('Speech recognition started');
+        console.log('[Voice Debug] Speech recognition started');
+        console.log('[Voice Debug] Recognition instance:', recognitionRef.current);
         // transcript is managed by the useSpeechRecognition hook
       };
 
@@ -192,8 +251,12 @@ const ConversationDialogue: React.FC = () => {
         // transcript is managed by the useSpeechRecognition hook
       };
       (recognitionRef.current as any).onerror = (event: any) => {
+        console.error('[Voice Debug] Speech recognition error:', event);
+        console.error('[Voice Debug] Error type:', event.error);
+        console.error('[Voice Debug] Error message:', event.message);
         setTimeout(clearError, ERROR_DISPLAY_DURATION);
         setError(`Speech recognition error: ${event.error}. Please try again.`);
+        setIdle();
       };
     } else {
       console.warn('Speech Recognition API not supported in this browser.');
@@ -330,24 +393,105 @@ const ConversationDialogue: React.FC = () => {
     }
   };
 
+  // Determine container position and size based on state
+  const getContainerStyles = () => {
+    if (!showChat) return 'hidden';
+    
+    if (startInHero && !isSticky) {
+      // In hero section - larger and centered
+      return `relative ${isMobile ? 'w-full' : 'w-full max-w-4xl mx-auto'} ${className}`;
+    }
+    
+    if (isMinimized) {
+      // Minimized state - just a button
+      return `fixed ${isMobile ? 'bottom-4 right-4' : 'bottom-6 right-6'} z-[9999]`;
+    }
+    
+    // Sticky/floating state
+    return `fixed z-[9999] ${
+      isMobile 
+        ? 'bottom-0 left-0 right-0 rounded-t-3xl' 
+        : isExpanded 
+          ? 'bottom-6 right-6 w-[600px] h-[700px]'
+          : 'bottom-6 right-6 w-[440px] h-[550px]'
+    } transition-all duration-300`;
+  };
+
+  // Render minimized button
+  if (isMinimized) {
+    return (
+      <motion.button
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        onClick={() => setIsMinimized(false)}
+        className="fixed bottom-6 right-6 z-[9999] w-14 h-14 bg-primary hover:bg-primary-hover text-text-white rounded-full shadow-glow flex items-center justify-center transition-all duration-300"
+      >
+        <span className="text-2xl">🤖</span>
+      </motion.button>
+    );
+  }
+
   return (
-    <div 
-      ref={conversationDialogueRef}
-      className={`fixed z-[9999] ${isMobile ? 'bottom-4 left-4 right-4' : 'bottom-6 right-6 w-[440px]'} 
-        bg-bg-dark-95 backdrop-blur-2xl border border-border-white-10 rounded-3xl shadow-glass 
-        transition-all duration-300 hover:border-border-white-20 ${isDraggingOver ? 'border-primary shadow-glow' : ''}`}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}>
+    <AnimatePresence>
+      <motion.div
+        ref={conversationDialogueRef}
+        initial={isSticky ? { opacity: 0, y: 20 } : false}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 20 }}
+        className={`${getContainerStyles()} bg-bg-dark-95 backdrop-blur-2xl border border-border-white-10 ${
+          startInHero && !isSticky ? 'rounded-2xl' : 'rounded-3xl'
+        } shadow-glass hover:border-border-white-20 ${isDraggingOver ? 'border-primary shadow-glow' : ''}`}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
       
-      {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-border-white-5">
-        <div className="flex items-center gap-3">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-          <h3 className="font-satoshi font-medium text-text-white">AI Assistant</h3>
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-border-white-5">
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <h3 className="font-satoshi font-medium text-text-white">Business Intelligent Agent</h3>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => clearConversation()}
+              className="px-2 py-1 text-xs border border-border-white-10 rounded-lg text-text-white-60 hover:text-text-white hover:border-border-white-20 transition-colors"
+              aria-label="Clear conversation"
+              title="Clear conversation"
+            >
+              Clear
+            </button>
+            {isSticky && (
+              <>
+                <button
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="p-1.5 hover:bg-bg-white-10 rounded-lg transition-colors"
+                  aria-label={isExpanded ? 'Collapse' : 'Expand'}
+                >
+                  {isExpanded ? (
+                    <Minimize2 className="w-4 h-4 text-text-white-60" />
+                  ) : (
+                    <Maximize2 className="w-4 h-4 text-text-white-60" />
+                  )}
+                </button>
+                <button
+                  onClick={() => setIsMinimized(true)}
+                  className="p-1.5 hover:bg-bg-white-10 rounded-lg transition-colors"
+                  aria-label="Minimize"
+                >
+                  <Minimize2 className="w-4 h-4 text-text-white-60" />
+                </button>
+                <button
+                  onClick={() => setShowChat(false)}
+                  className="p-1.5 hover:bg-bg-white-10 rounded-lg transition-colors"
+                  aria-label="Close"
+                >
+                  <X className="w-4 h-4 text-text-white-60" />
+                </button>
+              </>
+            )}
+          </div>
         </div>
-        <span className="text-xs text-text-white-60">Powered by Gemini</span>
-      </div>
       
       {/* Messages Area */}
       <MessageList 
@@ -420,8 +564,9 @@ const ConversationDialogue: React.FC = () => {
             onSendMessage={handleSendMessage}
           />
         )}
-      </div>
-    </div>
+        </div>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 

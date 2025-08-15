@@ -54,7 +54,12 @@ const Marketplace = () => {
 
   return (
     <>
-      <Meta />
+      <Meta 
+        title="LOG_ON AI Marketplace | Autonomous Agents, Automations & Integrations"
+        description="Discover and deploy autonomous AI agents, automations, and integrations on LOG_ON. Filter by category and industry to find solutions that drive growth."
+        canonical="https://www.log-on.io/marketplace"
+        keywords="AI marketplace, AI agents, business automation, process automation, integrations, LOG_ON"
+      />
       <GridBackground>
         <AppHeader />
         

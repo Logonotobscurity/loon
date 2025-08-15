@@ -15,7 +15,10 @@ import ConversationDialogue from '../features/conversation/ConversationDialogue'
 const LandingPage = () => {
   return (
     <>
-      <Meta />
+      <Meta 
+        title="LOG_ON - AI Agent Marketplace | Voice-First Business Intelligence"
+        canonical="https://www.log-on.io/"
+      />
       <GridBackground>
         <AppHeader />
         <main>
@@ -29,12 +32,11 @@ const LandingPage = () => {
           speed={30}
         />
         </main>
-        <Footer />
-        <MobileFooterCTA />
-        <ConversationDialogue />
-      </GridBackground>
-    </>
-  );
+      <Footer />
+      <MobileFooterCTA />
+    </GridBackground>
+  </>
+ );
 };
 
 export default LandingPage;

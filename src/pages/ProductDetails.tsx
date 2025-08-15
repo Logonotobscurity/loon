@@ -9,6 +9,7 @@ import { SectionWrapper } from '../components/Global/SectionWrapper';
 import { CTAButton } from '../components/Global/CTAButton';
 import { marketplaceProducts, customMarketplaceCategories } from '../features/marketplace/data/marketplaceData';
 import Meta from '../components/Meta';
+import { Helmet } from 'react-helmet-async';
 
 const ProductDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -47,7 +48,28 @@ const ProductDetails = () => {
       <Meta 
         title={`${product.name} | LOG_ON Marketplace`}
         description={product.description}
+        canonical={`https://www.log-on.io/marketplace/products/${product.id}`}
+        ogImage={product.imageUrl}
       />
+      <Helmet>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": product.name,
+            "image": product.imageUrl,
+            "description": product.description,
+            "category": category?.label,
+            "brand": { "@type": "Brand", "name": "LOG_ON" },
+            "offers": {
+              "@type": "Offer",
+              "price": "0.00",
+              "priceCurrency": "USD",
+              "availability": "https://schema.org/InStock"
+            }
+          })}
+        </script>
+      </Helmet>
       <GridBackground>
         <AppHeader />
         
@@ -62,7 +84,7 @@ const ProductDetails = () => {
                 Marketplace
               </Link>
               <span className="text-text-white-40">/</span>
-              <span className="text-text-white-60">{category?.name}</span>
+              <span className="text-text-white-60">{category?.label}</span>
               <span className="text-text-white-40">/</span>
               <span className="text-text-white">{product.name}</span>
             </nav>

@@ -1,12 +1,18 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
+interface BreadcrumbItem {
+  name: string;
+  item: string;
+}
+
 interface MetaProps {
   title?: string;
   description?: string;
   keywords?: string;
   canonical?: string;
   ogImage?: string;
+  breadcrumbs?: BreadcrumbItem[];
 }
 
 const Meta: React.FC<MetaProps> = ({
@@ -14,7 +20,8 @@ const Meta: React.FC<MetaProps> = ({
   description = "Deploy autonomous AI agents with LOG_ON to automate workflows, accelerate growth & transform your business. Enterprise-grade infrastructure for voice-first business intelligence.",
   keywords = "AI agents, business automation, voice AI, autonomous agents, workflow automation, enterprise AI, business intelligence, Developer Ecosystem, AI infrastructure, LOG_ON",
   canonical = "https://www.log-on.io",
-  ogImage = "https://www.log-on.io/og-image.png"
+  ogImage = "https://www.log-on.io/og-image.png",
+  breadcrumbs
 }) => {
   const siteName = "LOG_ON";
   const twitterHandle = "@log_on_ai";
@@ -74,20 +81,20 @@ const Meta: React.FC<MetaProps> = ({
       </script>
 
       {/* BreadcrumbList Schema */}
-      <script type="application/ld+json">
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          "itemListElement": [
-            {
+      {breadcrumbs && breadcrumbs.length > 0 && (
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": breadcrumbs.map((bc, idx) => ({
               "@type": "ListItem",
-              "position": 1,
-              "name": "Home",
-              "item": canonical
-            }
-          ]
-        })}
-      </script>
+              "position": idx + 1,
+              "name": bc.name,
+              "item": bc.item,
+            })),
+          })}
+        </script>
+      )}
     </Helmet>
   );
 };

@@ -130,9 +130,9 @@
   .conversation-dialogue {
     /* Adjust positioning for mobile if needed */
     bottom: 10px; /* Closer to the bottom on mobile */
-    left: 50%;
-    transform: translateX(-50%);
-    right: unset; /* Ensure left/transform take precedence */
+    left: 10px;
+    right: 10px;
+    transform: none;
   }
 }
 
@@ -214,7 +214,7 @@
     gap: 16px;
     max-height: 400px;
     min-height: 200px;
-    margin-bottom: 16px;
+    margin-bottom: 0; /* Remove bottom margin to reduce space */
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }

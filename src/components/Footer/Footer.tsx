@@ -6,25 +6,25 @@ import { Github, Twitter, Linkedin, Youtube, ArrowUpRight } from 'lucide-react';
 
 const footerLinks = {
   product: [
-    { name: 'Features', href: '#capabilities' },
-    { name: 'Marketplace', href: '#marketplace' },
-    { name: 'Use Cases', href: '#use-cases' },
-    { name: 'Pricing', href: '#' },
-    { name: 'Enterprise', href: '#' }
+    { name: 'Features', href: '/features' },
+    { name: 'Marketplace', href: '/marketplace' },
+    { name: 'Use Cases', href: '/#use-cases' },
+    { name: 'Pricing', href: '/pricing' },
+    { name: 'Enterprise', href: '/about' }
   ],
   developers: [
-    { name: 'Documentation', href: '#' },
-    { name: 'API Reference', href: '#' },
-    { name: 'SDK & Tools', href: '#' },
-    { name: 'Community', href: '#' },
-    { name: 'Open Source', href: '#' }
+    { name: 'Documentation', href: '/docs' },
+    { name: 'API Reference', href: '/docs#api' },
+    { name: 'SDK \u0026 Tools', href: '/docs#sdks' },
+    { name: 'Community', href: '/about#community' },
+    { name: 'Open Source', href: '/about#open-source' }
   ],
   company: [
-    { name: 'About Us', href: '#' },
-    { name: 'Blog', href: '#' },
-    { name: 'Careers', href: '#' },
-    { name: 'Press', href: '#' },
-    { name: 'Contact', href: '#' }
+    { name: 'About Us', href: '/about' },
+    { name: 'Blog', href: '/blog' },
+    { name: 'Careers', href: '/about#careers' },
+    { name: 'Press', href: '/about#press' },
+    { name: 'Contact', href: '/about#contact' }
   ],
   legal: [
     { name: 'Privacy Policy', href: '#' },

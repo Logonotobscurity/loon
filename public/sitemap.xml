@@ -5,4 +5,28 @@
     <lastmod>2025-01-01</lastmod>
     <priority>1.00</priority>
   </url>
+  <url>
+    <loc>https://www.log-on.io/marketplace</loc>
+    <priority>0.90</priority>
+  </url>
+  <url>
+    <loc>https://www.log-on.io/features</loc>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://www.log-on.io/pricing</loc>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://www.log-on.io/docs</loc>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://www.log-on.io/blog</loc>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://www.log-on.io/about</loc>
+    <priority>0.70</priority>
+  </url>
 </urlset>
