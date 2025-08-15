@@ -4,6 +4,7 @@ import { SectionWrapper } from '../Global/SectionWrapper';
 import { StandardCard, StandardCardTitle, StandardCardDescription } from '../Global/StandardCard';
 import ButtonBlackShadow from '../Global/ButtonBlackShadow';
 import { AssessmentModal, AssessmentType } from '../Assessment/AssessmentModal';
+import { trackEvent } from '../../analytics/analytics';
 
 const assessmentToolsData: {
   sectionLabel: string;
@@ -49,6 +50,7 @@ export const BusinessAssessmentSection = () => {
   const openAssessment = (type: AssessmentType) => {
     setCurrentAssessment(type);
     setAssessmentOpen(true);
+    try { trackEvent('assessment_open', { source: 'business-assessment', type }); } catch {}
   };
 
   return (

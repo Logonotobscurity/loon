@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu as MenuIcon, X } from 'lucide-react';
@@ -6,9 +6,34 @@ import { Logo } from '../Global/Logo';
 import { CTAButton } from '../Global/CTAButton';
 import { EnhancedDropdownMenu } from './EnhancedDropdownMenu';
 import { navigationConfig } from '../../config/navigation';
+import { ResponsiveModal } from '../Global/ResponsiveModal';
+import { JoinWaitlistModal } from '../Global/JoinWaitlistModal';
+import { trackEvent } from '../../analytics/analytics';
 
 export const AppHeader = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<'waitlist' | 'vendor'>('waitlist');
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const openWaitlist = () => {
+    setModalMode('waitlist');
+    setIsModalOpen(true);
+    trackEvent('cta_click', { location: 'header', label: 'Join Waitlist' });
+  };
+
+  const openVendor = () => {
+    setModalMode('vendor');
+    setIsModalOpen(true);
+    trackEvent('cta_click', { location: 'header', label: 'Become a Vendor' });
+  };
 
   const menuVariants = {
     closed: { opacity: 0, y: "-100%" },
@@ -18,7 +43,7 @@ export const AppHeader = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
       <motion.div
-        className="bg-transparent border-b border-transparent transition-all duration-300"
+        className={`border-b transition-all duration-300 ${scrolled ? 'bg-bg-dark/80 backdrop-blur-xl border-border-white-10' : 'bg-transparent border-transparent'}`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: 'spring', stiffness: 100, damping: 20 }}
@@ -61,8 +86,20 @@ export const AppHeader = () => {
             />
           </nav>
           <div className="hidden md:flex items-center gap-2 lg:gap-4">
-            <CTAButton variant="outline" className="!px-4 lg:!px-6 !py-2 lg:!py-3 text-sm lg:text-base">Sign In</CTAButton>
-            <CTAButton variant="primary" className="!px-4 lg:!px-6 !py-2 lg:!py-3 text-sm lg:text-base">Get Started</CTAButton>
+            <CTAButton 
+              variant="outline" 
+              className="!px-4 lg:!px-6 !py-2 lg:!py-3 text-sm lg:text-base"
+              onClick={openWaitlist}
+            >
+              Join Waitlist
+            </CTAButton>
+            <CTAButton 
+              variant="primary" 
+              className="!px-4 lg:!px-6 !py-2 lg:!py-3 text-sm lg:text-base"
+              onClick={openVendor}
+            >
+              Become a Vendor
+            </CTAButton>
           </div>
           <div className="md:hidden">
             <button onClick={() => setIsOpen(true)} aria-label="Open menu" className="p-2 hover:bg-bg-white-10 rounded-lg transition-colors">
@@ -113,12 +150,24 @@ export const AppHeader = () => {
                 <a href="#" className="text-2xl font-satoshi font-medium text-text-white hover:text-primary transition-colors duration-200">
                   Resources
                 </a>
-                <CTAButton variant="primary" className="w-full mt-8">Get Started</CTAButton>
+                <CTAButton 
+                  variant="primary" 
+                  className="w-full mt-8"
+                  onClick={() => { setIsOpen(false); openWaitlist(); }}
+                >Join Waitlist</CTAButton>
               </nav>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      <ResponsiveModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        title={modalMode === 'vendor' ? 'Become a Vendor / Developer' : 'Join the Waitlist'}
+      >
+        <JoinWaitlistModal mode={modalMode} onClose={() => setIsModalOpen(false)} />
+      </ResponsiveModal>
     </header>
   );
 };

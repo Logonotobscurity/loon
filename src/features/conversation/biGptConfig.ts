@@ -16,7 +16,7 @@ export const PROCESS_MAPPINGS: ProcessMapping[] = [
   {
     trigger: ['email', 'drowning in emails', 'inbox', 'email management'],
     process: 'Email Management',
-    logonAgent: 'Assistant Tools Suite',
+    logonAgent: 'Sales Enrichment Assistant',
     category: 'assistant-tools',
     alternative: 'Gmail filters (free)',
     setupTime: 30,
@@ -25,7 +25,7 @@ export const PROCESS_MAPPINGS: ProcessMapping[] = [
   {
     trigger: ['excel', 'spreadsheet', 'data chaos', 'excel chaos'],
     process: 'Data Pipeline',
-    logonAgent: 'SAP Integration Agent',
+    logonAgent: 'Ops Efficiency Optimizer',
     category: 'automation-ops',
     alternative: 'Google Sheets (free)',
     setupTime: 45,
@@ -34,7 +34,7 @@ export const PROCESS_MAPPINGS: ProcessMapping[] = [
   {
     trigger: ['forecast', 'sales forecast', 'predict', 'analytics'],
     process: 'Predictive Analytics',
-    logonAgent: 'Process Mining Agent',
+    logonAgent: 'BI Quickstart Analyst',
     category: 'process-mining',
     alternative: 'Basic trend analysis',
     setupTime: 60,
@@ -43,7 +43,7 @@ export const PROCESS_MAPPINGS: ProcessMapping[] = [
   {
     trigger: ['inventory', 'stock', 'warehouse', 'supply chain'],
     process: 'Supply Chain',
-    logonAgent: 'Automation Ops Agent',
+    logonAgent: 'Inventory Forecast Bot',
     category: 'automation-ops',
     alternative: 'Manual templates',
     setupTime: 90,
@@ -52,7 +52,7 @@ export const PROCESS_MAPPINGS: ProcessMapping[] = [
   {
     trigger: ['customer', 'complaints', 'support', 'service desk'],
     process: 'Service Desk',
-    logonAgent: 'Assistant Tools Bot',
+    logonAgent: 'Customer Feedback Miner',
     category: 'assistant-tools',
     alternative: 'Zendesk (paid)',
     setupTime: 45,
@@ -61,7 +61,7 @@ export const PROCESS_MAPPINGS: ProcessMapping[] = [
   {
     trigger: ['invoice', 'billing', 'payment', 'accounts'],
     process: 'Invoice Processing',
-    logonAgent: 'SAP Integration Connector',
+    logonAgent: 'Vendor Intake Orchestrator',
     category: 'automation-ops',
     alternative: 'Excel templates (free)',
     setupTime: 45,
@@ -70,7 +70,7 @@ export const PROCESS_MAPPINGS: ProcessMapping[] = [
   {
     trigger: ['hr', 'onboarding', 'employee', 'recruitment'],
     process: 'HR Automation',
-    logonAgent: 'HR Process Automation Accelerator',
+    logonAgent: 'Vendor Intake Orchestrator',
     category: 'automation-ops',
     alternative: 'Manual checklists',
     setupTime: 60,
@@ -79,7 +79,7 @@ export const PROCESS_MAPPINGS: ProcessMapping[] = [
   {
     trigger: ['marketing', 'campaign', 'social media', 'content'],
     process: 'Marketing Automation',
-    logonAgent: 'Marketing Automation Workflow',
+    logonAgent: 'Content Brief Generator',
     category: 'assistant-tools',
     alternative: 'Buffer/Hootsuite (free tier)',
     setupTime: 30,
@@ -211,11 +211,18 @@ Notes for Engineering
 `;
 
 // Helper function to format agent recommendation
-export function formatAgentRecommendation(agent: any, mapping: ProcessMapping) {
+export function formatAgentRecommendation(agentName: string, mapping: ProcessMapping) {
   const roi = calculateROI(mapping);
+  const agent = marketplaceProducts.find(product => product.name === agentName) || {
+    name: agentName,
+    description: '',
+    tags: []
+  };
   
   return {
     agentName: agent.name,
+    description: agent.description,
+    tags: agent.tags,
     category: mapping.category,
     setupTime: mapping.setupTime,
     weeklySaved: mapping.weeklySaved,

@@ -1,8 +1,9 @@
-import React, { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React, { Suspense, lazy, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import LandingPage from './pages';
 import Marketplace from './pages/Marketplace';
 import ProductDetails from './pages/ProductDetails';
+import { initAnalytics, trackPageView } from './analytics/analytics';
 
 const Features = lazy(() => import('./pages/Features'));
 const Pricing = lazy(() => import('./pages/Pricing'));
@@ -11,10 +12,18 @@ const Blog = lazy(() => import('./pages/Blog'));
 const BlogPost = lazy(() => import('./pages/BlogPost'));
 const About = lazy(() => import('./pages/About'));
 
+function RouteTracker() {
+  const location = useLocation();
+  useEffect(() => { trackPageView(location.pathname); }, [location.pathname]);
+  return null;
+}
+
 function App() {
+  useEffect(() => { initAnalytics(); }, []);
   return (
     <Router>
       <Suspense fallback={null}>
+        <RouteTracker />
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/features" element={<Features />} />

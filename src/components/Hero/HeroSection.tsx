@@ -1,10 +1,15 @@
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Sphere, MeshDistortMaterial } from '@react-three/drei';
 import { motion } from 'framer-motion';
 import { SectionWrapper } from '../Global/SectionWrapper';
 import ConversationDialogue from '../../features/conversation/ConversationDialogue';
 import { copy } from '../../copy';
+import { CTAButton } from '../Global/CTAButton';
+import { ResponsiveModal } from '../Global/ResponsiveModal';
+import { JoinWaitlistModal } from '../../components/Global/JoinWaitlistModal';
+import AssessmentModal from '../../features/assessment/AssessmentModal';
+import { trackEvent } from '../../analytics/analytics';
 
 const AnimatedBlob = () => {
   return (
@@ -29,10 +34,25 @@ const AnimatedBlob = () => {
 };
 
 export const HeroSection = () => {
+  const [waitlistOpen, setWaitlistOpen] = useState(false);
+  const [waitlistMode, setWaitlistMode] = useState<'waitlist' | 'vendor'>('waitlist');
+  const [assessmentOpen, setAssessmentOpen] = useState(false);
+
   useEffect(() => {
     // Seed RAG on hero mount so context is available early
     import('../../features/conversation/seedRag').then(m => m.seedRagKnowledgeBase()).catch(() => {});
   }, []);
+
+  const openWaitlist = (mode: 'waitlist' | 'vendor') => {
+    setWaitlistMode(mode);
+    setWaitlistOpen(true);
+    trackEvent('cta_click', { location: 'hero', label: mode === 'vendor' ? 'Become a Vendor' : 'Join Waitlist' });
+  };
+
+  const openAssessment = () => {
+    setAssessmentOpen(true);
+    trackEvent('assessment_open', { location: 'hero' });
+  };
 
   return (
     <SectionWrapper id="hero" className="relative overflow-hidden min-h-[100dvh] flex flex-col items-center justify-center pt-16 sm:pt-20">
@@ -57,6 +77,18 @@ export const HeroSection = () => {
         >
           {copy.hero.subheadline}
         </motion.h2>
+
+        {/* Hero CTAs */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="mt-6 sm:mt-8 flex items-center justify-center gap-3 sm:gap-4"
+        >
+          <CTAButton variant="primary" onClick={() => openWaitlist('waitlist')}>Join Waitlist</CTAButton>
+          <CTAButton variant="secondary" onClick={() => openWaitlist('vendor')}>Become a Vendor</CTAButton>
+          <CTAButton variant="outline" onClick={openAssessment}>Start Assessment</CTAButton>
+        </motion.div>
         
         {/* BI-GPT Conversation integrated in hero */}
         <motion.div
@@ -68,6 +100,13 @@ export const HeroSection = () => {
           <ConversationDialogue startInHero={true} className="max-w-3xl mx-auto" />
         </motion.div>
       </div>
+
+      {/* Modals */}
+      <ResponsiveModal isOpen={waitlistOpen} onClose={() => setWaitlistOpen(false)} title={waitlistMode === 'vendor' ? 'Become a Vendor / Developer' : 'Join the Waitlist'}>
+        <JoinWaitlistModal mode={waitlistMode} onClose={() => setWaitlistOpen(false)} />
+      </ResponsiveModal>
+
+      <AssessmentModal isOpen={assessmentOpen} onClose={() => setAssessmentOpen(false)} />
     </SectionWrapper>
   );
 };

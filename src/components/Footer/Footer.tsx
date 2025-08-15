@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Logo } from '../Global/Logo';
 import { CTAButton } from '../Global/CTAButton';
 import { Github, Twitter, Linkedin, Youtube, ArrowUpRight } from 'lucide-react';
+import { ResponsiveModal } from '../Global/ResponsiveModal';
+import { JoinWaitlistModal } from '../Global/JoinWaitlistModal';
 
 const footerLinks = {
   product: [
@@ -42,6 +44,9 @@ const socialLinks = [
 ];
 
 export const Footer = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [modalMode, setModalMode] = useState<'waitlist' | 'vendor'>('waitlist');
+
   return (
     <footer className="relative bg-bg-dark pt-12 sm:pt-16 md:pt-20 pb-20 md:pb-8 overflow-hidden">
       {/* Decorative elements */}
@@ -53,27 +58,35 @@ export const Footer = () => {
 
       <div className="container relative z-10">
         {/* CTA Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="glass-card p-8 md:p-12 mb-16 text-center"
-        >
-          <h3 className="font-satoshi font-bold text-2xl sm:text-3xl md:text-4xl mb-3 sm:mb-4">
-            Ready to Deploy Your First Agent?
-          </h3>
-          <p className="text-text-white-80 text-base sm:text-lg mb-6 sm:mb-8 max-w-2xl mx-auto">
-            Join thousands of businesses automating their workflows with LOG_ON's autonomous AI agents
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <CTAButton variant="primary" className="!px-8 !py-4">
-              Start Free Trial
-            </CTAButton>
-            <CTAButton variant="secondary" className="!px-8 !py-4">
-              Schedule Demo
-            </CTAButton>
-          </div>
-        </motion.div>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="glass-card p-8 md:p-12 mb-16 text-center"
+          >
+            <h3 className="font-satoshi font-bold text-2xl sm:text-3xl md:text-4xl mb-3 sm:mb-4">
+              Ready to Deploy Your First Agent?
+            </h3>
+            <p className="text-text-white-80 text-base sm:text-lg mb-6 sm:mb-8 max-w-2xl mx-auto">
+              Join thousands of businesses automating their workflows with LOG_ON's autonomous AI agents
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <CTAButton 
+                variant="primary" 
+                className="!px-8 !py-4"
+                onClick={() => { setModalMode('waitlist'); setShowModal(true); }}
+              >
+                Join Waitlist
+              </CTAButton>
+              <CTAButton 
+                variant="secondary" 
+                className="!px-8 !py-4"
+                onClick={() => { setModalMode('vendor'); setShowModal(true); }}
+              >
+                Become a Vendor
+              </CTAButton>
+            </div>
+          </motion.div>
 
         {/* Footer Content */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6 sm:gap-8 mb-8 sm:mb-12">
@@ -208,6 +221,12 @@ export const Footer = () => {
           </div>
         </div>
       </div>
+
+      {showModal && (
+        <ResponsiveModal isOpen={showModal} onClose={() => setShowModal(false)}>
+          <JoinWaitlistModal mode={modalMode} onClose={() => setShowModal(false)} />
+        </ResponsiveModal>
+      )}
     </footer>
   );
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Meta from '../components/Meta';
 import { GridBackground } from '../components/Global/GridBackground';
 import { AppHeader } from '../components/Header/AppHeader';
@@ -6,6 +6,17 @@ import { SectionWrapper } from '../components/Global/SectionWrapper';
 import { Footer } from '../components/Footer/Footer';
 
 const About = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+
+  const mailtoHref = () => {
+    const to = 'logonthepage@gmail.com';
+    const subject = encodeURIComponent(`Career interest from ${name || 'candidate'}`);
+    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
+    return `mailto:${to}?subject=${subject}&body=${body}`;
+  };
+
   return (
     <> 
       <Meta 
@@ -46,10 +57,49 @@ const About = () => {
             </ul>
           </SectionWrapper>
 
-          <SectionWrapper id="careers" className="py-12 text-center">
-            <h2 className="font-satoshi font-semibold text-2xl text-text-white mb-3">Careers</h2>
-            <p className="text-text-white-70 max-w-2xl mx-auto">We welcome builders with skills in AI, web, data, and automation. If you’re passionate about autonomous systems and business impact, we want to hear from you.</p>
-            <p className="text-text-white-60 text-sm mt-2">Anyone with skills willing to join the team is invited to reach out.</p>
+          <SectionWrapper id="careers" className="py-12">
+            <h2 className="font-satoshi font-semibold text-2xl text-text-white mb-3 text-center">Careers</h2>
+            <p className="text-text-white-70 max-w-2xl mx-auto text-center">We welcome builders with skills in AI, web, data, and automation. If you’re passionate about autonomous systems and business impact, we want to hear from you.</p>
+            <p className="text-text-white-60 text-sm mt-2 text-center">Anyone with skills willing to join the team is invited to reach out.</p>
+
+            <div className="glass-card p-6 mt-6 max-w-2xl mx-auto">
+              <h3 className="font-satoshi font-semibold text-text-white mb-3">Express Interest</h3>
+              <div className="grid sm:grid-cols-2 gap-3">
+                <input
+                  type="text"
+                  placeholder="Your name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="input"
+                />
+                <input
+                  type="email"
+                  placeholder="Your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="input"
+                />
+              </div>
+              <textarea
+                placeholder="Tell us about your skills and interests"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                rows={4}
+                className="input mt-3"
+              />
+              <div className="mt-4 flex justify-end">
+                <a href={mailtoHref()} className="btn-primary">Send Email</a>
+              </div>
+            </div>
+          </SectionWrapper>
+
+          <SectionWrapper id="contact" className="py-12">
+            <h2 className="font-satoshi font-semibold text-2xl text-text-white mb-3">Contact</h2>
+            <div className="glass-card p-6">
+              <p className="text-text-white-80">Have a question or want to partner? Reach our team at
+                {' '}<a href="mailto:logonthepage@gmail.com" className="text-primary hover:text-primary-light underline">logonthepage@gmail.com</a>.
+              </p>
+            </div>
           </SectionWrapper>
         </main>
         <Footer />

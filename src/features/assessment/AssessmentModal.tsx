@@ -1,134 +1,65 @@
 import React, { useState } from 'react';
 import ResponsiveModal from '../Global/ResponsiveModal';
 import CTAButton from '../Global/CTAButton';
-import * as z from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { trackEvent } from '../../analytics/analytics';
 
-const AssessmentValidation = z.object({
-  fullName: z.string().min(1, { message: 'Full Name is required' }),
-  businessEmail: z.string().email({ message: 'Invalid email address' }),
-  companyName: z.string().min(1, { message: 'Company Name is required' }),
-  businessGoals: z.string().min(1, { message: 'Business Goals are required' }),
-  currentChallenges: z
-    .string()
-    .min(1, { message: 'Current Challenges are required' }),
-});
-
-type AssessmentFormData = z.infer<typeof AssessmentValidation>;
+export type AssessmentType = 'ai-readiness' | 'workflow-automation' | 'roi-calculator' | 'security-compliance';
 
 interface AssessmentModalProps {
   isOpen: boolean;
   onClose: () => void;
+  assessmentType?: AssessmentType;
 }
 
-const AssessmentModal: React.FC<AssessmentModalProps> = ({
-  isOpen,
-  onClose,
-}) => {
-  const form = useForm<AssessmentFormData>({
-    resolver: zodResolver(AssessmentValidation),
-    defaultValues: {
-      fullName: '',
-      businessEmail: '',
-      companyName: '',
-      businessGoals: '',
-      currentChallenges: '',
-    },
-  });
+const AssessmentModal: React.FC<AssessmentModalProps> = ({ isOpen, onClose, assessmentType }) => {
+  const [fullName, setFullName] = useState('');
+  const [businessEmail, setBusinessEmail] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [businessGoals, setBusinessGoals] = useState('');
+  const [currentChallenges, setCurrentChallenges] = useState('');
 
-  const onSubmit = (values: AssessmentFormData) => {
-    console.log('Assessment form submitted:', values);
-    // Here you would typically send the data to your backend or an external service
-    onClose(); // Close the modal after submission
+  const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+    try {
+      trackEvent('assessment_submit', {
+        type: assessmentType || 'unknown',
+        hasGoals: !!businessGoals,
+        hasChallenges: !!currentChallenges,
+      });
+    } catch {}
+    onClose();
   };
 
   return (
     <ResponsiveModal isOpen={isOpen} onClose={onClose} title="Business Assessment">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="fullName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Full Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Your full name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="businessEmail"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Business Email</FormLabel>
-                <FormControl>
-                  <Input type="email" placeholder="Your business email" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="companyName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Company Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Your company name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="businessGoals"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Business Goals</FormLabel>
-                <FormControl>
-                  <Textarea placeholder="Describe your business goals" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="currentChallenges"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Current Challenges</FormLabel>
-                <FormControl>
-                  <Textarea placeholder="Describe your current challenges" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="flex justify-end">
-            <CTAButton type="submit">Submit Assessment</CTAButton>
-          </div>
-        </form>
-      </Form>
+      <form onSubmit={onSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-text-white-80 mb-2">Full Name</label>
+          <input className="input" placeholder="Your full name" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-text-white-80 mb-2">Business Email</label>
+          <input className="input" type="email" placeholder="Your business email" value={businessEmail} onChange={(e) => setBusinessEmail(e.target.value)} required />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-text-white-80 mb-2">Company Name</label>
+          <input className="input" placeholder="Your company name" value={companyName} onChange={(e) => setCompanyName(e.target.value)} required />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-text-white-80 mb-2">Business Goals</label>
+          <textarea className="input" placeholder="Describe your business goals" value={businessGoals} onChange={(e) => setBusinessGoals(e.target.value)} required rows={3} />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-text-white-80 mb-2">Current Challenges</label>
+          <textarea className="input" placeholder="Describe your current challenges" value={currentChallenges} onChange={(e) => setCurrentChallenges(e.target.value)} required rows={3} />
+        </div>
+        <div className="flex justify-end">
+          <CTAButton type="submit">Submit Assessment</CTAButton>
+        </div>
+      </form>
     </ResponsiveModal>
   );
 };
 
+export { AssessmentModal };
 export default AssessmentModal;

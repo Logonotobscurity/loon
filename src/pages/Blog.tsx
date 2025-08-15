@@ -5,6 +5,33 @@ import { AppHeader } from '../components/Header/AppHeader';
 import { SectionWrapper } from '../components/Global/SectionWrapper';
 import { Footer } from '../components/Footer/Footer';
 
+// Markdown posts loader (Vite)
+const posts = Object.entries(
+  import.meta.glob('../../content/blog/*.md', { eager: true, as: 'raw' })
+).map(([path, raw]) => {
+  const slug = path.split('/').pop()?.replace('.md', '') || 'post';
+  // Simple frontmatter parse: expects first block like ---\nkey: value\n---
+  const match = String(raw).match(/^---[\s\S]*?---/);
+  const fm = match ? match[0] : '';
+  const meta: Record<string, string> = {};
+  fm.split('\n').forEach((line) => {
+    const t = line.replace(/^---|---$/g, '').trim();
+    const idx = t.indexOf(':');
+    if (idx > -1) {
+      const k = t.slice(0, idx).trim();
+      const v = t.slice(idx + 1).trim();
+      if (k) meta[k] = v;
+    }
+  });
+  return {
+    slug,
+    title: meta.title || slug.replace(/-/g, ' '),
+    date: meta.date || '',
+    excerpt: meta.excerpt || '',
+    tags: (meta.tags || '').split(',').map((s) => s.trim()).filter(Boolean),
+  };
+}).sort((a, b) => (a.date < b.date ? 1 : -1));
+
 const Blog = () => {
   return (
     <>
@@ -27,10 +54,18 @@ const Blog = () => {
 
           <SectionWrapper className="py-12">
             <div className="grid md:grid-cols-3 gap-6">
-              {[1,2,3].map((i) => (
-                <a key={i} href={`/blog/sample-post-${i}`} className="glass-card p-6 block hover:border-primary/50 transition-all">
-                  <h3 className="font-semibold text-text-white mb-2">Sample Post {i}</h3>
-                  <p className="text-text-white-70 text-sm">A short teaser introducing the topic and value to the reader.</p>
+              {posts.map((p) => (
+                <a key={p.slug} href={`/blog/${p.slug}`} className="glass-card p-6 block hover:border-primary/50 transition-all">
+                  <h3 className="font-semibold text-text-white mb-2">{p.title}</h3>
+                  {p.date && <p className="text-text-white-60 text-xs mb-1">{new Date(p.date).toLocaleDateString()}</p>}
+                  <p className="text-text-white-70 text-sm line-clamp-3">{p.excerpt || 'Read more...'}</p>
+                  {!!p.tags.length && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {p.tags.map((t) => (
+                        <span key={t} className="px-2 py-0.5 text-xs rounded bg-text-white-10 text-text-white-70">{t}</span>
+                      ))}
+                    </div>
+                  )}
                   <span className="text-primary text-sm mt-3 inline-block">Read More →</span>
                 </a>
               ))}

@@ -29,6 +29,169 @@ export const industryCategories: MarketplaceCategory[] = [
 ];
 
 export const marketplaceProducts: MarketplaceProduct[] = [
+  // --- New placeholder agents (20) ---
+  {
+    id: 'ops-efficiency-optimizer',
+    name: 'Ops Efficiency Optimizer',
+    description: 'Detects process bottlenecks and suggests automations to improve throughput.',
+    category: 'automation-ops',
+    imageUrl: '/images/process-optimization.png',
+    tags: ['Bottleneck Detection', 'Throughput', 'Automation Suggestions'],
+    isTrending: true
+  },
+  {
+    id: 'sales-enrichment-assistant',
+    name: 'Sales Enrichment Assistant',
+    description: 'Auto-enriches leads from public sources and prioritizes outreach.',
+    category: 'assistant-tools',
+    imageUrl: '/images/marketing-workflow.png',
+    tags: ['Lead Enrichment', 'Scoring', 'Outreach']
+  },
+  {
+    id: 'bi-quickstart-analyst',
+    name: 'BI Quickstart Analyst',
+    description: 'Generates dashboards and KPIs from your CSV/DB with guided prompts.',
+    category: 'agent-catalog',
+    imageUrl: '/images/data-analysis-agent.png',
+    tags: ['Dashboarding', 'KPI', 'Guided Analysis']
+  },
+  {
+    id: 'customer-feedback-miner',
+    name: 'Customer Feedback Miner',
+    description: 'Clusters NPS/CSAT comments and recommends product improvements.',
+    category: 'assistant-tools',
+    imageUrl: '/images/community-workflow.png',
+    tags: ['NLP', 'Clustering', 'Insights']
+  },
+  {
+    id: 'inventory-forecast-bot',
+    name: 'Inventory Forecast Bot',
+    description: 'Predicts stock requirements and flags supply risks.',
+    category: 'automation-ops',
+    imageUrl: '/images/ecommerce-automation.png',
+    tags: ['Forecasting', 'Supply Chain', 'Alerts']
+  },
+  {
+    id: 'policy-compliance-checker',
+    name: 'Policy Compliance Checker',
+    description: 'Scans processes and documents to highlight compliance gaps.',
+    category: 'agent-catalog',
+    imageUrl: '/images/policy-agent.png',
+    tags: ['Compliance', 'Audit', 'Policy']
+  },
+  {
+    id: 'security-log-sentinel',
+    name: 'Security Log Sentinel',
+    description: 'Analyzes logs for anomalies and suggests actionable responses.',
+    category: 'agent-catalog',
+    imageUrl: '/images/tenant-comm-agent.png',
+    tags: ['SIEM', 'Anomaly Detection', 'Response']
+  },
+  {
+    id: 'vendor-intake-orchestrator',
+    name: 'Vendor Intake Orchestrator',
+    description: 'Streamlines vendor onboarding and assessment workflows.',
+    category: 'automation-ops',
+    imageUrl: '/images/workflow-automation.png',
+    tags: ['Onboarding', 'Assessment', 'Workflow']
+  },
+  {
+    id: 'content-brief-generator',
+    name: 'Content Brief Generator',
+    description: 'Turns keywords into SEO-ready briefs with outline and references.',
+    category: 'assistant-tools',
+    imageUrl: '/images/grammarly.png',
+    tags: ['SEO', 'Brief', 'Content']
+  },
+  {
+    id: 'it-ops-auto-remediator',
+    name: 'IT Ops Auto Remediator',
+    description: 'Detects common infra issues and triggers pre-approved runbooks.',
+    category: 'automation-ops',
+    imageUrl: '/images/cloud-workflow.png',
+    tags: ['Runbooks', 'Infra', 'Monitoring']
+  },
+  {
+    id: 'cost-optimization-advisor',
+    name: 'Cost Optimization Advisor',
+    description: 'Finds cloud/app waste and recommends savings actions.',
+    category: 'assistant-tools',
+    imageUrl: '/images/azure-factory.png',
+    tags: ['FinOps', 'Savings', 'Recommendations']
+  },
+  {
+    id: 'contract-intelligence-agent',
+    name: 'Contract Intelligence Agent',
+    description: 'Extracts key terms from contracts and tracks obligations.',
+    category: 'agent-catalog',
+    imageUrl: '/images/document-automation.png',
+    tags: ['OCR', 'Extraction', 'Obligations']
+  },
+  {
+    id: 'recruiting-matcher',
+    name: 'Recruiting Matcher',
+    description: 'Matches candidates to roles and drafts outreach messages.',
+    category: 'assistant-tools',
+    imageUrl: '/images/hr-worker.png',
+    tags: ['Matching', 'Outreach', 'HR']
+  },
+  {
+    id: 'support-auto-triage',
+    name: 'Support Auto Triage',
+    description: 'Routes tickets by intent, urgency and sentiment with summaries.',
+    category: 'assistant-tools',
+    imageUrl: '/images/zendesk-ai.png',
+    tags: ['Routing', 'Summaries', 'Sentiment']
+  },
+  {
+    id: 'partner-program-manager',
+    name: 'Partner Program Manager',
+    description: 'Tracks partner leads, co-sell motions, and collateral requests.',
+    category: 'automation-ops',
+    imageUrl: '/images/partner-agent.png',
+    tags: ['Partners', 'Pipeline', 'Enablement']
+  },
+  {
+    id: 'churn-prediction-analyst',
+    name: 'Churn Prediction Analyst',
+    description: 'Scores accounts at risk and suggests save plays.',
+    category: 'agent-catalog',
+    imageUrl: '/images/marketing-ai-agent.png',
+    tags: ['Churn', 'Save Plays', 'Scoring']
+  },
+  {
+    id: 'finance-close-buddy',
+    name: 'Finance Close Buddy',
+    description: 'Automates close checklist and reconciliations.',
+    category: 'automation-ops',
+    imageUrl: '/images/finance-worker.png',
+    tags: ['Close', 'Reconciliation', 'Checklists']
+  },
+  {
+    id: 'governance-drift-monitor',
+    name: 'Governance Drift Monitor',
+    description: 'Alerts on configuration drift vs. policy baselines.',
+    category: 'agent-catalog',
+    imageUrl: '/images/policy-agent.png',
+    tags: ['Drift', 'Baseline', 'Alerts']
+  },
+  {
+    id: 'data-quality-guardian',
+    name: 'Data Quality Guardian',
+    description: 'Continuously checks data pipelines and flags quality issues.',
+    category: 'process-mining',
+    imageUrl: '/images/data-transformation.png',
+    tags: ['DQ', 'Pipelines', 'Anomalies']
+  },
+  {
+    id: 'meeting-notes-synthesizer',
+    name: 'Meeting Notes Synthesizer',
+    description: 'Turns call recordings into action items and CRM updates.',
+    category: 'assistant-tools',
+    imageUrl: '/images/reclaim-ai.png',
+    tags: ['Transcription', 'Actions', 'CRM']
+  },
+  // --- End placeholders ---
   {
     id: 'hr-process-automation',
     name: 'HR Process Automation Accelerator',

@@ -136,3 +136,5 @@ export const ResponsiveModal: React.FC<ResponsiveModalProps> = ({
     </AnimatePresence>
   );
 };
+
+export default ResponsiveModal;
