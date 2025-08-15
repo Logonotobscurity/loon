@@ -1,2 +1,237 @@
 body {
+    /* src/features/conversation/conversation.css */
+
+/* Position the main conversation dialogue container */
+.conversation-dialogue {
+  position: fixed; /* Make the element sticky */
+  bottom: 20px; /* Adjust the distance from the bottom as needed */
+  /* Choose either bottom-center or bottom-right positioning */
+  /* Bottom-center: */
+  left: 50%;
+  transform: translateX(-50%);
+  /* Bottom-right: */
+  /* right: 20px; */
+  /* left: unset; */
+  /* transform: unset; */
+
+  z-index: 1000; /* Ensure the dialogue is on top of other content */
+  /* Add padding, background, border, and box-shadow for styling */
+  padding: 10px;
+  background-color: #fff; /* Example background color */
+  border: 1px solid #ccc; /* Example border */
+  border-radius: 8px; /* Example border radius */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Example box shadow */
+}
+
+/* Hide desktop input area on mobile */
+.conversation-dialogue.mobile .desktop-input-area {
+  display: none;
+}
+
+/* Hide mobile microphone button area on desktop */
+.conversation-dialogue.desktop .mobile-input-area {
+  display: none;
+}
+
+/* Basic styling for desktop input area */
+.desktop-input-area {
+  display: flex; /* Arrange input and button in a row */
+  align-items: center;
+  gap: 10px; /* Space between input and button */
+}
+
+.desktop-input-area .message-input {
+  flex-grow: 1; /* Allow input to take up available space */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.desktop-input-area .microphone-button {
+  /* Style for desktop microphone button */
+  padding: 8px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 1.2em; /* Adjust icon size */
+}
+
+/* Basic styling for mobile microphone button area */
+.mobile-input-area {
+  display: flex;
+  justify-content: center; /* Center the button horizontally */
+}
+
+.mobile-input-area .mobile-microphone-button {
+  /* Style for large mobile microphone button */
+  width: 60px; /* Example size */
+  height: 60px; /* Example size */
+  border-radius: 50%; /* Make it round */
+  border: none;
+  background-color: #007bff; /* Example background color */
+  color: white; /* Example icon color */
+  font-size: 2em; /* Adjust icon size */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* Media query for mobile devices */
+@media (max-width: 768px) { /* Example breakpoint */
+  .conversation-dialogue {
+    /* Adjust positioning for mobile if needed */
+    bottom: 10px; /* Closer to the bottom on mobile */
+    left: 50%;
+    transform: translateX(-50%);
+    right: unset; /* Ensure left/transform take precedence */
+  }
+  /* src/features/conversation/conversation.css */
+
+/* ... (previous CSS rules) ... */
+
+/* Styles for microphone button states */
+.microphone-button.idle,
+.mobile-microphone-button.idle {
+  /* Idle state: subtle glow */
+  opacity: 0.8; /* Example subtle appearance */
+  transition: opacity 0.3s ease-in-out; /* Example transition */
+}
+
+.microphone-button.listening,
+.mobile-microphone-button.listening {
+  /* Listening state: animated sound waves */
+  color: #007bff; /* Example color change */
+  animation: pulse 1.5s infinite ease-in-out; /* Example animation */
+}
+
+.microphone-button.processing,
+.mobile-microphone-button.processing {
+  /* Processing state: animated beams */
+  color: #ffc107; /* Example color change */
+  animation: spin 1.5s infinite linear; /* Example animation */
+}
+
+.microphone-button.success,
+.mobile-microphone-button.success {
+  /* Success state: green flash with sparkles */
+  color: #28a745; /* Example color change (green) */
+  animation: success-flash 0.5s ease-in-out; /* Example animation */
+  /* You might add a pseudo-element for sparkles if needed */
+}
+
+/* Example Animations (you can customize these) */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes success-flash {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* src/features/conversation/conversation.css */
+
+/* ... (previous CSS rules) ... */
+
+/* Conversation Display Area */
+.conversation-display {
+    flex-grow: 1; /* Allow conversation area to take up available space */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding: 10px;
+    display: flex;
+    flex-direction: column; /* Stack messages vertically */
+    gap: 10px; /* Space between message bubbles */
+    /* Adjust max-height as needed to control the size of the conversation area */
+    max-height: 300px; /* Example max height */
+  }
+  
+  /* Message Bubble */
+  .message-bubble {
+    max-width: 80%; /* Limit bubble width */
+    padding: 8px 12px;
+    border-radius: 18px; /* Rounded corners */
+    position: relative; /* Needed for timestamp positioning */
+    word-wrap: break-word; /* Prevent long words from overflowing */
+  }
+  
+  .message-bubble p {
+      margin: 0; /* Remove default paragraph margin */
+  }
+  
+  /* User message bubble (align right, different background) */
+  .message-bubble.user {
+    align-self: flex-end; /* Align to the right */
+    background-color: #007bff; /* Example user bubble color */
+    color: white; /* Example text color */
+    border-bottom-right-radius: 4px; /* Slightly less rounded corner at the bottom right */
+  }
+  
+  /* AI message bubble (align left, different background) */
+  .message-bubble.ai {
+    align-self: flex-start; /* Align to the left */
+    background-color: #e9e9eb; /* Example AI bubble color */
+    color: #333; /* Example text color */
+    border-bottom-left-radius: 4px; /* Slightly less rounded corner at the bottom left */
+  }
+  
+  /* Timestamp */
+  .message-bubble .timestamp {
+    display: block; /* Display timestamp on a new line */
+    font-size: 0.7em; /* Smaller font size */
+    color: rgba(0, 0, 0, 0.5); /* Example muted color */
+    margin-top: 5px; /* Space above timestamp */
+    text-align: right; /* Align timestamp to the right within the bubble */
+  }
+  
+  .message-bubble.ai .timestamp {
+      text-align: left; /* Align AI timestamp to the left */
+  }
+  
+  
+  /* Styling for images within message bubbles */
+  .message-bubble img {
+    max-width: 100%; /* Ensure image doesn't overflow the bubble */
+    border-radius: 8px; /* Rounded corners for images */
+    margin-top: 5px; /* Space above image if there's text */
+  }
+  
+  /* Styling for loading indicator bubble */
+  .message-bubble.ai.loading {
+      /* Style for the loading bubble */
+      align-self: flex-start;
+      background-color: #e9e9eb;
+      color: #333;
+      font-style: italic;
+  }
+  
+}
+
 }

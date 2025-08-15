@@ -1,0 +1,53 @@
+[debug] [2025-08-15T01:21:27.852Z] ----------------------------------------------------------------------
+[debug] [2025-08-15T01:21:27.854Z] Command:       /nix/store/ws50yvm6vzlzf7jzz6n7xh4szddrack1-nodejs-20.19.1/bin/node /nix/store/4ba3nh7p56fsnidgr9jcqnpv4k7nwwrv-firebase-tools-14.12.0/lib/node_modules/firebase-tools/lib/bin/firebase.js init hosting
+[debug] [2025-08-15T01:21:27.854Z] CLI Version:   14.12.0
+[debug] [2025-08-15T01:21:27.855Z] Platform:      linux
+[debug] [2025-08-15T01:21:27.855Z] Node Version:  v20.19.1
+[debug] [2025-08-15T01:21:27.855Z] Time:          Fri Aug 15 2025 01:21:27 GMT+0000 (Coordinated Universal Time)
+[debug] [2025-08-15T01:21:27.855Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-08-15T01:21:27.860Z] Checked if tokens are valid: true, expires at: 1755222664761
+[debug] [2025-08-15T01:21:27.860Z] Checked if tokens are valid: true, expires at: 1755222664761
+[debug] [2025-08-15T01:21:27.862Z] >>> [apiv2][query] GET https://monospace-pa.googleapis.com/v1/workspaces/loongit-55123178 [none]
+[debug] [2025-08-15T01:21:28.620Z] <<< [apiv2][status] GET https://monospace-pa.googleapis.com/v1/workspaces/loongit-55123178 200
+[debug] [2025-08-15T01:21:28.620Z] <<< [apiv2][body] GET https://monospace-pa.googleapis.com/v1/workspaces/loongit-55123178 {"workspaceId":"loongit-55123178","name":"logon","workspaceRedirectUrl":"firebase-loongit-1755214679680.cluster-ikslh4rdsnbqsvu5nw3v4dqjj2.cloudworkstations.dev","status":"WORKSPACE_STATUS_RUNNING","lastAccessDatetime":"2025-08-15T00:41:48.003524Z","workspaceTemplate":"WORKSPACE_TEMPLATE_FLUTTER","owner":"SELF","serviceAccountEmail":"msp-8212838221455516964@monospace-per-ws-sa-6.iam.gserviceaccount.com","gitRepoUrl":"https://github.com/Logonotobscurity/loon.git","enableNix":true,"ownerEmail":"logonthepage@gmail.com","workstationAccessToken":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2Nsb3VkLmdvb2dsZS5jb20vd29ya3N0YXRpb25zIiwiYXVkIjoiZmlyZWJhc2UtbG9vbmdpdC0xNzU1MjE0Njc5NjgwLmNsdXN0ZXItaWtzbGg0cmRzbmJxc3Z1NW53M3Y0ZHFqajIuY2xvdWR3b3Jrc3RhdGlvbnMuZGV2IiwiaWF0IjoxNzU1MjIwODg4LCJleHAiOjE3NTUzMDcyODh9.rhDnvCUYcgCHC4LVN1QRAtgndakbMYPqhdRGH1NUoCdX3-v3c9wUgSyLBXIy497VvvuJfIqbQQwU6cUAVieL6ff2UPv9ga4WatVtxNfciEK2puFzkCZoEnBNi3_Xy8PWE2W3fozckkoMeXhmGF83ENET9xGdGeqN5MwNhCDC89MPG8qcm3QTSzVi0UWuVdasbeeR68cmLASsq0wqpgB0SFbRQJX1y2wNb4qHnUNtS35e0br7Ke5Ec05oQxOCQjXQd4kQ3FcoJwLEaxujEEwBlbD2E8Pwsc1O3_Izzx3D-dIlUzg0syMEpcPhlvuW_rv5Z6bf8n7SBCWqrfMMwEaYUg"}
+[debug] [2025-08-15T01:21:28.621Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-08-15T01:21:28.621Z] > authorizing via signed-in user (logonthepage@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /home/user/loon
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[info] i  If you want to create a project in a Google Cloud organization or folder, please use "firebase projects:create" instead, and return to this command when you've created the project. 
+[debug] [2025-08-15T01:21:57.358Z] Checked if tokens are valid: true, expires at: 1755222664761
+[debug] [2025-08-15T01:21:57.358Z] Checked if tokens are valid: true, expires at: 1755222664761
+[debug] [2025-08-15T01:21:57.359Z] >>> [apiv2][query] POST https://firebase.googleapis.com/v1/projects:checkProjectId [none]
+[debug] [2025-08-15T01:21:57.359Z] >>> [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"proposedId":"logon.com"}
+[debug] [2025-08-15T01:21:57.387Z] <<< [apiv2][status] POST https://firebase.googleapis.com/v1/projects:checkProjectId 400
+[debug] [2025-08-15T01:21:57.387Z] <<< [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"error":{"code":400,"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT"}}
+[debug] [2025-08-15T01:21:57.388Z] Couldn't check if project ID logon.com is available. Original error: FirebaseError: Failed to check if project ID is available. See firebase-debug.log for more info.
+[debug] [2025-08-15T01:22:15.604Z] Checked if tokens are valid: true, expires at: 1755222664761
+[debug] [2025-08-15T01:22:15.605Z] Checked if tokens are valid: true, expires at: 1755222664761
+[debug] [2025-08-15T01:22:15.605Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects [none]
+[debug] [2025-08-15T01:22:15.605Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"projectId":"logon.com","name":"logon.com"}
+[debug] [2025-08-15T01:22:16.207Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects 400
+[debug] [2025-08-15T01:22:16.207Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"error":{"code":400,"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT","details":[{"@type":"type.googleapis.com/google.rpc.BadRequest","fieldViolations":[{"field":"project_id","description":"project_id contains invalid characters"},{"field":"display_name","description":"project display name contains invalid characters"}]},{"@type":"type.googleapis.com/google.rpc.Help","links":[{"url":"https://cloud.google.com/resource-manager/reference/rest/v1/projects"}]}]}}
+[debug] [2025-08-15T01:22:16.219Z] FirebaseError: Request to https://cloudresourcemanager.googleapis.com/v1/projects had HTTP Error: 400, Request contains an invalid argument.
+    at responseToError (/nix/store/4ba3nh7p56fsnidgr9jcqnpv4k7nwwrv-firebase-tools-14.12.0/lib/node_modules/firebase-tools/lib/responseToError.js:52:12)
+    at RetryOperation._fn (/nix/store/4ba3nh7p56fsnidgr9jcqnpv4k7nwwrv-firebase-tools-14.12.0/lib/node_modules/firebase-tools/lib/apiv2.js:312:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+[error] 
+[error] Error: Failed to create project. See firebase-debug.log for more info.
