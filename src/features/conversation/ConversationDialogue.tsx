@@ -345,12 +345,12 @@ const ConversationDialogue: React.FC = () => {
       onDrop={handleDrop}>
       
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-border-white-5">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-border-white-5">
+        <div className="flex items-center gap-2 sm:gap-3">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-          <h3 className="font-satoshi font-medium text-text-white">Business Intelligence Agent</h3>
+          <h3 className="font-satoshi font-medium text-sm sm:text-base text-text-white truncate">Business Intelligence Agent</h3>
         </div>
-        <span className="text-xs text-text-white-60">Powered by Gemini</span>
+        <span className="text-[10px] sm:text-xs text-text-white-60 whitespace-nowrap">Powered by Gemini</span>
       </div>
       
       {/* Messages Area */}
@@ -408,6 +408,9 @@ const ConversationDialogue: React.FC = () => {
             onFileChange={handleFileChange}
             isLoadingAIResponse={isLoadingAIResponse}
             getMicrophoneIcon={getMicrophoneIcon}
+            inputText={inputText}
+            onInputChange={handleInputChange}
+            onSendMessage={handleSendMessage}
           />
         ) : (
           <DesktopInputArea
