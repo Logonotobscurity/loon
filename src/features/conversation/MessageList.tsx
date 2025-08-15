@@ -15,14 +15,14 @@ export const MessageList: React.FC<MessageListProps> = ({ messages, conversation
     return null;
   }
   return (
-    <div className="flex-grow overflow-y-auto px-4 py-4 space-y-4 max-h-[400px] min-h-[200px] custom-scrollbar">
+    <div className="flex-grow overflow-y-auto px-3 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-4 max-h-[300px] sm:max-h-[400px] min-h-[150px] sm:min-h-[200px] custom-scrollbar">
       {messages.map((message) => (
         <div
           key={message.id}
           className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} animate-in`}
         >
           <div
-            className={`max-w-[85%] px-4 py-3 rounded-2xl transition-all duration-200 ${
+            className={`max-w-[85%] px-3 sm:px-4 py-2 sm:py-3 rounded-2xl transition-all duration-200 ${
               message.sender === 'user'
                 ? 'bg-primary text-text-white rounded-br-md shadow-glow-sm'
                 : 'glass-light border border-border-white-10 text-text-white-90 rounded-bl-md'
@@ -116,7 +116,7 @@ export const MessageList: React.FC<MessageListProps> = ({ messages, conversation
                 <span className="w-2 h-2 bg-text-white-40 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
                 <span className="w-2 h-2 bg-text-white-40 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
               </div>
-<span className="text-sm">Analyzing...</span>
+              <span className="text-sm">Analyzing...</span>
             </div>
           </div>
         </div>

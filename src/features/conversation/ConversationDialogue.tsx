@@ -10,6 +10,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { motion, AnimatePresence } from 'framer-motion';
 import { Minimize2, Maximize2, X } from 'lucide-react';
 import { findMatchingAgent, calculateROI, analyzeSentiment, TONE_CONFIGS, BI_GPT_IDENTITY_PROMPT } from './biGptConfig';
+import { trackEvent } from '../../analytics/analytics';
 
 // Declare the SpeechRecognition and webkitSpeechRecognition types (keep this for broader compatibility)
 declare global {
@@ -41,7 +42,7 @@ const ConversationDialogue: React.FC<ConversationDialogueProps> = ({
 }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isMinimized, setIsMinimized] = useState(false);
-const isSticky = false;
+  const isSticky = false;
   const [isExpanded, setIsExpanded] = useState(startInHero);
   const [showChat, setShowChat] = useState(true);
   
@@ -99,6 +100,7 @@ const isSticky = false;
 
       setIsLoadingAIResponse(true); // Set loading state
 
+      try { trackEvent('ai_message_send', { source: startInHero ? 'hero' : 'floating', hasImage: !!attachedImage }); } catch {}
       // Create a message object for the user's message
       const userMessage: Message = {
         id: Date.now().toString(), // Simple ID
@@ -147,6 +149,7 @@ const isSticky = false;
 
         const response = result.response;
         const aiText = response.text();
+        try { trackEvent('ai_message_receive', { source: startInHero ? 'hero' : 'floating', length: aiText.length }); } catch {}
         console.log("Received AI response:", aiText);
 
         // Create a message object for the AI's response
@@ -548,6 +551,9 @@ const isSticky = false;
             onFileChange={handleFileChange}
             isLoadingAIResponse={isLoadingAIResponse}
             getMicrophoneIcon={getMicrophoneIcon}
+            inputText={inputText}
+            onInputChange={handleInputChange}
+            onSendMessage={handleSendMessage}
           />
         ) : (
           <DesktopInputArea

@@ -1,52 +1,40 @@
 /* Legacy styles - most styles now handled by Tailwind classes */
 
-/* Hide desktop input area on mobile */
-.conversation-dialogue.mobile .desktop-input-area {
-  display: none;
+/* Media queries removed - using Tailwind responsive classes instead */
+
+/* Animations used by Tailwind classes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Hide mobile microphone button area on desktop */
-.conversation-dialogue.desktop .mobile-input-area {
-  display: none;
+/* Custom scrollbar for message list */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
 
-/* Basic styling for desktop input area */
-.desktop-input-area {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: rgba(255, 255, 255, 0.05); /* bg-white-5 */
-  border: 1px solid rgba(255, 255, 255, 0.1); /* border-white-10 */
-  border-radius: 12px;
-  padding: 4px;
-  transition: all 0.3s ease;
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
 }
 
-.desktop-input-area:focus-within {
-  border-color: rgba(26, 102, 255, 0.5); /* primary with opacity */
-  box-shadow: 0 0 0 4px rgba(26, 102, 255, 0.1);
-}
-
-.desktop-input-area .message-input {
-  flex-grow: 1;
-  padding: 12px 16px;
+.custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
-  border: none;
-  border-radius: 8px;
-  color: #ffffff; /* text-white */
-  font-family: 'Inter', sans-serif;
-  font-size: 15px;
-  outline: none;
-  transition: background-color 0.2s;
 }
 
-.desktop-input-area .message-input::placeholder {
-  color: rgba(255, 255, 255, 0.4); /* text-white-40 */
-  font-size: 14px;
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
 }
 
-.desktop-input-area .message-input:hover {
-  background: rgba(255, 255, 255, 0.05);
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .desktop-input-area .message-input:focus {
