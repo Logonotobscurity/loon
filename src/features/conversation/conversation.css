@@ -1,5 +1,3 @@
-body {
-    /* src/features/conversation/conversation.css */
 
 /* Position the main conversation dialogue container */
 .conversation-dialogue {
@@ -86,9 +84,7 @@ body {
     transform: translateX(-50%);
     right: unset; /* Ensure left/transform take precedence */
   }
-  /* src/features/conversation/conversation.css */
-
-/* ... (previous CSS rules) ... */
+}
 
 /* Styles for microphone button states */
 .microphone-button.idle,
@@ -157,9 +153,6 @@ body {
   }
 }
 
-/* src/features/conversation/conversation.css */
-
-/* ... (previous CSS rules) ... */
 
 /* Conversation Display Area */
 .conversation-display {
@@ -232,6 +225,19 @@ body {
       font-style: italic;
   }
   
+  .conversation-dialogue.dragging-over {
+    border-color: #007bff; /* Example highlight color */
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* Example glow effect */
+  }
+
+/* Styling for the loading indicator animation */
+.loading-indicator-animation {
+    display: inline-block; /* Ensure it takes up space based on content */
+    animation: pulse 1.5s infinite ease-in-out; /* Apply a pulsing animation */
 }
 
-}
+/* You can add more complex loading animations here if needed */
+/* For example, keyframes for blinking dots: */
+/* @keyframes blinking-dots { ... } */
+/* Or keyframes for a spinning icon: */
+/* @keyframes spinning-icon { ... } */

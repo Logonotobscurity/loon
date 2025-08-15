@@ -1,8 +1,8 @@
 import React from 'react';
 import { Tab } from '@headlessui/react';
 import { motion } from 'framer-motion';
-import { SectionWrapper } from '../Global/SectionWrapper';
-import { CTAButton } from '../Global/CTAButton';
+import { SectionWrapper } from '../../components/Global/SectionWrapper';
+import { CTAButton } from '../../components/Global/CTAButton';
 import { 
   Headphones, 
   TrendingUp, 

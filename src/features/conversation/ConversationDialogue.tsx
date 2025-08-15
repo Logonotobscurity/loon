@@ -3,6 +3,10 @@ import './conversation.css'; // Import the CSS file
 import useMicrophoneState from './useMicrophoneState'; // Import the custom microphone hook
 import useConversationState, { Message } from './useConversationState'; // Import the custom conversation hook and Message type
 
+import useSpeechRecognition from '/home/user/loon/src/features/conversation/useSpeechRecognition'; // Import the speech recognition hook
+import MobileInputArea from '/home/user/loon/src/features/conversation/MobileInputArea.tsx';
+import MessageList from '/home/user/loon/src/features/conversation/MessageList.tsx';
+import DesktopInputArea from '/home/user/loon/src/features/conversation/DesktopInputArea.tsx';
 // Import the GoogleGenerativeAI class
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -14,33 +18,51 @@ declare global {
   }
 }
 
-// Initialize the Gemini API (manage your API key securely!)
-const API_KEY = "AIzaSyBjz9_Cvx_CwSn6fqjdJfwPAL5UtYwUlK8"; // Replace with your actual Gemini API key
+// Initialize the Gemini API using the environment variable
+const API_KEY = import.meta.env.VITE_GOOGLE_GENERATIVE_AI_API_KEY;
 const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); // Choose your model
 
 const ConversationDialogue: React.FC = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // Example breakpoint
   const { microphoneState, setIdle, setListening, setProcessing, setSuccess } = useMicrophoneState(); // Use the microphone hook
-  const { messages, addMessage } = useConversationState(); // Use the conversation hook (remove clearConversation)
+  const { messages, addMessage } = useConversationState(); // Use the conversation hook
+
+  // Use the speech recognition hook
+  const { isListening: isHookListening, transcript, error: speechError, startRecognition, stopRecognition } = useSpeechRecognition();
 
   // State for input
   const [inputText, setInputText] = useState('');
-  const [transcript, setTranscript] = useState(''); // State to hold the current transcript
   const [attachedImage, setAttachedImage] = useState<File | null>(null); // State for attached image
   const [isLoadingAIResponse, setIsLoadingAIResponse] = useState(false); // State to indicate if waiting for AI response
+  const [generalError, setGeneralError] = useState<string | null>(null); // State to hold general error messages
 
   // Ref for SpeechRecognition instance
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const listeningTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Ref for the timeout
+  const conversationEndRef = useRef<HTMLDivElement>(null); // Ref for the end of the conversation for scrolling
   const fileInputRef = useRef<HTMLInputElement | null>(null); // Ref for file input
+  const conversationDialogueRef = useRef<HTMLDivElement>(null); // Ref for the main container div
+  const [isDraggingOver, setIsDraggingOver] = useState(false); // State for drag-over effect for drag and drop
 
-  const SPEECH_TIMEOUT = 3000; // milliseconds to wait after the last speech detected
+  const ERROR_DISPLAY_DURATION = 5000; // milliseconds to display error messages
+
+  // Function to clear the error message
+  const clearError = () => {
+    setGeneralError(null);
+  };
+
 
    // Handle sending message (text or voice) - MOVED ABOVE useEffect
   const handleSendMessage = async () => { // Make function async
     const messageToSend = inputText.trim() || transcript.trim(); // Use input text or final transcript
     if (messageToSend || attachedImage) { // Allow sending if there's text OR an image
+      if (!API_KEY) { // Assuming API_KEY is still needed here for the AI call
+        setError("AI API key is not configured. Please check your environment variables.");
+        setTimeout(clearError, ERROR_DISPLAY_DURATION);
+        setIsLoadingAIResponse(false);
+        return; // Stop if API key is missing
+      }
       console.log("Sending message:", messageToSend);
       console.log("Attached image:", attachedImage);
 
@@ -56,6 +78,7 @@ const ConversationDialogue: React.FC = () => {
       };
       addMessage(userMessage); // Add user message to conversation history
 
+        // Scroll to the bottom after adding the user message
       try {
         // Prepare content for the API
         const parts = [];
@@ -89,7 +112,8 @@ const ConversationDialogue: React.FC = () => {
 
       } catch (error) {
         console.error("Error sending message to Gemini API:", error);
-        // TODO: Show an error message to the user
+        setError(`Failed to get a response from the AI. Error: ${(error as Error).message}. Please try again.`);
+        setTimeout(clearError, ERROR_DISPLAY_DURATION);
       } finally {
          setIsLoadingAIResponse(false); // Clear loading state
       }
@@ -153,18 +177,20 @@ const ConversationDialogue: React.FC = () => {
       (recognitionRef.current as any).onend = () => {
         console.log('Speech recognition ended');
         // Use the final transcript to send the message
-        if (transcript.trim()) {
-           setInputText(transcript); // Set the final transcript as input text
-           handleSendMessage(); // Automatically send the message after speech ends
+        let finalTranscript = '';
+        // Iterate through all results to get the final transcript
+        // The event object from onend might not have the results property directly in some implementations
+        // We rely on the transcript state being updated by onresult for simplicity here, but a more robust approach might store final results during onresult
+         if (transcript.trim()) {
+           // Call handleSendMessage directly with the current transcript state
+           handleSendMessage(transcript); // Pass transcript directly
         }
         setIdle(); // Revert to idle after processing (or after sending message)
-        setTranscript(''); // Clear transcript
+        setTranscript(''); // Clear interim transcript state
       };
-
       (recognitionRef.current as any).onerror = (event: any) => {
-        console.error('Speech recognition error:', event.error);
-        setIdle(); // Revert to idle on error
-        setTranscript(''); // Clear transcript
+        setTimeout(clearError, ERROR_DISPLAY_DURATION);
+        setError(`Speech recognition error: ${event.error}. Please try again.`);
       };
     } else {
       console.warn('Speech Recognition API not supported in this browser.');
@@ -180,7 +206,32 @@ const ConversationDialogue: React.FC = () => {
         clearTimeout(listeningTimeoutRef.current);
       }
     };
-  }, [setIdle, setListening, setProcessing, transcript, handleSendMessage]); // Add handleSendMessage to dependencies
+  }, [setIdle, setListening, setProcessing, handleSendMessage, transcript, clearError, setError]); // Added handleSendMessage and transcript to dependencies
+
+  // Effect for drag and drop functionality
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault(); // Prevent default to allow drop
+    setIsDraggingOver(true);
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault(); // Prevent default browser behavior
+    setIsDraggingOver(false);
+
+    const files = event.dataTransfer?.files;
+    if (files && files.length > 0) {
+      const imageFile = Array.from(files).find(file => file.type.startsWith('image/'));
+      if (imageFile) {
+        setAttachedImage(imageFile);
+        console.log("Image attached via drag and drop:", imageFile.name);
+      } else {
+        setError('Only image files are allowed.');
+        setTimeout(clearError, ERROR_DISPLAY_DURATION);
+      }
+    }
+  };
+ const handleDragLeave = () => {
+    setIsDraggingOver(false);
+  };
+
 
 
   // Handle text input change
@@ -206,22 +257,33 @@ const ConversationDialogue: React.FC = () => {
 
   // Handle microphone button click
   const handleMicrophoneClick = () => {
+    // Check if Speech Recognition API is available
     if (recognitionRef.current) {
+      // If currently idle, start listening
       if (microphoneState === 'idle') {
-        try {
-          (recognitionRef.current as any).start(); // Cast to any
-        } catch (error) {
-          console.error('Error starting speech recognition:', error);
-          setIdle(); // Revert to idle on error
-        }
+        // Request microphone permissions before starting
+        navigator.mediaDevices.getUserMedia({ audio: true })
+          .then(() => {
+            try {
+              (recognitionRef.current as any).start(); // Cast to any
+            } catch (error) {
+              console.error('Error starting speech recognition:', error);
+              setError('Error starting microphone. Please try again.');
+              setTimeout(clearError, ERROR_DISPLAY_DURATION);
+              setIdle(); // Revert to idle on error
+            }
+          })
+          .catch((error) => {
+            console.error('Microphone permission denied:', error);
+            setError('Microphone permission denied. Please allow access to use voice input.');
+            setTimeout(clearError, ERROR_DISPLAY_DURATION);
+          });
       } else {
+        // If not idle, stop listening
         (recognitionRef.current as any).stop(); // Cast to any
-      }
-    } else {
-      console.warn('Speech Recognition API not available.');
     }
   };
-
+};
   // Handle image attachment button click
   const handleAttachImageClick = () => {
     fileInputRef.current?.click(); // Trigger the hidden file input
@@ -264,7 +326,20 @@ const ConversationDialogue: React.FC = () => {
   };
 
   return (
-    <div className={`conversation-dialogue ${isMobile ? 'mobile' : 'desktop'}`}>
+    <div ref={conversationDialogueRef}
+      className={
+        `fixed bottom-5 left-1/2 -translate-x-1/2 z-[1000] p-2.5 bg-white border border-gray-300 rounded-lg shadow-md
+        ${isMobile ? 'sm:bottom-2.5' : ''}
+        ${isDraggingOver ? 'border-blue-500 shadow-blue-500' : ''}
+        `
+      }
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      ref={conversationDialogueRef}
+      className={`conversation-dialogue ${isMobile ? 'mobile' : 'desktop'} ${isDraggingOver ? 'dragging-over' : ''}`}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}>
       {/* Conversation Display Area */}
       <div className="conversation-display">
         {messages.map(message => (
@@ -277,10 +352,18 @@ const ConversationDialogue: React.FC = () => {
          {/* Loading indicator */}
          {isLoadingAIResponse && (
             <div className="message-bubble ai loading">
-               <p>...</p> {/* Replace with a loading animation */}
+               <div className="loading-indicator-animation">AI is thinking...</div> {/* Replace with a loading animation */}
             </div>
          )}
       </div>
+      <div ref={conversationEndRef} /> {/* Empty div at the end for scrolling */}
+
+      {/* Display attached image preview */}
+      {error && (
+        <div className="error-message" onClick={clearError} style={{ cursor: 'pointer', color: 'red', marginBottom: '10px' }}>
+          {error} (Click to dismiss)
+        </div>
+      )}
 
       {/* Display attached image preview */}
       {attachedImage && (
