@@ -1,28 +1,4 @@
-
-/* Position the main conversation dialogue container */
-.conversation-dialogue {
-  /* Glass morphism effect matching the design system */
-  background: rgba(9, 9, 11, 0.95); /* bg-dark with opacity */
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.1); /* border-white-10 */
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), /* glass shadow */
-              0 0 40px rgba(26, 102, 255, 0.1); /* subtle glow */
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.conversation-dialogue:hover {
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37),
-              0 0 60px rgba(26, 102, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-.conversation-dialogue.dragging-over {
-  border-color: #1a66ff; /* primary color */
-  box-shadow: 0 0 40px rgba(26, 102, 255, 0.4);
-}
+/* Legacy styles - most styles now handled by Tailwind classes */
 
 /* Hide desktop input area on mobile */
 .conversation-dialogue.mobile .desktop-input-area {

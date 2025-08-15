@@ -333,102 +333,94 @@ const ConversationDialogue: React.FC = () => {
   return (
     <div 
       ref={conversationDialogueRef}
-      className={`conversation-dialogue ${isMobile ? 'mobile' : 'desktop'} ${isDraggingOver ? 'dragging-over' : ''}`}
-      style={{
-        position: 'fixed',
-        bottom: '24px',
-        right: '24px',
-        zIndex: 9999,
-        minWidth: '380px',
-        maxWidth: '480px'
-      }}
+      className={`fixed z-[9999] ${isMobile ? 'bottom-4 left-4 right-4' : 'bottom-6 right-6 w-[440px]'} 
+        bg-bg-dark-95 backdrop-blur-2xl border border-border-white-10 rounded-3xl shadow-glass 
+        transition-all duration-300 hover:border-border-white-20 ${isDraggingOver ? 'border-primary shadow-glow' : ''}`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}>
-      {/* Conversation Display Area */}
-      <div className="conversation-display">
-        {messages.map(message => (
-          <div key={message.id} className={`message-bubble ${message.sender}`}>
-            {message.text && <p>{message.text}</p>}
-            {message.imageUrl && <img src={message.imageUrl} alt="attached" />}
-            <span className="timestamp">{new Date(message.timestamp).toLocaleTimeString()}</span>
-          </div>
-        ))}
-         {/* Loading indicator */}
-         {isLoadingAIResponse && (
-            <div className="message-bubble ai loading">
-               <div className="loading-indicator-animation">AI is thinking...</div> {/* Replace with a loading animation */}
-            </div>
-         )}
+      
+      {/* Header */}
+      <div className="flex items-center justify-between px-6 py-4 border-b border-border-white-5">
+        <div className="flex items-center gap-3">
+          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+          <h3 className="font-satoshi font-medium text-text-white">AI Assistant</h3>
+        </div>
+        <span className="text-xs text-text-white-60">Powered by Gemini</span>
       </div>
-      <div ref={conversationEndRef} /> {/* Empty div at the end for scrolling */}
-
-      {/* Display attached image preview */}
+      
+      {/* Messages Area */}
+      <MessageList 
+        messages={messages} 
+        conversationEndRef={conversationEndRef}
+        isLoadingAIResponse={isLoadingAIResponse}
+      />
+      
+      {/* Error Message */}
       {error && (
-        <div className="error-message" onClick={clearError} style={{ cursor: 'pointer', color: 'red', marginBottom: '10px' }}>
-          {error} (Click to dismiss)
+        <div className="mx-4 mb-3 px-3 py-2 bg-accent-red/10 border border-accent-red/20 rounded-lg 
+          text-accent-red text-sm cursor-pointer transition-opacity duration-200 hover:opacity-80"
+          onClick={clearError}
+        >
+          <div className="flex items-center justify-between">
+            <span>{error}</span>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </div>
         </div>
       )}
-
-      {/* Display attached image preview */}
+      
+      {/* Image Preview */}
       {attachedImage && (
-         <div className="image-preview">
-           <img src={URL.createObjectURL(attachedImage)} alt="Attached preview" />
-           <button className="remove-image-button" onClick={() => setAttachedImage(null)}>X</button>
-         </div>
-       )}
-
-      {isMobile ? (
-        // Mobile Input Area (can have both mic and image)
-        <div className="mobile-input-area">
-           {/* Hidden file input */}
-          <input
-            type="file"
-            accept="image/*"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            style={{ display: 'none' }}
-          />
-          <button className="image-attach-button" onClick={handleAttachImageClick}>
-             🖼️ {/* Image attach icon */}
-          </button>
-          <button className={`mobile-microphone-button ${microphoneState}`} onClick={handleMicrophoneClick} disabled={isLoadingAIResponse}>
-            {getMicrophoneIcon()} {/* Use the helper function to get the icon */}
-          </button>
-        </div>
-      ) : (
-        // Desktop Input Area (can have both text, mic, and image)
-        <div className="desktop-input-area">
-           {/* Hidden file input */}
-           <input
-            type="file"
-            accept="image/*"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            style={{ display: 'none' }}
-          />
-           <button className="image-attach-button" onClick={handleAttachImageClick} disabled={isLoadingAIResponse}>
-             🖼️ {/* Image attach icon */}
-           </button>
-          <input
-            type="text"
-            placeholder="Ask me anything about business strategy, automation, or share your ideas. I'm here to help transform your vision into reality..."
-            className="message-input"
-            value={inputText || transcript} // Display interim transcript while listening
-            onChange={handleInputChange}
-            onKeyPress={(event) => {
-              if (event.key === 'Enter') {
-                handleSendMessage();
-              }
-            }}
-             disabled={isLoadingAIResponse} // Disable input while loading
-          />
-          <button className={`microphone-button ${microphoneState}`} onClick={handleMicrophoneClick} disabled={isLoadingAIResponse}>
-            {getMicrophoneIcon()} {/* Use the helper function to get the icon */}
-          </button>
+        <div className="mx-4 mb-3 relative">
+          <div className="relative p-2 bg-bg-white-5 border border-border-white-10 rounded-lg">
+            <img 
+              src={URL.createObjectURL(attachedImage)} 
+              alt="Attached preview" 
+              className="max-h-32 max-w-full rounded object-contain mx-auto"
+            />
+            <button 
+              className="absolute top-1 right-1 w-6 h-6 bg-bg-dark-90 hover:bg-accent-red 
+                text-text-white rounded-full flex items-center justify-center transition-colors duration-200"
+              onClick={() => setAttachedImage(null)}
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
         </div>
       )}
 
+      {/* Input Area */}
+      <div className="p-4 border-t border-border-white-5">
+        {isMobile ? (
+          <MobileInputArea
+            microphoneState={microphoneState}
+            onMicrophoneClick={handleMicrophoneClick}
+            onAttachImageClick={handleAttachImageClick}
+            fileInputRef={fileInputRef}
+            onFileChange={handleFileChange}
+            isLoadingAIResponse={isLoadingAIResponse}
+            getMicrophoneIcon={getMicrophoneIcon}
+          />
+        ) : (
+          <DesktopInputArea
+            microphoneState={microphoneState}
+            onMicrophoneClick={handleMicrophoneClick}
+            onAttachImageClick={handleAttachImageClick}
+            fileInputRef={fileInputRef}
+            onFileChange={handleFileChange}
+            isLoadingAIResponse={isLoadingAIResponse}
+            getMicrophoneIcon={getMicrophoneIcon}
+            inputText={inputText}
+            transcript={transcript}
+            onInputChange={handleInputChange}
+            onSendMessage={handleSendMessage}
+          />
+        )}
+      </div>
     </div>
   );
 };
