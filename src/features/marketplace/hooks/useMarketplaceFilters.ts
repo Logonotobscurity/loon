@@ -1,25 +1,16 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
+import { useMarketplaceStore } from '../../../store/marketplaceStore';
 
-export interface FilterState {
-  category: string;
-  industry: string;
-  search: string;
-}
+// Re-export types from the centralized store
+export type { FilterState } from '../../../types';
 
+/**
+ * Hook for managing marketplace filters using the centralized store.
+ * 
+ * @deprecated Use useMarketplaceStore directly for new components.
+ */
 export const useMarketplaceFilters = () => {
-  const [filters, setFilters] = useState<FilterState>({
-    category: 'all',
-    industry: 'all',
-    search: '',
-  });
+  const { filters, updateFilter, resetFilters, setFilters } = useMarketplaceStore();
 
-  const updateFilter = useCallback((key: keyof FilterState, value: string) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
-  }, []);
-
-  const resetFilters = useCallback(() => {
-    setFilters({ category: 'all', industry: 'all', search: '' });
-  }, []);
-
-  return { filters, updateFilter, resetFilters };
+  return { filters, updateFilter, resetFilters, setFilters };
 };

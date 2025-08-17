@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { SectionWrapper } from '../Global/SectionWrapper';
-import { CTAButton } from '../Global/CTAButton';
+import { SectionWrapper } from '../../components/Global/SectionWrapper';
+import { CTAButton } from '../../components/Global/CTAButton';
 import { Text } from '../../lib/DesignSystem';
 import { copy } from '../../copy';
 
@@ -71,7 +71,7 @@ export const InnovateSection = () => {
             custom={index}
           >
             <Text as="h3" style="h5" className="mb-2">{feature.title}</Text>
-            <Text style="bodyS" className="text-text-white-60">{feature.description}</Text>
+            <Text style="body-small" className="text-text-white-60">{feature.description}</Text>
           </motion.div>
         ))}
       </motion.div>

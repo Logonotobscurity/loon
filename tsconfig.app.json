@@ -14,11 +14,14 @@
       "noEmit": true,
       "jsx": "react-jsx",
 
-      /* Linting */
+      /* Enhanced Linting */
       "strict": true,
+      "exactOptionalPropertyTypes": true,
+      "noImplicitReturns": true,
+      "noFallthroughCasesInSwitch": true,
+      "noUncheckedIndexedAccess": true,
       "noUnusedLocals": true,
-      "noUnusedParameters": true,
-      "noFallthroughCasesInSwitch": true
+      "noUnusedParameters": true
     },
     "include": ["src"]
   }

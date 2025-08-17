@@ -3,14 +3,19 @@ import { MicrophoneState } from './useMicrophoneState';
 import { IconButton } from '../../components/Global/IconButton';
 
 interface MobileInputAreaProps {
+  inputText: string;
+  setInputText: (text: string) => void;
+  attachedImage: File | null;
+  setAttachedImage: (image: File | null) => void;
+  handleSendMessage: () => void;
+  isLoadingAIResponse: boolean;
+  onTranscriptChange: (transcript: string) => void;
   microphoneState: MicrophoneState;
   onMicrophoneClick: () => void;
   onAttachImageClick: () => void;
   fileInputRef: RefObject<HTMLInputElement>;
   onFileChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  isLoadingAIResponse: boolean;
   getMicrophoneIcon: () => string;
-  inputText: string;
   onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onSendMessage: () => void;
 }
@@ -151,7 +156,7 @@ export const MobileInputArea: React.FC<MobileInputAreaProps> = ({
               <IconButton
                 className="p-2 text-text-white bg-primary hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                 onClick={onSendMessage}
-                disabled={isLoadingAIResponse || !inputText.trim()}
+                disabled={isLoadingAIResponse || !inputText?.trim()}
                 aria-label="Send message"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

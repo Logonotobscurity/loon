@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { SectionWrapper } from '../Global/SectionWrapper';
-import { StandardCard, StandardCardTitle, StandardCardDescription } from '../Global/StandardCard';
-import ButtonBlackShadow from '../Global/ButtonBlackShadow';
-import { AssessmentModal, AssessmentType } from '../Assessment/AssessmentModal';
+import { SectionWrapper } from '../../components/Global/SectionWrapper';
+import { StandardCard, StandardCardTitle } from '../../components/Global/StandardCard';
+import { AssessmentModal, AssessmentType } from '../assessment/AssessmentModal';
 import { trackEvent } from '../../analytics/analytics';
 
 const assessmentToolsData: {

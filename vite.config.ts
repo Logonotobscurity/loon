@@ -5,6 +5,7 @@ export default defineConfig({
   plugins: [react()],
   
   optimizeDeps: {
+    include: ['react', 'react-dom', '@google/generative-ai'],
     exclude: ['lucide-react'],
   },
   
@@ -12,13 +13,24 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'ui-vendor': ['framer-motion', 'lucide-react', '@headlessui/react'],
-          '3d-vendor': ['@react-three/fiber', '@react-three/drei', 'three'],
+          'vendor-react': ['react', 'react-dom'],
+          'vendor-router': ['react-router-dom'],
+          'vendor-ui': ['framer-motion', '@headlessui/react', 'lucide-react'],
+          'vendor-3d': ['@react-three/fiber', '@react-three/drei', 'three'],
+          'vendor-ai': ['@google/generative-ai'],
+          'vendor-firebase': ['firebase/app', 'firebase/firestore', 'firebase/auth'],
+          'vendor-utils': ['zustand', 'date-fns', 'clsx'],
         },
       },
     },
-    chunkSizeWarningLimit: 2000, // Increase limit to reduce noise
-    target: 'es2020', // Modern browsers for better minification
+    chunkSizeWarningLimit: 1000,
+    target: 'es2020',
+    minify: 'terser',
+    sourcemap: false,
+  },
+  
+  server: {
+    port: 3000,
+    host: true,
   },
 });

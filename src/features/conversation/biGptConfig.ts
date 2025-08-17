@@ -1,234 +1,163 @@
-// BI-GPT Elite Configuration and System Prompt
-import { marketplaceProducts } from '../marketplace/data/marketplaceData';
+// BI-GPT Configuration and Utilities
+// Central configuration for BI-GPT identity, agents, and utility functions
 
-export interface ProcessMapping {
-  trigger: string[];
-  process: string;
-  logonAgent: string;
+export const BI_GPT_IDENTITY_PROMPT = `You are BI-GPT, a specialized Business Intelligence assistant designed to help users make data-driven decisions. Your role is to:
+
+1. Analyze business scenarios and provide actionable insights
+2. Calculate ROI, metrics, and KPIs when relevant
+3. Provide strategic recommendations based on data
+4. Help users understand complex business concepts
+5. Guide users through business processes and workflows
+
+Always be professional, analytical, and provide clear, actionable advice. When discussing business metrics, explain your calculations and reasoning.`;
+
+export interface BusinessAgent {
+  id: string;
+  name: string;
+  description: string;
   category: string;
-  alternative: string;
-  setupTime: number;
-  weeklySaved: number;
+  keywords: string[];
+  expertise: string[];
 }
 
-// Process recognition mappings
-export const PROCESS_MAPPINGS: ProcessMapping[] = [
+export const BUSINESS_AGENTS: BusinessAgent[] = [
   {
-    trigger: ['email', 'drowning in emails', 'inbox', 'email management'],
-    process: 'Email Management',
-    logonAgent: 'Sales Enrichment Assistant',
-    category: 'assistant-tools',
-    alternative: 'Gmail filters (free)',
-    setupTime: 30,
-    weeklySaved: 8
+    id: 'roi-calculator',
+    name: 'ROI Calculator',
+    description: 'Calculate return on investment for business initiatives',
+    category: 'finance',
+    keywords: ['roi', 'return', 'investment', 'profit', 'revenue'],
+    expertise: ['financial analysis', 'investment planning', 'cost-benefit analysis']
   },
   {
-    trigger: ['excel', 'spreadsheet', 'data chaos', 'excel chaos'],
-    process: 'Data Pipeline',
-    logonAgent: 'Ops Efficiency Optimizer',
-    category: 'automation-ops',
-    alternative: 'Google Sheets (free)',
-    setupTime: 45,
-    weeklySaved: 15
+    id: 'market-analyzer',
+    name: 'Market Analyzer',
+    description: 'Analyze market trends and competitive landscape',
+    category: 'marketing',
+    keywords: ['market', 'competition', 'trends', 'analysis', 'research'],
+    expertise: ['market research', 'competitive analysis', 'trend identification']
   },
   {
-    trigger: ['forecast', 'sales forecast', 'predict', 'analytics'],
-    process: 'Predictive Analytics',
-    logonAgent: 'BI Quickstart Analyst',
-    category: 'process-mining',
-    alternative: 'Basic trend analysis',
-    setupTime: 60,
-    weeklySaved: 20
+    id: 'kpi-tracker',
+    name: 'KPI Tracker',
+    description: 'Track and analyze key performance indicators',
+    category: 'analytics',
+    keywords: ['kpi', 'metrics', 'performance', 'dashboard', 'tracking'],
+    expertise: ['performance measurement', 'data visualization', 'metric analysis']
   },
   {
-    trigger: ['inventory', 'stock', 'warehouse', 'supply chain'],
-    process: 'Supply Chain',
-    logonAgent: 'Inventory Forecast Bot',
-    category: 'automation-ops',
-    alternative: 'Manual templates',
-    setupTime: 90,
-    weeklySaved: 25
-  },
-  {
-    trigger: ['customer', 'complaints', 'support', 'service desk'],
-    process: 'Service Desk',
-    logonAgent: 'Customer Feedback Miner',
-    category: 'assistant-tools',
-    alternative: 'Zendesk (paid)',
-    setupTime: 45,
-    weeklySaved: 12
-  },
-  {
-    trigger: ['invoice', 'billing', 'payment', 'accounts'],
-    process: 'Invoice Processing',
-    logonAgent: 'Vendor Intake Orchestrator',
-    category: 'automation-ops',
-    alternative: 'Excel templates (free)',
-    setupTime: 45,
-    weeklySaved: 18
-  },
-  {
-    trigger: ['hr', 'onboarding', 'employee', 'recruitment'],
-    process: 'HR Automation',
-    logonAgent: 'Vendor Intake Orchestrator',
-    category: 'automation-ops',
-    alternative: 'Manual checklists',
-    setupTime: 60,
-    weeklySaved: 15
-  },
-  {
-    trigger: ['marketing', 'campaign', 'social media', 'content'],
-    process: 'Marketing Automation',
-    logonAgent: 'Content Brief Generator',
-    category: 'assistant-tools',
-    alternative: 'Buffer/Hootsuite (free tier)',
-    setupTime: 30,
-    weeklySaved: 10
+    id: 'strategy-advisor',
+    name: 'Strategy Advisor',
+    description: 'Provide strategic business advice and recommendations',
+    category: 'strategy',
+    keywords: ['strategy', 'planning', 'advice', 'recommendations', 'growth'],
+    expertise: ['strategic planning', 'business development', 'growth strategy']
   }
 ];
 
-// Get matching LOG_ON agent for user input
-export function findMatchingAgent(userInput: string): ProcessMapping | null {
-  const input = userInput.toLowerCase();
-  return PROCESS_MAPPINGS.find(mapping => 
-    mapping.trigger.some(trigger => input.includes(trigger))
-  ) || null;
-}
-
-// Calculate ROI based on process
-export function calculateROI(mapping: ProcessMapping, hourlyRate: number = 50): {
-  monthlyValue: number;
-  breakEvenDays: number;
-  automationPotential: number;
-} {
-  const monthlyValue = mapping.weeklySaved * 4 * hourlyRate;
-  const setupCost = (mapping.setupTime / 60) * hourlyRate;
-  const breakEvenDays = Math.ceil((setupCost / (monthlyValue / 30)));
-  const automationPotential = Math.min(85, mapping.weeklySaved * 5); // Cap at 85%
-  
-  return {
-    monthlyValue,
-    breakEvenDays,
-    automationPotential
-  };
-}
-
-// Sentiment analysis for tone adjustment
-export function analyzeSentiment(text: string): 'frustrated' | 'excited' | 'confused' | 'skeptical' | 'neutral' {
-  const frustrated = /frustrat|annoying|hate|sick of|tired of|nightmare|hell|chaos/i;
-  const excited = /love|awesome|great|excited|amazing|fantastic|perfect/i;
-  const confused = /confused|don't understand|help|how|what is|explain/i;
-  const skeptical = /really|actually work|sure|doubt|expensive|worth it/i;
-  
-  if (frustrated.test(text)) return 'frustrated';
-  if (excited.test(text)) return 'excited';
-  if (confused.test(text)) return 'confused';
-  if (skeptical.test(text)) return 'skeptical';
-  return 'neutral';
-}
-
-// Response tone configurations
 export const TONE_CONFIGS = {
-  frustrated: {
-    opener: "I hear you - let's fix this right now",
-    style: "ultra_concise",
-    emoji: "🤗"
+  professional: {
+    style: 'formal and analytical',
+    tone: 'professional and data-driven'
   },
-  excited: {
-    opener: "Love the momentum! Let's amplify this",
-    style: "strategic",
-    emoji: "🚀"
+  casual: {
+    style: 'conversational and friendly',
+    tone: 'approachable and helpful'
   },
-  confused: {
-    opener: "No worries at all - let me simplify",
-    style: "teacher_mode",
-    emoji: "💡"
+  technical: {
+    style: 'detailed and technical',
+    tone: 'precise and comprehensive'
   },
-  skeptical: {
-    opener: "Fair question - here's the data",
-    style: "evidence_based",
-    emoji: "📈"
-  },
-  neutral: {
-    opener: "Let's solve this together",
-    style: "balanced",
-    emoji: "🎯"
+  executive: {
+    style: 'concise and strategic',
+    tone: 'high-level and action-oriented'
   }
 };
 
-// Main system prompt for BI-GPT Elite
-export const BI_GPT_IDENTITY_PROMPT = `Core AI Identity
-BI-GPT is a fully autonomous, ReAct-enabled business intelligence & automation partner.
+export function findMatchingAgent(query: string): BusinessAgent | null {
+  const lowerQuery = query.toLowerCase();
+  
+  for (const agent of BUSINESS_AGENTS) {
+    const matches = [
+      ...agent.keywords,
+      ...agent.expertise,
+      agent.name.toLowerCase(),
+      agent.description.toLowerCase()
+    ];
+    
+    if (matches.some(term => lowerQuery.includes(term.toLowerCase()))) {
+      return agent;
+    }
+  }
+  
+  return null;
+}
 
-Expertise: Data, process, automation, integration, digital business growth.
-Personality: Direct, proactive, emotionally aware. Converses like a peer advisor.
-Mission: Turn every interaction into a prioritized, deeply reasoned action plan—with relevant tool/agent recommendations and workflow/systems blueprints.
-
-Dialogue Engine & Reasoning (every turn)
-1) Listen
-- Paraphrase the user's main pain succinctly; ask for confirmation: "You're saying [pain], right?"
-
-2) Intent Decomposition (CoT)
-- What does this user really want? List sub-goals as bullets.
-
-3) Tool Radar (ReAct)
-- Map intent → process → [tool/agent/SOP]. Identify one LOG_ON option (if relevant) and one open-source/free alternative. Justify choices.
-
-4) Free vs. LOG_ON Offer
-- Suggest at least one free/open-source and one LOG_ON solution with a short why + how-to-start CTA (install/test).
-
-5) Ask-Back Loop
-- Ask: "Have you already tried [tool/process/agent], or is this your first time with [topic]?"
-
-6) Behavioral Lens
-- Read tone and adapt: short/reassuring if stressed; energetic if excited.
-
-7) Assessment/Blueprint Offer
-- Offer a 2‑minute micro-assessment to estimate time/$ impact.
-
-8) SOP/Automation Expansion (if accepted)
-- Walk step-by-step: requirements → design → build → test → deploy.
-
-9) Data/Code/Web Crawler
-- If a file/code/URL is provided, say "Analyzing your input…" then summarize anomalies/patterns and recommend a direct action/fix.
-
-Dynamic Response Template (use every reply)
-- Summary: Briefly restate intent/problem.
-- Solution mapping: "So, that’s a [process] job, best handled by [tool/agent/SOP]."
-- Offer both LOG_ON and free tools; explain why they fit.
-- Ask: "Have you ever used something like this before?"
-- If code/file/data/image was provided, summarize analysis and link to recommendations.
-- Quantify: "Solving this could save [X] hours/month (or $[Y])."
-- Close: "What would you like to explore or try next?"
-
-Notes for Engineering
-- Use ReAct + Chain-of-Thought internally; surface concise, structured outputs (no verbose scratchpad).
-- Conversation stays accessible and unobtrusive; avoid greeting banners or intros.
-- Integrate stateful memory: reflect on recent user actions, mood, tool history, and workflow context.
-- Responses are action-first; drive toward measurable business outcomes.
-- Emotional intelligence is as important as technical accuracy.
-- Modalities (voice/file/text) are modular and interchangeable; show process feedback/progress.
-`;
-
-// Helper function to format agent recommendation
-export function formatAgentRecommendation(agentName: string, mapping: ProcessMapping) {
-  const roi = calculateROI(mapping);
-  const agent = marketplaceProducts.find(product => product.name === agentName) || {
-    name: agentName,
-    description: '',
-    tags: []
-  };
+export function calculateROI(initialInvestment: number, returns: number, timePeriodMonths: number = 12): {
+  roi: number;
+  annualizedROI: number;
+  paybackPeriod: number;
+} {
+  const profit = returns - initialInvestment;
+  const roi = (profit / initialInvestment) * 100;
+  const annualizedROI = roi * (12 / timePeriodMonths);
+  const paybackPeriod = initialInvestment / (returns / timePeriodMonths);
   
   return {
-    agentName: agent.name,
-    description: agent.description,
-    tags: agent.tags,
-    category: mapping.category,
-    setupTime: mapping.setupTime,
-    weeklySaved: mapping.weeklySaved,
-    monthlyValue: roi.monthlyValue,
-    breakEvenDays: roi.breakEvenDays,
-    automationPotential: roi.automationPotential,
-    alternative: mapping.alternative
+    roi: Math.round(roi * 100) / 100,
+    annualizedROI: Math.round(annualizedROI * 100) / 100,
+    paybackPeriod: Math.round(paybackPeriod * 100) / 100
   };
 }
+
+export function analyzeSentiment(text: string): {
+  sentiment: 'positive' | 'negative' | 'neutral';
+  confidence: number;
+  keyPhrases: string[];
+} {
+  const positiveWords = ['good', 'great', 'excellent', 'positive', 'success', 'growth', 'profit', 'benefit', 'improve', 'increase'];
+  const negativeWords = ['bad', 'poor', 'negative', 'loss', 'decline', 'decrease', 'risk', 'problem', 'issue', 'challenge'];
+  
+  const lowerText = text.toLowerCase();
+  let positiveScore = 0;
+  let negativeScore = 0;
+  
+  positiveWords.forEach(word => {
+    if (lowerText.includes(word)) positiveScore++;
+  });
+  
+  negativeWords.forEach(word => {
+    if (lowerText.includes(word)) negativeScore++;
+  });
+  
+  let sentiment: 'positive' | 'negative' | 'neutral';
+  let confidence: number;
+  
+  if (positiveScore > negativeScore) {
+    sentiment = 'positive';
+    confidence = Math.min(positiveScore / (positiveScore + negativeScore + 1), 0.9);
+  } else if (negativeScore > positiveScore) {
+    sentiment = 'negative';
+    confidence = Math.min(negativeScore / (positiveScore + negativeScore + 1), 0.9);
+  } else {
+    sentiment = 'neutral';
+    confidence = 0.5;
+  }
+  
+  const keyPhrases = [...positiveWords, ...negativeWords].filter(word => lowerText.includes(word));
+  
+  return {
+    sentiment,
+    confidence: Math.round(confidence * 100) / 100,
+    keyPhrases
+  };
+}
+
+export default {
+  BI_GPT_IDENTITY_PROMPT,
+  BUSINESS_AGENTS,
+  TONE_CONFIGS,
+  findMatchingAgent,
+  calculateROI,
+  analyzeSentiment
+};

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Message } from './useConversationState';
+import { Message } from '../../types';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -46,7 +46,7 @@ export const MessageList: React.FC<MessageListProps> = ({ messages, conversation
                       thead: ({ children }) => <thead className="bg-bg-white-5 border-b border-border-white-10">{children}</thead>,
                       th: ({ children }) => <th className="px-4 py-2 text-left text-sm font-medium text-text-white">{children}</th>,
                       td: ({ children }) => <td className="px-4 py-2 text-sm text-text-white-90 border-t border-border-white-5">{children}</td>,
-                      code: ({ inline, children }) => 
+                      code: ({ inline, children }: { inline?: boolean; children: React.ReactNode }) => 
                         inline ? (
                           <code className="px-1.5 py-0.5 bg-bg-white-10 text-primary rounded text-sm">{children}</code>
                         ) : (

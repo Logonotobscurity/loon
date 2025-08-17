@@ -105,4 +105,9 @@ export const copy = {
     primary: "Click to Speak",
     secondary: "Book a Builder",
   },
+  innovate: {
+    headline: "Innovate with AI",
+    subhead: "Transform your business with cutting-edge AI solutions",
+    cta: "Start Building",
+  },
 };

@@ -36,7 +36,7 @@ export const DesktopInputArea: React.FC<DesktopInputAreaProps> = ({
     }
   };
 
-  const hasContent = (inputText || transcript).trim().length > 0;
+  const hasContent = ((inputText || '') || (transcript || '')).trim().length > 0;
 
   return (
     <div className="relative flex items-center gap-3 px-4 py-3 bg-bg-white-5 border border-border-white-10 rounded-2xl transition-all duration-300 hover:bg-bg-white-10 focus-within:border-primary focus-within:shadow-glow">

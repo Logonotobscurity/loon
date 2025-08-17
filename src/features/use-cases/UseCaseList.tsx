@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { StandardCard, StandardCardTitle, StandardCardDescription } from '../Global/StandardCard';
+import { StandardCard, StandardCardTitle, StandardCardDescription } from '../../components/Global/StandardCard';
 import { ChevronRight } from 'lucide-react';
 
 interface UseCase {

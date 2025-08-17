@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import ResponsiveModal from '../Global/ResponsiveModal';
-import CTAButton from '../Global/CTAButton';
+import ResponsiveModal from '../../components/Global/ResponsiveModal';
+import { CTAButton } from '../../components/Global/CTAButton';
 import { trackEvent } from '../../analytics/analytics';
 
 export type AssessmentType = 'ai-readiness' | 'workflow-automation' | 'roi-calculator' | 'security-compliance';

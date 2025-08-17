@@ -1,7 +1,7 @@
 import React from 'react';
-import { SectionWrapper } from '../Global/SectionWrapper';
-import { CTAButton } from '../Global/CTAButton';
-import { StandardCard, StandardCardTitle, StandardCardDescription } from '../Global/StandardCard';
+import { SectionWrapper } from '../../components/Global/SectionWrapper';
+import { CTAButton } from '../../components/Global/CTAButton';
+import { StandardCard, StandardCardTitle, StandardCardDescription } from '../../components/Global/StandardCard';
 import { motion } from 'framer-motion';
 
 const communityLinks = [
@@ -49,7 +49,10 @@ export const CommunitySection = () => {
         <p className="font-inter text-lg text-text-white-80 mb-6">
           Ready to start building?
         </p>
-        <CTAButton href="#marketplace" variant="primary">
+        <CTAButton 
+          variant="primary" 
+          onClick={() => window.location.href = '/marketplace'}
+        >
           Explore the Marketplace
         </CTAButton>
       </div>

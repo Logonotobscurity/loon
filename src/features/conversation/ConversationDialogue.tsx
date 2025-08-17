@@ -1,28 +1,27 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './conversation.css';
-import useMicrophoneState from './useMicrophoneState';
-import useConversationState, { Message } from './useConversationState';
-import useSpeechRecognition from './useSpeechRecognition';
-import { MobileInputArea } from './MobileInputArea';
-import { MessageList } from './MessageList';
-import { DesktopInputArea } from './DesktopInputArea';
+import { useConversationStore } from '../../store/conversationStore';
+import { Message } from '../../types';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { motion, AnimatePresence } from 'framer-motion';
 import { Minimize2, Maximize2, X } from 'lucide-react';
-import { findMatchingAgent, calculateROI, analyzeSentiment, TONE_CONFIGS, BI_GPT_IDENTITY_PROMPT } from './biGptConfig';
+import { BI_GPT_IDENTITY_PROMPT } from './bigptconfig';
 import { trackEvent } from '../../analytics/analytics';
+import { ErrorBoundary } from '../../components/ErrorBoundary';
+import { MessageRenderer } from './components/MessageRenderer';
+import { InputSection } from './components/InputSection';
 
-// Declare the SpeechRecognition and webkitSpeechRecognition types (keep this for broader compatibility)
+// Declare the SpeechRecognition and webkitSpeechRecognition types for TypeScript
 declare global {
   interface Window {
-    SpeechRecognition: any;
-    webkitSpeechRecognition: any;
+    SpeechRecognition: typeof SpeechRecognition;
+    webkitSpeechRecognition: typeof SpeechRecognition;
   }
 }
 
-// Initialize the Gemini API using the environment variable
-const API_KEY = import.meta.env.VITE_GOOGLE_GENERATIVE_AI_API_KEY;
-const genAI = new GoogleGenerativeAI(API_KEY);
+// Initialize the Gemini API using validated environment configuration
+import { environment } from '../../services/config/environment';
+const genAI = new GoogleGenerativeAI(environment.googleGenerativeAIApiKey);
 
 // BI-GPT system instruction is provided centrally via biGptConfig
 
@@ -46,76 +45,59 @@ const ConversationDialogue: React.FC<ConversationDialogueProps> = ({
   const [isExpanded, setIsExpanded] = useState(startInHero);
   const [showChat, setShowChat] = useState(true);
   
-  const { microphoneState, setIdle, setListening, setProcessing, setSuccess } = useMicrophoneState();
-  const { messages, addMessage, clearConversation } = useConversationState();
-
-  // Use the speech recognition hook
-  const { isListening: isHookListening, transcript, error: speechError, startRecognition, stopRecognition } = useSpeechRecognition();
-  
-  // Debug logging for voice functionality
-  useEffect(() => {
-    console.log('[Voice Debug] Microphone State:', microphoneState);
-    console.log('[Voice Debug] Transcript:', transcript);
-    console.log('[Voice Debug] Speech Error:', speechError);
-    console.log('[Voice Debug] Is Hook Listening:', isHookListening);
-  }, [microphoneState, transcript, speechError, isHookListening]);
+  // Fix microphone state - use useState instead of custom hook
+  const [microphoneState, setMicrophoneState] = useState<'idle' | 'listening' | 'processing' | 'success'>('idle');
+  const { messages, addMessage, clearConversation } = useConversationStore();
 
   // State for input
   const [inputText, setInputText] = useState('');
-  const [attachedImage, setAttachedImage] = useState<File | null>(null); // State for attached image
-  const [isLoadingAIResponse, setIsLoadingAIResponse] = useState(false); // State to indicate if waiting for AI response
-  const [generalError, setGeneralError] = useState<string | null>(null); // State to hold general error messages
-
+  const [attachedImage, setAttachedImage] = useState<File | null>(null);
+  const [isLoadingAIResponse, setIsLoadingAIResponse] = useState(false);
   // Ref for SpeechRecognition instance
   const recognitionRef = useRef<SpeechRecognition | null>(null);
-  const listeningTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Ref for the timeout
-  const conversationEndRef = useRef<HTMLDivElement>(null); // Ref for the end of the conversation for scrolling
-  const fileInputRef = useRef<HTMLInputElement | null>(null); // Ref for file input
-  const conversationDialogueRef = useRef<HTMLDivElement>(null); // Ref for the main container div
-  const [isDraggingOver, setIsDraggingOver] = useState(false); // State for drag-over effect for drag and drop
+  const listeningTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const conversationEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const conversationDialogueRef = useRef<HTMLDivElement>(null);
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
 
-  const ERROR_DISPLAY_DURATION = 5000; // milliseconds to display error messages
-  const SPEECH_TIMEOUT = 2000; // milliseconds to wait before processing speech
+  const ERROR_DISPLAY_DURATION = 5000;
+  const SPEECH_TIMEOUT = 2000;
   const [error, setError] = useState<string | null>(null);
 
   // Function to clear the error message
   const clearError = () => {
-    setGeneralError(null);
     setError(null);
   };
 
-
-   // Handle sending message (text or voice) - MOVED ABOVE useEffect
-  const handleSendMessage = async () => { // Make function async
-    const messageToSend = inputText.trim() || transcript.trim(); // Use input text or final transcript
-    if (messageToSend || attachedImage) { // Allow sending if there's text OR an image
-      if (!API_KEY) { // Assuming API_KEY is still needed here for the AI call
+  // Handle sending message (text or voice)
+  const handleSendMessage = useCallback(async () => {
+    const messageToSend = inputText?.trim() || '';
+    if (messageToSend || attachedImage) {
+      if (!environment.googleGenerativeAIApiKey) {
         setError("AI API key is not configured. Please check your environment variables.");
         setTimeout(clearError, ERROR_DISPLAY_DURATION);
         setIsLoadingAIResponse(false);
-        return; // Stop if API key is missing
+        return;
       }
       console.log("Sending message:", messageToSend);
       console.log("Attached image:", attachedImage);
 
-      setIsLoadingAIResponse(true); // Set loading state
+      setIsLoadingAIResponse(true);
 
       try { trackEvent('ai_message_send', { source: startInHero ? 'hero' : 'floating', hasImage: !!attachedImage }); } catch {}
-      // Create a message object for the user's message
+      
       const userMessage: Message = {
-        id: Date.now().toString(), // Simple ID
+        id: Date.now().toString(),
         text: messageToSend,
-        imageUrl: attachedImage ? URL.createObjectURL(attachedImage) : undefined,
         sender: 'user',
         timestamp: Date.now(),
+        ...(attachedImage && { imageUrl: URL.createObjectURL(attachedImage) }),
       };
-      addMessage(userMessage); // Add user message to conversation history
+      addMessage(userMessage);
 
-        // Scroll to the bottom after adding the user message
       try {
-        // Prepare content for the API with adaptive RAG context
         const parts = [];
-        // Attempt to retrieve RAG context
         try {
           const { retrieveContext } = await import('./rag');
           const ctxSnippets = retrieveContext(messageToSend, 3);
@@ -134,12 +116,10 @@ const ConversationDialogue: React.FC<ConversationDialogueProps> = ({
           parts.push(imagePart);
         }
 
-        // Send the message to the Gemini API
         const result = await model.generateContent({
           contents: [{ role: "user", parts: parts }],
         });
 
-        // Record interaction for adaptive learning
         try {
           const { recordInteraction } = await import('./rag');
           recordInteraction(messageToSend);
@@ -152,16 +132,14 @@ const ConversationDialogue: React.FC<ConversationDialogueProps> = ({
         try { trackEvent('ai_message_receive', { source: startInHero ? 'hero' : 'floating', length: aiText.length }); } catch {}
         console.log("Received AI response:", aiText);
 
-        // Create a message object for the AI's response
         const aiMessage: Message = {
-          id: Date.now().toString() + '_ai', // Simple AI ID
+          id: Date.now().toString() + '_ai',
           text: aiText,
           sender: 'ai',
           timestamp: Date.now(),
         };
-        addMessage(aiMessage); // Add AI message to conversation history
+        addMessage(aiMessage);
 
-        // Store AI response into RAG KB
         try {
           const { upsertDocuments } = await import('./rag');
           upsertDocuments([{ id: `resp_${Date.now()}`, text: aiText }]);
@@ -169,24 +147,22 @@ const ConversationDialogue: React.FC<ConversationDialogueProps> = ({
           console.warn('RAG upsert unavailable:', e);
         }
 
-        setSuccess(); // Indicate success after receiving AI response
+        setMicrophoneState('success');
 
       } catch (error) {
         console.error("Error sending message to Gemini API:", error);
         setError(`Failed to get a response from the AI. Error: ${(error as Error).message}. Please try again.`);
         setTimeout(clearError, ERROR_DISPLAY_DURATION);
       } finally {
-         setIsLoadingAIResponse(false); // Clear loading state
+        setIsLoadingAIResponse(false);
       }
 
-      setInputText(''); // Clear input after sending
-      // transcript is managed by the useSpeechRecognition hook
-      setAttachedImage(null); // Clear attached image after sending
+      setInputText('');
+      setAttachedImage(null);
     }
-  };
+  }, [inputText, attachedImage, addMessage, startInHero, setMicrophoneState]);
 
-
-  // Handle window resize to determine mobile/desktop view
+  // Handle window resize
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -198,76 +174,56 @@ const ConversationDialogue: React.FC<ConversationDialogueProps> = ({
     };
   }, []);
 
-
-
   // Initialize SpeechRecognition
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
-      // Explicitly cast to any if TypeScript still complains after tsconfig update
       recognitionRef.current = new (SpeechRecognition as any)();
-      (recognitionRef.current as any).continuous = true; // Listen continuously for pauses
-      (recognitionRef.current as any).interimResults = true; // Get interim results
-      (recognitionRef.current as any).lang = 'en-US'; // Set language
+      (recognitionRef.current as any).continuous = true;
+      (recognitionRef.current as any).interimResults = true;
+      (recognitionRef.current as any).lang = 'en-US';
 
-      // Event handlers for recognition
       (recognitionRef.current as any).onstart = () => {
-        setListening();
+        setMicrophoneState('listening');
         console.log('[Voice Debug] Speech recognition started');
-        console.log('[Voice Debug] Recognition instance:', recognitionRef.current);
-        // transcript is managed by the useSpeechRecognition hook
       };
 
-      (recognitionRef.current as any).onresult = (event: SpeechRecognitionEvent) => {
+      (recognitionRef.current as any).onresult = (event: Event) => {
+        const speechEvent = event as SpeechRecognitionEvent;
         let currentTranscript = '';
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
-          currentTranscript += event.results[i][0].transcript;
+        for (let i = speechEvent.resultIndex; i < speechEvent.results.length; ++i) {
+          currentTranscript += speechEvent.results[i][0].transcript;
         }
 
-        // transcript is managed by the useSpeechRecognition hook
-        // We need to update it through the hook if available
-
-        // Clear any existing timeout
         if (listeningTimeoutRef.current) {
           clearTimeout(listeningTimeoutRef.current);
         }
 
-        // Set a new timeout to stop listening after a pause
         listeningTimeoutRef.current = setTimeout(() => {
-          recognitionRef.current?.stop(); // Stop recognition after timeout
-          setProcessing(); // Move to processing state
+          recognitionRef.current?.stop();
+          setMicrophoneState('processing');
         }, SPEECH_TIMEOUT);
       };
 
       (recognitionRef.current as any).onend = () => {
         console.log('Speech recognition ended');
-        // Use the final transcript to send the message
-        let finalTranscript = '';
-        // Iterate through all results to get the final transcript
-        // The event object from onend might not have the results property directly in some implementations
-        // We rely on the transcript state being updated by onresult for simplicity here, but a more robust approach might store final results during onresult
-         if (transcript.trim()) {
-           // Call handleSendMessage directly with the current transcript state
-           handleSendMessage(); // handleSendMessage uses transcript from closure
+        if (inputText && inputText.trim()) {
+          handleSendMessage();
         }
-        setIdle(); // Revert to idle after processing (or after sending message)
-        // transcript is managed by the useSpeechRecognition hook
+        setMicrophoneState('idle');
       };
+
       (recognitionRef.current as any).onerror = (event: any) => {
         console.error('[Voice Debug] Speech recognition error:', event);
-        console.error('[Voice Debug] Error type:', event.error);
-        console.error('[Voice Debug] Error message:', event.message);
-        setTimeout(clearError, ERROR_DISPLAY_DURATION);
         setError(`Speech recognition error: ${event.error}. Please try again.`);
-        setIdle();
+        setTimeout(clearError, ERROR_DISPLAY_DURATION);
+        setMicrophoneState('idle');
       };
     } else {
       console.warn('Speech Recognition API not supported in this browser.');
-      // You might want to disable the microphone button or show a message
     }
 
     return () => {
-      // Clean up recognition instance and timeout on component unmount
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
@@ -275,16 +231,16 @@ const ConversationDialogue: React.FC<ConversationDialogueProps> = ({
         clearTimeout(listeningTimeoutRef.current);
       }
     };
-  }, [setIdle, setListening, setProcessing, transcript]); // Updated dependencies
+  }, [setMicrophoneState, inputText, handleSendMessage]);
 
-  // Effect for drag and drop functionality
+  // Handle drag and drop
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault(); // Prevent default to allow drop
+    event.preventDefault();
     setIsDraggingOver(true);
   };
   
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault(); // Prevent default browser behavior
+    event.preventDefault();
     setIsDraggingOver(false);
 
     const files = event.dataTransfer?.files;
@@ -299,24 +255,32 @@ const ConversationDialogue: React.FC<ConversationDialogueProps> = ({
       }
     }
   };
- const handleDragLeave = () => {
+
+  const handleDragLeave = () => {
     setIsDraggingOver(false);
   };
 
-
-
-  // Handle text input change
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputText(event.target.value);
-  };
-
   // Function to convert File to GenerativeContent part for image
-  async function fileToGenerativePart(file: File): Promise<{ inlineData: { data: string; mimeType: string } }> { // Add return type
-    const base64EncodedDataOrUri = await new Promise<string>((resolve) => { // Explicitly type as string
+  async function fileToGenerativePart(file: File): Promise<{ inlineData: { data: string; mimeType: string } }> {
+    const base64EncodedDataOrUri = await new Promise<string>((resolve) => {
       const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result as string); // Cast to string
+      reader.onloadend = () => {
+        const result = reader.result as string;
+        if (result && result.startsWith('data:')) {
+          resolve(result);
+        } else {
+          throw new Error('Failed to generate image data');
+        }
+      };
+      reader.onerror = () => {
+        throw new Error('Failed to read file');
+      };
       reader.readAsDataURL(file);
     });
+
+    if (!base64EncodedDataOrUri) {
+      throw new Error('Failed to generate image data');
+    }
 
     return {
       inlineData: {
@@ -326,91 +290,18 @@ const ConversationDialogue: React.FC<ConversationDialogueProps> = ({
     };
   }
 
-  // Handle microphone button click
-  const handleMicrophoneClick = () => {
-    // Check if Speech Recognition API is available
-    if (recognitionRef.current) {
-      // If currently idle, start listening
-      if (microphoneState === 'idle') {
-        // Request microphone permissions before starting
-        navigator.mediaDevices.getUserMedia({ audio: true })
-          .then(() => {
-            try {
-              (recognitionRef.current as any).start(); // Cast to any
-            } catch (error) {
-              console.error('Error starting speech recognition:', error);
-              setError('Error starting microphone. Please try again.');
-              setTimeout(clearError, ERROR_DISPLAY_DURATION);
-              setIdle(); // Revert to idle on error
-            }
-          })
-          .catch((error) => {
-            console.error('Microphone permission denied:', error);
-            setError('Microphone permission denied. Please allow access to use voice input.');
-            setTimeout(clearError, ERROR_DISPLAY_DURATION);
-          });
-      } else {
-        // If not idle, stop listening
-        (recognitionRef.current as any).stop(); // Cast to any
-    }
-  }
-};
-  // Handle image attachment button click
-  const handleAttachImageClick = () => {
-    fileInputRef.current?.click(); // Trigger the hidden file input
-  };
-
-  // Handle file selection
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      // Basic file type validation (optional)
-      if (file.type.startsWith('image/')) {
-        setAttachedImage(file);
-        console.log("Image attached:", file.name);
-        // TODO: Show thumbnail preview (the image-preview div handles this currently)
-      } else {
-        console.warn("Only image files are allowed.");
-        // TODO: Show an error message to the user
-      }
-    }
-    // Clear the file input value to allow selecting the same file again
-    if (event.target) {
-      event.target.value = '';
-    }
-  };
-
-  // Function to get the appropriate microphone icon based on state
-  const getMicrophoneIcon = () => {
-    switch (microphoneState) {
-      case 'idle':
-        return '🎤'; // Idle icon (replace with your actual icon)
-      case 'listening':
-        return '🔊'; // Listening icon (replace with your actual icon and add animation in CSS)
-      case 'processing':
-        return '🧠'; // Processing icon (replace with your actual icon and add animation in CSS)
-      case 'success':
-        return '✅'; // Success icon (replace with your actual icon and add animation in CSS)
-      default:
-        return '🎤';
-    }
-  };
-
   // Determine container position and size based on state
   const getContainerStyles = () => {
     if (!showChat) return 'hidden';
     
     if (startInHero && !isSticky) {
-      // In hero section - larger and centered
       return `relative ${isMobile ? 'w-full' : 'w-full max-w-4xl mx-auto'} ${className}`;
     }
     
     if (isMinimized) {
-      // Minimized state - just a button
       return `fixed ${isMobile ? 'bottom-4 right-4' : 'bottom-6 right-6'} z-[9999]`;
     }
     
-    // Sticky/floating state
     return `fixed z-[9999] ${
       isMobile 
         ? 'bottom-0 left-0 right-0 rounded-t-3xl' 
@@ -435,144 +326,128 @@ const ConversationDialogue: React.FC<ConversationDialogueProps> = ({
   }
 
   return (
-    <AnimatePresence>
-      <motion.div
-        ref={conversationDialogueRef}
-        initial={isSticky ? { opacity: 0, y: 20 } : false}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 20 }}
-        className={`${getContainerStyles()} bg-bg-dark-95 backdrop-blur-2xl border border-border-white-10 ${
-          startInHero && !isSticky ? 'rounded-2xl' : 'rounded-3xl'
-        } shadow-glass hover:border-border-white-20 ${isDraggingOver ? 'border-primary shadow-glow' : ''}`}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-      >
-      
-        {/* Header */}
-        <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-border-white-5">
-          <div className="flex items-center gap-3">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <h3 className="font-satoshi font-medium text-text-white">Business Intelligent Agent</h3>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => clearConversation()}
-              className="px-2 py-1 text-xs border border-border-white-10 rounded-lg text-text-white-60 hover:text-text-white hover:border-border-white-20 transition-colors"
-              aria-label="Clear conversation"
-              title="Clear conversation"
-            >
-              Clear
-            </button>
-            {isSticky && (
-              <>
-                <button
-                  onClick={() => setIsExpanded(!isExpanded)}
-                  className="p-1.5 hover:bg-bg-white-10 rounded-lg transition-colors"
-                  aria-label={isExpanded ? 'Collapse' : 'Expand'}
-                >
-                  {isExpanded ? (
-                    <Minimize2 className="w-4 h-4 text-text-white-60" />
-                  ) : (
-                    <Maximize2 className="w-4 h-4 text-text-white-60" />
-                  )}
-                </button>
-                <button
-                  onClick={() => setIsMinimized(true)}
-                  className="p-1.5 hover:bg-bg-white-10 rounded-lg transition-colors"
-                  aria-label="Minimize"
-                >
-                  <Minimize2 className="w-4 h-4 text-text-white-60" />
-                </button>
-                <button
-                  onClick={() => setShowChat(false)}
-                  className="p-1.5 hover:bg-bg-white-10 rounded-lg transition-colors"
-                  aria-label="Close"
-                >
-                  <X className="w-4 h-4 text-text-white-60" />
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      
-      {/* Messages Area */}
-      <MessageList 
-        messages={messages} 
-        conversationEndRef={conversationEndRef}
-        isLoadingAIResponse={isLoadingAIResponse}
-      />
-      
-      {/* Error Message */}
-      {error && (
-        <div className="mx-4 mb-3 px-3 py-2 bg-accent-red/10 border border-accent-red/20 rounded-lg 
-          text-accent-red text-sm cursor-pointer transition-opacity duration-200 hover:opacity-80"
-          onClick={clearError}
+    <ErrorBoundary>
+      <AnimatePresence>
+        <motion.div
+          ref={conversationDialogueRef}
+          initial={isSticky ? { opacity: 0, y: 20 } : false}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          className={`${getContainerStyles()} bg-bg-dark-95 backdrop-blur-2xl border border-border-white-10 ${
+            startInHero && !isSticky ? 'rounded-2xl' : 'rounded-3xl'
+          } shadow-glass hover:border-border-white-20 ${isDraggingOver ? 'border-primary shadow-glow' : ''}`}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
         >
-          <div className="flex items-center justify-between">
-            <span>{error}</span>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+          {/* Header */}
+          <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-border-white-5">
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <h3 className="font-satoshi font-medium text-text-white">Business Intelligent Agent</h3>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => clearConversation()}
+                className="px-2 py-1 text-xs border border-border-white-10 rounded-lg text-text-white-60 hover:text-text-white hover:border-border-white-20 transition-colors"
+                aria-label="Clear conversation"
+                title="Clear conversation"
+              >
+                Clear
+              </button>
+              {isSticky && (
+                <>
+                  <button
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    className="p-1.5 hover:bg-bg-white-10 rounded-lg transition-colors"
+                    aria-label={isExpanded ? 'Collapse' : 'Expand'}
+                  >
+                    {isExpanded ? (
+                      <Minimize2 className="w-4 h-4 text-text-white-60" />
+                    ) : (
+                      <Maximize2 className="w-4 h-4 text-text-white-60" />
+                    )}
+                  </button>
+                  <button
+                    onClick={() => setIsMinimized(true)}
+                    className="p-1.5 hover:bg-bg-white-10 rounded-lg transition-colors"
+                    aria-label="Minimize"
+                  >
+                    <Minimize2 className="w-4 h-4 text-text-white-60" />
+                  </button>
+                  <button
+                    onClick={() => setShowChat(false)}
+                    className="p-1.5 hover:bg-bg-white-10 rounded-lg transition-colors"
+                    aria-label="Close"
+                  >
+                    <X className="w-4 h-4 text-text-white-60" />
+                  </button>
+                </>
+              )}
+            </div>
           </div>
-        </div>
-      )}
-      
-      {/* Image Preview */}
-      {attachedImage && (
-        <div className="mx-4 mb-3 relative">
-          <div className="relative p-2 bg-bg-white-5 border border-border-white-10 rounded-lg">
-            <img 
-              src={URL.createObjectURL(attachedImage)} 
-              alt="Attached preview" 
-              className="max-h-32 max-w-full rounded object-contain mx-auto"
-            />
-            <button 
-              className="absolute top-1 right-1 w-6 h-6 bg-bg-dark-90 hover:bg-accent-red 
-                text-text-white rounded-full flex items-center justify-center transition-colors duration-200"
-              onClick={() => setAttachedImage(null)}
-            >
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      )}
 
-      {/* Input Area */}
-      <div className="p-4 border-t border-border-white-5">
-        {isMobile ? (
-          <MobileInputArea
-            microphoneState={microphoneState}
-            onMicrophoneClick={handleMicrophoneClick}
-            onAttachImageClick={handleAttachImageClick}
-            fileInputRef={fileInputRef}
-            onFileChange={handleFileChange}
+          {/* Messages Area */}
+          <MessageRenderer
             isLoadingAIResponse={isLoadingAIResponse}
-            getMicrophoneIcon={getMicrophoneIcon}
-            inputText={inputText}
-            onInputChange={handleInputChange}
-            onSendMessage={handleSendMessage}
+            conversationEndRef={conversationEndRef}
           />
-        ) : (
-          <DesktopInputArea
-            microphoneState={microphoneState}
-            onMicrophoneClick={handleMicrophoneClick}
-            onAttachImageClick={handleAttachImageClick}
-            fileInputRef={fileInputRef}
-            onFileChange={handleFileChange}
-            isLoadingAIResponse={isLoadingAIResponse}
-            getMicrophoneIcon={getMicrophoneIcon}
-            inputText={inputText}
-            transcript={transcript}
-            onInputChange={handleInputChange}
-            onSendMessage={handleSendMessage}
-          />
-        )}
-        </div>
-      </motion.div>
-    </AnimatePresence>
+
+          {/* Error Message */}
+          {error && (
+            <div className="mx-4 mb-3 px-3 py-2 bg-accent-red/10 border border-accent-red/20 rounded-lg 
+              text-accent-red text-sm cursor-pointer transition-opacity duration-200 hover:opacity-80"
+              onClick={clearError}
+            >
+              <div className="flex items-center justify-between">
+                <span>{error}</span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </div>
+            </div>
+          )}
+
+          {/* Image Preview */}
+          {attachedImage && (
+            <div className="mx-4 mb-3 relative">
+              <div className="relative p-2 bg-bg-white-5 border border-border-white-10 rounded-lg">
+                <img 
+                  src={URL.createObjectURL(attachedImage)} 
+                  alt="Attached preview" 
+                  className="max-h-32 max-w-full rounded object-contain mx-auto"
+                />
+                <button 
+                  className="absolute top-1 right-1 w-6 h-6 bg-bg-dark-90 hover:bg-accent-red 
+                    text-text-white rounded-full flex items-center justify-center transition-colors duration-200"
+                  onClick={() => setAttachedImage(null)}
+                >
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Input Area */}
+          <div className="p-4 border-t border-border-white-5">
+            <InputSection
+              inputText={inputText}
+              attachedImage={attachedImage}
+              isLoadingAIResponse={isLoadingAIResponse}
+              isMobile={isMobile}
+              onInputChange={setInputText}
+              onImageChange={setAttachedImage}
+              onImageRemove={() => setAttachedImage(null)}
+              onSendMessage={handleSendMessage}
+              onTranscriptChange={setInputText}
+              onListeningStateChange={() => {}}
+            />
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    </ErrorBoundary>
   );
 };
 
