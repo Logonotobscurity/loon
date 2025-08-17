@@ -11,7 +11,7 @@ import { ResponsiveModal } from '../components/Global/ResponsiveModal';
 import { marketplaceProducts } from '../features/marketplace/data/marketplaceData';
 import { ProductMarketplaceCard } from '../features/marketplace/components/ProductMarketplaceCard';
 import Meta from '../components/Meta';
-import { useMarketplaceFilters } from '../features/marketplace/hooks/useMarketplaceFilters';
+import { useMarketplaceStore } from '../store/marketplaceStore';
 import { filterProducts } from '../features/marketplace/utils/filterUtils';
 import { FilterPanel } from '../features/marketplace/components/FilterPanel';
 import { ProductGrid } from '../features/marketplace/components/ProductGrid';
@@ -21,7 +21,7 @@ import { debounce } from '../utils/debounce';
 const Marketplace = () => {
   const [showCreatorModal, setShowCreatorModal] = useState<boolean>(false);
   const navigate = useNavigate();
-  const { filters, updateFilter, resetFilters } = useMarketplaceFilters();
+  const { filters, updateFilter, resetFilters } = useMarketplaceStore();
   const [searchQuery, setSearchQuery] = useState('');
 
   const debouncedSearch = useCallback(

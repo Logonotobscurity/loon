@@ -1,9 +1,10 @@
 import React, { memo } from 'react';
 import { Search } from 'lucide-react';
-import useStore from '../../../store';
+import { useMarketplaceStore } from '../../../store/marketplaceStore';
 
 export const SearchBar = memo(() => {
-  const { searchQuery, setSearchQuery } = useStore();
+  const searchQuery = useMarketplaceStore((state) => state.filters.search);
+  const setSearchQuery = (search: string) => useMarketplaceStore.getState().updateFilter('search', search);
   return (
     <div className="relative w-full">
       <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-white-40" />

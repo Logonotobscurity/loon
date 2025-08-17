@@ -1,16 +1,17 @@
 import React, { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import LandingPage from './pages';
-import Marketplace from './pages/Marketplace';
-import ProductDetails from './pages/ProductDetails';
 import { initAnalytics, trackPageView } from './analytics/analytics';
+import { PageLoading } from './components/Global/LoadingSpinner';
 
+const LandingPage = lazy(() => import('./pages'));
 const Features = lazy(() => import('./pages/Features'));
 const Pricing = lazy(() => import('./pages/Pricing'));
 const Docs = lazy(() => import('./pages/Docs'));
 const Blog = lazy(() => import('./pages/Blog'));
 const BlogPost = lazy(() => import('./pages/BlogPost'));
 const About = lazy(() => import('./pages/About'));
+const Marketplace = lazy(() => import('./pages/Marketplace'));
+const ProductDetails = lazy(() => import('./pages/ProductDetails'));
 
 function RouteTracker() {
   const location = useLocation();
@@ -22,7 +23,7 @@ function App() {
   useEffect(() => { initAnalytics(); }, []);
   return (
     <Router>
-      <Suspense fallback={null}>
+      <Suspense fallback={<PageLoading />}>
         <RouteTracker />
         <Routes>
           <Route path="/" element={<LandingPage />} />

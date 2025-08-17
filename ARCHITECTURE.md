@@ -151,7 +151,7 @@ MAX_RETRIES=3
 1. **Set up environment variables**:
    ```bash
    cp .env.example .env
-   # Edit .env with your API keys
+   # Edit .env with your API keys from Google AI Studio
    ```
 
 2. **Install dependencies**:
@@ -159,9 +159,10 @@ MAX_RETRIES=3
    npm install
    ```
 
-3. **Run tests**:
+3. **Verify setup**:
    ```bash
-   npm test
+   npm run build  # Check for TypeScript errors
+   npm test       # Run test suite
    ```
 
 4. **Start development server**:
@@ -171,17 +172,43 @@ MAX_RETRIES=3
 
 ## Troubleshooting
 
-### Common Issues
+### Common Issues & Solutions
 
-1. **API Key Not Found**: Ensure `VITE_GOOGLE_GENERATIVE_AI_API_KEY` is set in your environment
-2. **TypeScript Errors**: Check that all imports use the new type definitions from `src/types`
-3. **LocalStorage Issues**: Clear browser localStorage if experiencing data migration issues
+1. **"Cannot read properties of null (reading 'getSnapshot')"**
+   - **Cause**: Missing API key causing store initialization failure
+   - **Solution**: Ensure `VITE_GOOGLE_GENERATIVE_AI_API_KEY` is set in `.env`
+
+2. **"API Key Not Found"**
+   - **Cause**: Environment variable not configured
+   - **Solution**: Get key from [Google AI Studio](https://makersuite.google.com/app/apikey)
+
+3. **TypeScript Errors**
+   - **Cause**: Outdated type definitions or import issues
+   - **Solution**: Run `npm run build` to identify and fix type issues
+
+4. **LocalStorage Issues**
+   - **Cause**: Corrupted localStorage data from previous versions
+   - **Solution**: Clear browser localStorage: `localStorage.clear()`
+
+5. **Build Failures**
+   - **Cause**: Node.js version mismatch or dependency conflicts
+   - **Solution**: Use Node.js version from `.nvmrc` file
 
 ### Debug Mode
 Enable debug logging by setting:
 ```typescript
-// In development
+// In development console
 localStorage.setItem('debug', 'true');
+```
+
+### Reset Development Environment
+```bash
+# Clean slate approach
+rm -rf node_modules package-lock.json
+npm install
+cp .env.example .env
+# Edit .env with your keys
+npm run dev
 ```
 
 ## Support

@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { AppHeader } from '../components/Header/AppHeader';
 import { HeroSection } from '../components/Hero/HeroSection';
 import { CapabilitiesSection } from '../components/Capabilities/CapabilitiesSection';
-
-import { MarketplaceSection } from '../features/marketplace/components/MarketplaceSection';
-import { UseCasesByIndustry } from '../features/use-cases/UseCasesByIndustry';
 import { TextMarquee } from '../components/Global/TextMarquee';
-import { MobileFooterCTA } from '../components/Footer/MobileFooterCTA';
+
 import { Footer } from '../components/Footer/Footer';
 import { GridBackground } from '../components/Global/GridBackground';
 import Meta from '../components/Meta';
-import ConversationDialogue from '../features/conversation/ConversationDialogue';
+import { LoadingSpinner } from '../components/Global/LoadingSpinner';
+
+const MarketplaceSection = lazy(() => import('../features/marketplace/components/MarketplaceSection').then(module => ({ default: module.MarketplaceSection })));
+const UseCasesByIndustry = lazy(() => import('../features/use-cases/UseCasesByIndustry').then(module => ({ default: module.UseCasesByIndustry })));
+const ConversationDialogue = lazy(() => import('../features/conversation/ConversationDialogue').then(module => ({ default: module.default })));
 
 const LandingPage = () => {
   return (
@@ -22,21 +23,25 @@ const LandingPage = () => {
       <GridBackground>
         <AppHeader />
         <main>
-        <HeroSection />
-        <CapabilitiesSection />
-        <MarketplaceSection />
-        <UseCasesByIndustry />
-        <TextMarquee 
-          text="Converse, Convert, Conquer: The Power of Voice-First Business Intelligence • "
-          bidirectional={true}
-          speed={30}
-        />
+          <HeroSection />
+          <CapabilitiesSection />
+          <Suspense fallback={<LoadingSpinner />}>
+            <MarketplaceSection />
+          </Suspense>
+          <Suspense fallback={<LoadingSpinner />}>
+            <UseCasesByIndustry />
+          </Suspense>
+
+          <TextMarquee 
+            text="Converse, Convert, Conquer: The Power of Voice-First Business Intelligence • "
+            bidirectional={true}
+            speed={30}
+          />
         </main>
-      <Footer />
-      <MobileFooterCTA />
-    </GridBackground>
-  </>
- );
+        <Footer />
+      </GridBackground>
+    </>
+  );
 };
 
 export default LandingPage;

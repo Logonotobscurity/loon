@@ -1,6 +1,68 @@
-# Project Name
+# Business Intelligence GPT Landing Page
 
-This is a brief description of the project.
+A modern, responsive landing page for a Business Intelligence GPT application featuring conversational AI, marketplace integration, and advanced analytics capabilities.
+
+## Quick Setup Guide
+
+### Prerequisites
+- Node.js 18+ (see .nvmrc for exact version)
+- npm or pnpm
+
+### Installation & Setup
+
+1. **Clone and install dependencies**:
+   ```bash
+   npm install
+   ```
+
+2. **Configure environment variables**:
+   ```bash
+   cp .env.example .env
+   # Edit .env with your actual API keys
+   ```
+
+3. **Get your Google AI API key**:
+   - Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
+   - Generate a new API key
+   - Add it to your `.env` file: `VITE_GOOGLE_GENERATIVE_AI_API_KEY=your_actual_key`
+
+4. **Start development server**:
+   ```bash
+   npm run dev
+   ```
+
+### Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm test` - Run tests
+- `npm run cy:open` - Open Cypress E2E tests
+- `npm run storybook` - Start Storybook
+
+## Environment Configuration
+
+Required environment variables:
+- `VITE_GOOGLE_GENERATIVE_AI_API_KEY` - Required for AI functionality
+- `VITE_API_TIMEOUT` - Optional (default: 30000ms)
+- `VITE_MAX_RETRIES` - Optional (default: 3)
+
+## Troubleshooting
+
+### Common Issues
+
+1. **"Cannot read properties of null" errors**: Ensure your API key is set in `.env`
+2. **Build failures**: Check Node.js version matches .nvmrc
+3. **TypeScript errors**: Run `npm run build` to check for type issues
+4. **Missing dependencies**: Delete `node_modules` and `package-lock.json`, then run `npm install`
+
+### Resetting Local Development
+```bash
+rm -rf node_modules package-lock.json
+npm install
+cp .env.example .env
+# Update .env with your keys
+npm run dev
+```
 
 ## Codebase Structure
 

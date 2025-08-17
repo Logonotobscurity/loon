@@ -7,10 +7,10 @@ interface MessageRendererProps {
   conversationEndRef: React.RefObject<HTMLDivElement>;
 }
 
-export const MessageRenderer: React.FC<MessageRendererProps> = ({
+export const MessageRenderer = React.memo(({
   isLoadingAIResponse,
   conversationEndRef,
-}) => {
+}: MessageRendererProps) => {
   const { messages } = useConversationStore();
 
   return (
@@ -48,4 +48,6 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({
       )}
     </div>
   );
-};
+});
+
+MessageRenderer.displayName = 'MessageRenderer';

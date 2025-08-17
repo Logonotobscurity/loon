@@ -4,7 +4,7 @@ import { marketplaceProducts, MarketplaceProduct } from '../data/marketplaceData
 import { ProductMarketplaceCard } from './ProductMarketplaceCard';
 import { SectionWrapper } from '../../../components/Global/SectionWrapper';
 import { CTAButton } from '../../../components/Global/CTAButton';
-import useStore from '../../../store/index'; // Assuming your store is at src/store/index.ts
+import { useMarketplaceStore } from '../../../store/marketplaceStore';
 
 
 interface MarketplaceSectionProps {
@@ -51,8 +51,8 @@ export const MarketplaceSection = () => {
 // This component could be used on the actual marketplace page
 export const FullMarketplaceSection = () => {
   const navigate = useNavigate();
-  const searchQuery = useStore((state) => state.searchQuery);
-  const filters = useStore((state) => state.filters);
+  const searchQuery = useMarketplaceStore((state) => state.filters.search);
+  const filters = useMarketplaceStore((state) => state.filters);
 
   const productGridRef = useRef<HTMLDivElement>(null); // Ref for scrolling
 

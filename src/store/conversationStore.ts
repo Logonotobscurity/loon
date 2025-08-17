@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { Message, ConversationState } from '../types';
 import { ConversationRepository } from '../repositories/ConversationRepository';
-import { geminiApiService } from '../services/api/GeminiApiService';
+import { conversationService } from '../services/conversation/ConversationService';
 
 interface ConversationStore extends ConversationState {
   repository: ConversationRepository;
@@ -63,8 +63,8 @@ export const useConversationStore = create<ConversationStore>()(
       sendUserMessage: async (text: string, image?: File) => {
         const { addMessage } = get();
         
-        if (!geminiApiService.isConfigured()) {
-          set({ error: 'AI service is not configured' });
+        if (!conversationService.isConfigured()) {
+          set({ error: 'AI service is not configured. Please check your API key settings.' });
           return;
         }
 
@@ -74,27 +74,26 @@ export const useConversationStore = create<ConversationStore>()(
           // Add user message
           const userMessage: Message = {
             id: `msg_${Date.now()}_user`,
-            text,
-            imageUrl: image ? URL.createObjectURL(image) : undefined,
-            sender: 'user',
-            timestamp: Date.now(),
+            role: 'user',
+            content: text.trim(),
+            timestamp: new Date(),
+            ...(image && { imageUrl: URL.createObjectURL(image) }),
           };
           await addMessage(userMessage);
 
           // Send to AI
-          const response = await geminiApiService.sendMessage(text, image);
-          
-          if (!response.success) {
-            set({ error: response.error || 'Failed to get AI response' });
-            return;
-          }
+          const result = await conversationService.sendMessage({
+            text,
+            image,
+            conversationHistory: get().messages,
+          });
 
           // Add AI response
           const aiMessage: Message = {
             id: `msg_${Date.now()}_ai`,
-            text: response.data?.text || '',
-            sender: 'ai',
-            timestamp: Date.now(),
+            role: 'assistant',
+            content: result.response,
+            timestamp: new Date(),
           };
           await addMessage(aiMessage);
 

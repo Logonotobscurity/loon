@@ -15,7 +15,7 @@ describe('LOG_ON Landing Page E2E Tests', () => {
 
   context('Mobile View', () => {
     beforeEach(() => {
-      cy.viewport('iphone-6');
+      cy.viewport(375, 667); // iPhone 6 dimensions
     });
 
     it('shows the mobile footer CTA and buttons are clickable', () => {

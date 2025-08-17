@@ -36,7 +36,8 @@
 
 3. **Verify the fix works**
    - Run `npm run dev` to test the application
-   - Ensure the conversation feature works correctly
+   - The app will now gracefully handle missing API keys with helpful warnings
+   - Check browser console for any configuration issues
 
 ### 📁 Files Created/Updated
 

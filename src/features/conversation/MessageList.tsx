@@ -9,7 +9,7 @@ interface MessageListProps {
   isLoadingAIResponse: boolean;
 }
 
-export const MessageList: React.FC<MessageListProps> = ({ messages, conversationEndRef, isLoadingAIResponse }) => {
+export const MessageList = React.memo(({ messages, conversationEndRef, isLoadingAIResponse }: MessageListProps) => {
   // Hide the message area entirely until there is content or loading
   if (messages.length === 0 && !isLoadingAIResponse) {
     return null;
@@ -19,17 +19,17 @@ export const MessageList: React.FC<MessageListProps> = ({ messages, conversation
       {messages.map((message) => (
         <div
           key={message.id}
-          className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} animate-in`}
+          className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} animate-in`}
         >
           <div
             className={`max-w-[85%] px-3 sm:px-4 py-2 sm:py-3 rounded-2xl transition-all duration-200 ${
-              message.sender === 'user'
+              message.role === 'user'
                 ? 'bg-primary text-text-white rounded-br-md shadow-glow-sm'
                 : 'glass-light border border-border-white-10 text-text-white-90 rounded-bl-md'
             }`}
           >
-            {message.text && (
-              message.sender === 'ai' ? (
+            {message.content && (
+              message.role === 'assistant' ? (
                 <div className="markdown-content text-sm md:text-base leading-relaxed">
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
@@ -77,12 +77,12 @@ export const MessageList: React.FC<MessageListProps> = ({ messages, conversation
                       ),
                     }}
                   >
-                    {message.text}
+                    {message.content}
                   </ReactMarkdown>
                 </div>
               ) : (
                 <p className="text-sm md:text-base leading-relaxed whitespace-pre-wrap">
-                  {message.text}
+                  {message.content}
                 </p>
               )
             )}
@@ -94,7 +94,7 @@ export const MessageList: React.FC<MessageListProps> = ({ messages, conversation
               />
             )}
             <span
-              className={`block text-xs mt-2 ${message.sender === 'user' ? 'text-text-white-70' : 'text-text-white-60'
+              className={`block text-xs mt-2 ${message.role === 'user' ? 'text-text-white-70' : 'text-text-white-60'
               }`}
             >
               {new Date(message.timestamp).toLocaleTimeString([], {
@@ -124,5 +124,7 @@ export const MessageList: React.FC<MessageListProps> = ({ messages, conversation
       <div ref={conversationEndRef} /> {/* Empty div at the end for scrolling */}
     </div>
   );
-};
+});
+
+MessageList.displayName = 'MessageList';
 

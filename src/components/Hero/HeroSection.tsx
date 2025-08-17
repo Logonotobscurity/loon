@@ -1,47 +1,25 @@
-import React, { Suspense, useEffect, useState } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Sphere, MeshDistortMaterial } from '@react-three/drei';
+import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { SectionWrapper } from '../Global/SectionWrapper';
-import ConversationDialogue from '../../features/conversation/ConversationDialogue';
 import { copy } from '../../copy';
 import { CTAButton } from '../Global/CTAButton';
 import { ResponsiveModal } from '../Global/ResponsiveModal';
 import { JoinWaitlistModal } from '../../components/Global/JoinWaitlistModal';
+import { LoadingSpinner } from '../Global/LoadingSpinner';
 import AssessmentModal from '../../features/assessment/AssessmentModal';
 import { trackEvent } from '../../analytics/analytics';
 
-const AnimatedBlob = () => {
-  return (
-    <Canvas aria-label="An abstract, rotating 3D blue blob">
-      <Suspense fallback={null}>
-        <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={2} />
-        <ambientLight intensity={1} />
-        <directionalLight position={[3, 2, 1]} />
-        <Sphere args={[1, 100, 200]} scale={2.5}>
-          <MeshDistortMaterial
-            color="#1a66ff"
-            attach="material"
-            distort={0.5}
-            speed={2}
-            metalness={0.8}
-            roughness={0.2}
-          />
-        </Sphere>
-      </Suspense>
-    </Canvas>
-  );
-};
+const AnimatedBlob = lazy(() => import('./AnimatedBlob'));
+const ConversationDialogue = lazy(() => import('../../features/conversation/ConversationDialogue').then(module => ({ default: module.default })));
+
+
 
 export const HeroSection = () => {
   const [waitlistOpen, setWaitlistOpen] = useState(false);
   const [waitlistMode, setWaitlistMode] = useState<'waitlist' | 'vendor'>('waitlist');
   const [assessmentOpen, setAssessmentOpen] = useState(false);
 
-  useEffect(() => {
-    // Seed RAG on hero mount so context is available early
-    import('../../features/conversation/seedRag').then(m => m.seedRagKnowledgeBase()).catch(() => {});
-  }, []);
+
 
   const openWaitlist = (mode: 'waitlist' | 'vendor') => {
     setWaitlistMode(mode);
@@ -58,7 +36,9 @@ export const HeroSection = () => {
     <SectionWrapper id="hero" className="relative overflow-hidden min-h-[100dvh] flex flex-col items-center justify-center pt-16 sm:pt-20">
       {/* 3D Animation - hidden on small mobile */}
       <div className="absolute inset-0 z-0 opacity-20 sm:opacity-30 md:opacity-50">
-        <AnimatedBlob />
+        <Suspense fallback={null}>
+          <AnimatedBlob />
+        </Suspense>
       </div>
       <div className="relative z-10 w-full max-w-5xl mx-auto text-center px-4 sm:px-6 lg:px-8">
         <motion.h1
@@ -86,8 +66,6 @@ export const HeroSection = () => {
           className="mt-6 sm:mt-8 flex items-center justify-center gap-3 sm:gap-4"
         >
           <CTAButton variant="primary" onClick={() => openWaitlist('waitlist')}>Join Waitlist</CTAButton>
-          <CTAButton variant="secondary" onClick={() => openWaitlist('vendor')}>Become a Vendor</CTAButton>
-          <CTAButton variant="outline" onClick={openAssessment}>Start Assessment</CTAButton>
         </motion.div>
         
         {/* BI-GPT Conversation integrated in hero */}
@@ -97,7 +75,9 @@ export const HeroSection = () => {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="mt-8 sm:mt-12"
         >
-          <ConversationDialogue startInHero={true} className="max-w-3xl mx-auto" />
+          <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-pulse text-text-white-60">Loading conversation...</div></div>}>
+            <ConversationDialogue startInHero={true} className="max-w-3xl mx-auto" />
+          </Suspense>
         </motion.div>
       </div>
 

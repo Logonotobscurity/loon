@@ -16,22 +16,24 @@ export const LeadGenerationModal: React.FC<LeadGenerationModalProps> = ({ isOpen
     userType: 'User',
     psychologyQuestion: ''
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Log form data for development
-    console.log('Lead Generation Form Submitted:', formData);
-    // TODO: Integrate with form submission API
+    setIsLoading(true);
     
-    // Reset form and close modal
-    setFormData({
-      name: '',
-      email: '',
-      industryType: '',
-      userType: 'User',
-      psychologyQuestion: ''
-    });
-    onClose();
+    // Simulate async operation
+    setTimeout(() => {
+      setFormData({
+        name: '',
+        email: '',
+        industryType: '',
+        userType: 'User',
+        psychologyQuestion: ''
+      });
+      setIsLoading(false);
+      onClose();
+    }, 1000);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {

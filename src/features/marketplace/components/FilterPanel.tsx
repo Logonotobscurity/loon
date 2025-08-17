@@ -1,10 +1,13 @@
 import React, { memo } from 'react';
 import { SearchBar } from './SearchBar';
 import { customMarketplaceCategories, industryCategories } from '../data/marketplaceData';
-import useStore from '../../../store';
+import { useMarketplaceStore } from '../../../store/marketplaceStore';
 
 export const FilterPanel = memo(() => {
-  const { filters, setFilters, searchQuery, setSearchQuery } = useStore();
+  const filters = useMarketplaceStore((state) => state.filters);
+  const setFilters = useMarketplaceStore((state) => state.setFilters);
+  const searchQuery = useMarketplaceStore((state) => state.filters.search);
+  const setSearchQuery = (search: string) => useMarketplaceStore.getState().updateFilter('search', search);
 
   const handleFilterChange = (key: string, value: string) => {
     setFilters({ ...filters, [key]: value });

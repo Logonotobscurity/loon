@@ -2,10 +2,10 @@
 
 export interface Message {
   id: string;
-  text: string;
+  role: 'user' | 'assistant';
+  content: string;
   imageUrl?: string;
-  sender: 'user' | 'ai';
-  timestamp: number;
+  timestamp: Date;
 }
 
 export interface RAGDocument {

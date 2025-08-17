@@ -9,14 +9,18 @@ const config: Config = {
   // using ts-jest
   transform: {
     '^.+\\.tsx?$': ['ts-jest', {
-      tsconfig: 'tsconfig.test.json'
+      tsconfig: 'tsconfig.test.json',
+      useESM: true,
     }],
   },
+
+  // Enable ES modules
+  extensionsToTreatAsEsm: ['.ts', '.tsx'],
 
   // Runs special logic, such as cleaning up components
   // when using React Testing Library and adds special
   // extended assertions to Jest
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
 
   // Test spec file resolution pattern
   // Matches parent folder `__tests__` and filename
@@ -32,7 +36,16 @@ const config: Config = {
   // Used for mocking CSS Modules
   moduleNameMapper: {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    '^(\\.{1,2}/.*)\\.js$': '$1',
   },
+
+  // Transform node_modules if needed
+  transformIgnorePatterns: [
+    'node_modules/(?!(react-markdown|remark-gfm|vfile|vfile-message|unist-util-stringify-position|periscopic|is-reference|estree-walker|zustand)/)',
+  ],
+
+  // Enable ES modules
+  preset: undefined,
 };
 
 export default config;
