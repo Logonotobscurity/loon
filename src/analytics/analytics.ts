@@ -3,6 +3,19 @@ import { getAnalytics, logEvent, isSupported } from 'firebase/analytics';
 
 let analytics: import('firebase/analytics').Analytics | null = null;
 
+// Analytics batching and debouncing
+interface AnalyticsEvent {
+  name: string;
+  params?: Record<string, any>;
+  timestamp: number;
+}
+
+const eventQueue: AnalyticsEvent[] = [];
+let batchTimer: NodeJS.Timeout | null = null;
+let lastEventTime = 0;
+const BATCH_DELAY = 1000; // 1 second batching
+const RATE_LIMIT_DELAY = 5000; // 5 seconds rate limiting
+
 function getConfig() {
   const cfg = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -30,12 +43,46 @@ export async function initAnalytics() {
   }
 }
 
-export function trackEvent(name: string, params?: Record<string, any>) {
-  try {
-    if (analytics) logEvent(analytics, name as any, params as any);
-  } catch {
-    // no-op
+function processEventQueue() {
+  if (eventQueue.length === 0) return;
+
+  const now = Date.now();
+  if (now - lastEventTime < RATE_LIMIT_DELAY) {
+    // Rate limit hit, reschedule
+    scheduleBatchProcessing();
+    return;
   }
+
+  // Process batched events
+  const events = [...eventQueue];
+  eventQueue.length = 0;
+
+  events.forEach(event => {
+    try {
+      if (analytics) logEvent(analytics, event.name as any, event.params as any);
+    } catch {
+      // no-op
+    }
+  });
+
+  lastEventTime = now;
+  batchTimer = null;
+}
+
+function scheduleBatchProcessing() {
+  if (batchTimer) return;
+  batchTimer = setTimeout(processEventQueue, BATCH_DELAY);
+}
+
+export function trackEvent(name: string, params?: Record<string, any>) {
+  // Add to queue for batching
+  eventQueue.push({
+    name,
+    params,
+    timestamp: Date.now()
+  });
+
+  scheduleBatchProcessing();
 }
 
 export function trackPageView(path: string) {

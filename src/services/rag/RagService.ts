@@ -13,6 +13,9 @@ export interface VectorCalculationResult {
 
 export class RagService {
   private repository: RAGRepository;
+  private interactionThrottleTimer: NodeJS.Timeout | null = null;
+  private lastInteractionTime = 0;
+  private readonly INTERACTION_THROTTLE_DELAY = 5000; // 5 seconds
 
   constructor(repository: RAGRepository = new RAGRepository()) {
     this.repository = repository;

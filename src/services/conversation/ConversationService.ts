@@ -26,6 +26,8 @@ export class ConversationService {
   private genAI: GoogleGenerativeAI;
   private model: any;
   private config: ConversationServiceConfig;
+  private conversationCache: Map<string, { response: string; timestamp: number }> = new Map();
+  private readonly CACHE_TTL = 5 * 60 * 1000; // 5 minutes TTL
 
   constructor(config: ConversationServiceConfig = {}) {
     this.config = {
@@ -45,6 +47,9 @@ export class ConversationService {
         temperature: this.config.temperature,
       },
     }) : null;
+
+    // Clean cache every 5 minutes
+    setInterval(() => this.cleanCache(), this.CACHE_TTL);
   }
 
   public isConfigured(): boolean {
@@ -84,6 +89,13 @@ export class ConversationService {
 
       const response = await result.response;
       const textResponse = response.text();
+
+      // Cache the response
+      const cacheKey = this.generateCacheKey(text, conversationHistory, !!image, useRag);
+      this.conversationCache.set(cacheKey, {
+        response: textResponse,
+        timestamp: Date.now()
+      });
 
       trackEvent('conversation_response_received', {
         response_length: textResponse.length,
@@ -143,6 +155,20 @@ export class ConversationService {
       };
       reader.onerror = reject;
     });
+  }
+
+  private generateCacheKey(text: string, history: Message[], hasImage: boolean, useRag: boolean): string {
+    const historyHash = history.slice(-5).map(m => m.content.substring(0, 50)).join('|');
+    return `${text.substring(0, 100)}|${historyHash}|${hasImage}|${useRag}`;
+  }
+
+  private cleanCache(): void {
+    const now = Date.now();
+    for (const [key, value] of this.conversationCache.entries()) {
+      if (now - value.timestamp >= this.CACHE_TTL) {
+        this.conversationCache.delete(key);
+      }
+    }
   }
 
   private handleError(error: any): Error {
