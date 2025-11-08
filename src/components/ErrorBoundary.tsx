@@ -10,6 +10,13 @@ interface ErrorBoundaryProps {
   fallback?: React.ComponentType<{ error: Error; resetError: () => void }>;
 }
 
+/**
+ * An error boundary component to catch JavaScript errors anywhere in its child component tree.
+ *
+ * @param {object} props - The properties for the component.
+ * @param {React.ReactNode} props.children - The child components to render.
+ * @param {React.ComponentType<{ error: Error; resetError: () => void }>} [props.fallback] - A fallback component to render when an error is caught.
+ */
 export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
@@ -38,6 +45,14 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
   }
 }
 
+/**
+ * The default fallback component to render when an error is caught by the ErrorBoundary.
+ *
+ * @param {object} props - The properties for the component.
+ * @param {Error} props.error - The error that was caught.
+ * @param {Function} props.resetError - A function to reset the error state.
+ * @returns {JSX.Element} The rendered default error fallback component.
+ */
 const DefaultErrorFallback: React.FC<{ error: Error; resetError: () => void }> = ({ 
   error, 
   resetError 

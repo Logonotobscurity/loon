@@ -6,6 +6,15 @@ interface ButtonBlackShadowProps {
   className?: string;
 }
 
+/**
+ * A button component with a black shadow effect.
+ *
+ * @param {object} props - The properties for the component.
+ * @param {string} [props.text='Start'] - The text to display inside the button.
+ * @param {Function} [props.onClick] - The function to call when the button is clicked.
+ * @param {string} [props.className] - Additional CSS classes to apply to the button.
+ * @returns {JSX.Element} The rendered button component.
+ */
 const ButtonBlackShadow: React.FC<ButtonBlackShadowProps> = ({ 
   text = "Start", 
   onClick,

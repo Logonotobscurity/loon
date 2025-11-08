@@ -20,6 +20,16 @@ interface MarketplaceMenuProps {
   highlight?: string;
 }
 
+/**
+ * A dropdown menu for the marketplace with a link to the main marketplace page.
+ *
+ * @param {object} props - The properties for the component.
+ * @param {string} props.title - The title of the menu.
+ * @param {string} props.href - The link to the main marketplace page.
+ * @param {Array<MenuSection>} props.sections - The sections to display in the dropdown menu.
+ * @param {string} [props.highlight] - A highlight text to display at the bottom of the dropdown.
+ * @returns {JSX.Element} The rendered marketplace menu component.
+ */
 export const MarketplaceMenu: React.FC<MarketplaceMenuProps> = ({ 
   title, 
   href,

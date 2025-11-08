@@ -4,6 +4,13 @@ interface GridBackgroundProps {
   children: React.ReactNode;
 }
 
+/**
+ * A component that provides a grid background with decorative gradient and blur effects.
+ *
+ * @param {object} props - The properties for the component.
+ * @param {React.ReactNode} props.children - The content to display on top of the grid background.
+ * @returns {JSX.Element} The rendered component with a grid background.
+ */
 export const GridBackground = ({ children }: GridBackgroundProps) => {
   return (
     <div className="w-full min-h-screen bg-bg-dark relative overflow-hidden">

@@ -7,6 +7,14 @@ interface DropdownMenuProps {
   items: { name: string; href: string }[];
 }
 
+/**
+ * A dropdown menu component.
+ *
+ * @param {object} props - The properties for the component.
+ * @param {string} props.title - The title of the dropdown menu.
+ * @param {Array<{name: string, href: string}>} props.items - The items to display in the dropdown menu.
+ * @returns {JSX.Element} The rendered dropdown menu component.
+ */
 export const DropdownMenu = ({ title, items }: DropdownMenuProps) => {
   return (
     <Menu as="div" className="relative inline-block text-left">

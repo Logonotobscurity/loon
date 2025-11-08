@@ -8,6 +8,16 @@ interface TextMarqueeProps {
   className?: string;
 }
 
+/**
+ * A text marquee component with bidirectional scrolling.
+ *
+ * @param {object} props - The properties for the component.
+ * @param {string} props.text - The text to display in the marquee.
+ * @param {boolean} [props.bidirectional=true] - Whether the marquee should scroll in both directions.
+ * @param {number} [props.speed=20] - The speed of the marquee.
+ * @param {string} [props.className] - Additional CSS classes to apply to the marquee.
+ * @returns {JSX.Element} The rendered text marquee component.
+ */
 export const TextMarquee: React.FC<TextMarqueeProps> = ({ 
   text, 
   bidirectional = true,

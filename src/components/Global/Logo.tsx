@@ -1,5 +1,10 @@
 import React from 'react';
 
+/**
+ * A component that displays the application logo with a gradient effect.
+ *
+ * @returns {JSX.Element} The rendered logo component.
+ */
 export const Logo = () => {
   return (
     <span className="font-satoshi font-bold text-2xl text-text-white hover:text-primary transition-colors duration-200 flex items-center gap-2">

@@ -6,6 +6,14 @@ interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
   className?: string;
 }
 
+/**
+ * An icon button component with hover and tap animations.
+ *
+ * @param {object} props - The properties for the component.
+ * @param {React.ReactNode} props.children - The icon to display inside the button.
+ * @param {string} [props.className] - Additional CSS classes to apply to the button.
+ * @returns {JSX.Element} The rendered icon button component.
+ */
 export const IconButton = ({ children, className, ...props }: IconButtonProps) => {
   return (
     <motion.button

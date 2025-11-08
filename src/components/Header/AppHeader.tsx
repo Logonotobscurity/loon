@@ -10,6 +10,12 @@ import { ResponsiveModal } from '../Global/ResponsiveModal';
 import { JoinWaitlistModal } from '../Global/JoinWaitlistModal';
 import { trackEvent } from '../../analytics/analytics';
 
+/**
+ * The main header component for the application.
+ * It includes the logo, navigation, and call-to-action buttons.
+ *
+ * @returns {JSX.Element} The rendered header component.
+ */
 export const AppHeader = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);

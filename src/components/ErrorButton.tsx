@@ -7,6 +7,15 @@ interface ErrorButtonProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
+/**
+ * A button component for testing Sentry error tracking.
+ *
+ * @param {object} props - The properties for the component.
+ * @param {string} [props.className] - Additional CSS classes to apply to the button.
+ * @param {'primary' | 'secondary' | 'danger'} [props.variant='danger'] - The color variant of the button.
+ * @param {'sm' | 'md' | 'lg'} [props.size='md'] - The size of the button.
+ * @returns {JSX.Element} The rendered error button component.
+ */
 export const ErrorButton: React.FC<ErrorButtonProps> = ({
   className = '',
   variant = 'danger',
@@ -86,6 +95,12 @@ export const ErrorButton: React.FC<ErrorButtonProps> = ({
   );
 };
 
+/**
+ * A higher-order component that wraps a component with a Sentry error boundary.
+ *
+ * @param {React.ComponentType<P>} Component - The component to wrap.
+ * @returns {React.ComponentType<P>} The wrapped component.
+ */
 // Higher-order component for error boundaries
 export const withSentryErrorBoundary = <P extends object>(
   Component: React.ComponentType<P>
@@ -110,6 +125,11 @@ export const withSentryErrorBoundary = <P extends object>(
   });
 };
 
+/**
+ * A hook for Sentry performance monitoring.
+ *
+ * @returns {object} An object with functions to start and finish transactions and spans.
+ */
 // Hook for Sentry performance monitoring
 export const useSentryPerformance = () => {
   const startTransaction = (name: string, operation: string) => {

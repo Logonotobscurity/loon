@@ -14,6 +14,11 @@ const ConversationDialogue = lazy(() => import('../../features/conversation/Conv
 
 
 
+/**
+ * The hero section of the landing page.
+ *
+ * @returns {JSX.Element} The rendered hero section.
+ */
 export const HeroSection = () => {
   const [waitlistOpen, setWaitlistOpen] = useState(false);
   const [waitlistMode, setWaitlistMode] = useState<'waitlist' | 'vendor'>('waitlist');

@@ -2,6 +2,11 @@ import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Sphere, MeshDistortMaterial } from '@react-three/drei';
 
+/**
+ * An animated 3D blob component.
+ *
+ * @returns {JSX.Element} The rendered animated blob component.
+ */
 const AnimatedBlob: React.FC = () => {
   return (
     <Canvas aria-label="An abstract, rotating 3D blue blob">
