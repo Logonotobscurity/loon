@@ -10,6 +10,17 @@ interface StandardCardProps {
   withGradient?: boolean;
 }
 
+/**
+ * A standard card component with optional hover effects and gradient background.
+ *
+ * @param {object} props - The properties for the component.
+ * @param {React.ReactNode} props.children - The content to display inside the card.
+ * @param {string} [props.className] - Additional CSS classes to apply to the card.
+ * @param {Function} [props.onClick] - The function to call when the card is clicked.
+ * @param {boolean} [props.hoverable=true] - Whether the card should have hover effects.
+ * @param {boolean} [props.withGradient=true] - Whether the card should have a gradient background.
+ * @returns {JSX.Element} The rendered card component.
+ */
 export const StandardCard: React.FC<StandardCardProps> = ({ 
   children, 
   className = '', 
@@ -50,6 +61,14 @@ interface StandardCardIconProps {
   className?: string;
 }
 
+/**
+ * An icon component for use within a StandardCard.
+ *
+ * @param {object} props - The properties for the component.
+ * @param {LucideIcon} props.icon - The icon to display.
+ * @param {string} [props.className] - Additional CSS classes to apply to the icon container.
+ * @returns {JSX.Element} The rendered icon component.
+ */
 export const StandardCardIcon: React.FC<StandardCardIconProps> = ({ icon: Icon, className = '' }) => {
   return (
     <div className={`bg-primary/10 backdrop-blur-sm p-4 rounded-xl mb-4 group-hover:bg-primary/20 transition-colors duration-300 ${className}`}>
@@ -63,6 +82,14 @@ interface StandardCardTitleProps {
   className?: string;
 }
 
+/**
+ * A title component for use within a StandardCard.
+ *
+ * @param {object} props - The properties for the component.
+ * @param {React.ReactNode} props.children - The content to display as the title.
+ * @param {string} [props.className] - Additional CSS classes to apply to the title.
+ * @returns {JSX.Element} The rendered title component.
+ */
 export const StandardCardTitle: React.FC<StandardCardTitleProps> = ({ children, className = '' }) => {
   return (
     <h3 className={`font-satoshi font-semibold text-xl text-text-white mb-3 ${className}`}>
@@ -76,6 +103,14 @@ interface StandardCardDescriptionProps {
   className?: string;
 }
 
+/**
+ * A description component for use within a StandardCard.
+ *
+ * @param {object} props - The properties for the component.
+ * @param {React.ReactNode} props.children - The content to display as the description.
+ * @param {string} [props.className] - Additional CSS classes to apply to the description.
+ * @returns {JSX.Element} The rendered description component.
+ */
 export const StandardCardDescription: React.FC<StandardCardDescriptionProps> = ({ children, className = '' }) => {
   return (
     <p className={`text-text-white-60 font-inter text-sm leading-relaxed ${className}`}>

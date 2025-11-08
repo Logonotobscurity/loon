@@ -9,6 +9,16 @@ interface CTAButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
 }
 
+/**
+ * A call-to-action button with several variants and sizes.
+ *
+ * @param {object} props - The properties for the component.
+ * @param {React.ReactNode} props.children - The content to display inside the button.
+ * @param {string} [props.variant='primary'] - The button's style variant.
+ * @param {string} [props.size='md'] - The button's size.
+ * @param {string} [props.className] - Additional CSS classes to apply to the button.
+ * @returns {JSX.Element} The rendered button component.
+ */
 export const CTAButton = ({ children, variant = 'primary', size = 'md', className, ...props }: CTAButtonProps) => {
   const baseClasses = 'font-inter font-medium rounded-lg transition-all duration-300 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group';
   

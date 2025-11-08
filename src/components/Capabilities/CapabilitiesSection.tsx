@@ -6,6 +6,11 @@ import { copy } from '../../copy';
 
 const icons = [BrainCircuit, Lock, Monitor, Users, Zap, ShieldCheck];
 
+/**
+ * A section that displays the capabilities of the application.
+ *
+ * @returns {JSX.Element} The rendered capabilities section.
+ */
 export const CapabilitiesSection = () => {
   return (
     <SectionWrapper id="capabilities" className="relative">

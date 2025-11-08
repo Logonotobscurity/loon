@@ -8,6 +8,16 @@ interface ButtonCrossArrowProps {
   className?: string;
 }
 
+/**
+ * A button component with a cross-arrow icon, built on top of CTAButton.
+ *
+ * @param {object} props - The properties for the component.
+ * @param {string} [props.text='See all agent'] - The text to display inside the button.
+ * anpm install
+ * @param {Function} [props.onClick] - The function to call when the button is clicked.
+ * @param {string} [props.className] - Additional CSS classes to apply to the button.
+ * @returns {JSX.Element} The rendered button component.
+ */
 const ButtonCrossArrow: React.FC<ButtonCrossArrowProps> = ({ 
   text = "See all agent", 
   onClick,

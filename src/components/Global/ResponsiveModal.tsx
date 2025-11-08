@@ -11,6 +11,16 @@ interface ResponsiveModalProps {
   className?: string;
 }
 
+/**
+ * A responsive modal component that displays as a dialog on desktop and a drawer on mobile.
+ *
+ * @param {object} props - The properties for the component.
+ * @param {boolean} props.isOpen - Whether the modal is open.
+ * @param {Function} props.onClose - The function to call when the modal is closed.
+ * @param {React.ReactNode} props.children - The content to display inside the modal.
+ * @param {string} [props.className] - Additional CSS classes to apply to the modal content.
+ * @returns {JSX.Element | null} The rendered modal component or null if it's not open.
+ */
 export const ResponsiveModal: React.FC<ResponsiveModalProps> = ({
   isOpen,
   onClose,

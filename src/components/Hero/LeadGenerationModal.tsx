@@ -8,6 +8,14 @@ interface LeadGenerationModalProps {
   onClose: () => void;
 }
 
+/**
+ * A modal for lead generation.
+ *
+ * @param {object} props - The properties for the component.
+ * @param {boolean} props.isOpen - Whether the modal is open.
+ * @param {Function} props.onClose - The function to call when the modal is closed.
+ * @returns {JSX.Element} The rendered lead generation modal.
+ */
 export const LeadGenerationModal: React.FC<LeadGenerationModalProps> = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
     name: '',

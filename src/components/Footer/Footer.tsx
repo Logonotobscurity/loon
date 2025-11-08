@@ -43,6 +43,11 @@ const socialLinks = [
   { name: 'YouTube', icon: Youtube, href: '#' }
 ];
 
+/**
+ * A footer component that displays navigation links, social media links, and a call-to-action.
+ *
+ * @returns {JSX.Element} The rendered footer component.
+ */
 export const Footer = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState<'waitlist' | 'vendor'>('waitlist');

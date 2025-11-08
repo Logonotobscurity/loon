@@ -13,6 +13,20 @@ interface VirtualListProps<T> {
   onScroll?: (scrollOffset: number) => void;
 }
 
+/**
+ * A virtual list component for rendering large lists of items efficiently.
+ *
+ * @param {object} props - The properties for the component.
+ * @param {Array<T>} props.items - The items to render in the list.
+ * @param {(item: T, index: number) => React.ReactNode} props.renderItem - A function to render each item.
+ * @param {number | ((index: number) => number)} props.itemHeight - The height of each item, or a function to calculate the height.
+ * @param {number} [props.containerHeight] - The height of the list container.
+ * @param {number} [props.overscanCount=5] - The number of items to render outside the visible area.
+ * @param {string} [props.className] - Additional CSS classes to apply to the list.
+ * @param {boolean} [props.variableHeight=false] - Whether the items have variable heights.
+ * @param {(scrollOffset: number) => void} [props.onScroll] - A function to call when the list is scrolled.
+ * @returns {JSX.Element} The rendered virtual list component.
+ */
 export function VirtualList<T>({
   items,
   renderItem,
@@ -75,6 +89,11 @@ export function VirtualList<T>({
   );
 }
 
+/**
+ * A hook to get the current window size.
+ *
+ * @returns {{width: number, height: number}} The current window size.
+ */
 // Hook for window size
 export function useWindowSize() {
   const [windowSize, setWindowSize] = React.useState({
@@ -101,6 +120,14 @@ export function useWindowSize() {
   return windowSize;
 }
 
+/**
+ * A memoized component to render a marketplace item.
+ *
+ * @param {object} props - The properties for the component.
+ * @param {any} props.item - The marketplace item to render.
+ * @param {(item: any) => void} props.onClick - A function to call when the item is clicked.
+ * @returns {JSX.Element} The rendered marketplace item.
+ */
 // Memoized wrapper for marketplace items
 export const MemoizedMarketplaceItem = React.memo(({ 
   item, 

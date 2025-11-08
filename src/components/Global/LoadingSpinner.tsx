@@ -1,5 +1,10 @@
 import React from 'react';
 
+/**
+ * A simple loading spinner component.
+ *
+ * @returns {JSX.Element} The rendered loading spinner.
+ */
 export const LoadingSpinner: React.FC = () => {
   return (
     <div className="flex items-center justify-center min-h-[200px]">
@@ -8,6 +13,11 @@ export const LoadingSpinner: React.FC = () => {
   );
 };
 
+/**
+ * A full-page loading indicator with a "Loading..." message.
+ *
+ * @returns {JSX.Element} The rendered full-page loading indicator.
+ */
 export const PageLoading: React.FC = () => {
   return (
     <div className="flex items-center justify-center min-h-screen">

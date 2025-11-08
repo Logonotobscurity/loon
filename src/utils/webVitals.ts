@@ -9,6 +9,9 @@ interface WebVitalsReport {
   navigationType?: string;
 }
 
+/**
+ * A class to track web vitals and custom performance metrics.
+ */
 class WebVitalsTracker {
   private isInitialized = false;
   private vitals: WebVitalsReport[] = [];
@@ -151,6 +154,11 @@ if (typeof window !== 'undefined') {
   webVitalsTracker.init();
 }
 
+/**
+ * A React hook for using web vitals in components.
+ *
+ * @returns {object} An object with functions to get web vitals summary, check if core web vitals are good, get recommendations, measure custom metrics, and track interactions.
+ */
 // React hook for using web vitals in components
 export const useWebVitals = () => {
   return {

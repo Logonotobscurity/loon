@@ -14,12 +14,22 @@ const About = lazy(() => import('./pages/About'));
 const Marketplace = lazy(() => import('./pages/Marketplace'));
 const ProductDetails = lazy(() => import('./pages/ProductDetails'));
 
+/**
+ * RouteTracker component.
+ * This component tracks page views whenever the route changes.
+ * @returns {null} This component does not render anything.
+ */
 function RouteTracker() {
   const location = useLocation();
   useEffect(() => { trackPageView(location.pathname); }, [location.pathname]);
   return null;
 }
 
+/**
+ * Main App component.
+ * This component sets up the application's routing and initializes analytics.
+ * @returns {JSX.Element} The rendered App component.
+ */
 function App() {
   useEffect(() => { initAnalytics(); }, []);
   return (

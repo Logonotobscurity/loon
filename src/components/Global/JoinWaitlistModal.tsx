@@ -1,5 +1,13 @@
 import React, { useMemo, useState } from 'react';
 
+/**
+ * A modal component for joining a waitlist or applying as a vendor.
+ *
+ * @param {object} props - The properties for the component.
+ * @param {string} [props.mode='waitlist'] - The mode of the modal, either 'waitlist' or 'vendor'.
+ * @param {Function} props.onClose - The function to call when the modal is closed.
+ * @returns {JSX.Element} The rendered modal component.
+ */
 export function JoinWaitlistModal({ mode = 'waitlist', onClose }: { mode?: 'waitlist' | 'vendor'; onClose: () => void }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');

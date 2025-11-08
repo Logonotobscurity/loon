@@ -7,6 +7,15 @@ interface SectionWrapperProps {
   id?: string;
 }
 
+/**
+ * A wrapper component for sections with animation effects.
+ *
+ * @param {object} props - The properties for the component.
+ * @param {React.ReactNode} props.children - The content to display inside the section.
+ * @param {string} [props.className] - Additional CSS classes to apply to the section.
+ * @param {string} [props.id] - The ID of the section.
+ * @returns {JSX.Element} The rendered section wrapper component.
+ */
 export const SectionWrapper = ({ children, className = '', id }: SectionWrapperProps) => {
   return (
     <motion.section

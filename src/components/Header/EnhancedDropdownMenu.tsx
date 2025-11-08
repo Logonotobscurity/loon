@@ -19,6 +19,15 @@ interface EnhancedDropdownMenuProps {
   highlight?: string;
 }
 
+/**
+ * An enhanced dropdown menu with sections and an optional highlight.
+ *
+ * @param {object} props - The properties for the component.
+ * @param {string} props.title - The title of the dropdown menu.
+ * @param {Array<MenuSection>} props.sections - The sections to display in the dropdown menu.
+ * @param {string} [props.highlight] - A highlight text to display at the bottom of the dropdown.
+ * @returns {JSX.Element} The rendered enhanced dropdown menu component.
+ */
 export const EnhancedDropdownMenu: React.FC<EnhancedDropdownMenuProps> = ({ 
   title, 
   sections,

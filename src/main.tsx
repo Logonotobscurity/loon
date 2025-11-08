@@ -1,3 +1,7 @@
+/**
+ * @fileoverview This is the entry point of the application.
+ * It initializes Sentry for error tracking, and renders the main App component.
+ */
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import * as Sentry from '@sentry/react';

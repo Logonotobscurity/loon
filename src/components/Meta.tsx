@@ -15,6 +15,18 @@ interface MetaProps {
   breadcrumbs?: BreadcrumbItem[];
 }
 
+/**
+ * A component to manage SEO and metadata using React Helmet.
+ *
+ * @param {object} props - The properties for the component.
+ * @param {string} [props.title] - The title of the page.
+ * @param {string} [props.description] - The description of the page.
+ * @param {string} [props.keywords] - The keywords for the page.
+ * @param {string} [props.canonical] - The canonical URL of the page.
+ * @param {string} [props.ogImage] - The Open Graph image for the page.
+ * @param {Array<BreadcrumbItem>} [props.breadcrumbs] - An array of breadcrumb items.
+ * @returns {JSX.Element} The rendered meta component.
+ */
 const Meta: React.FC<MetaProps> = ({
   title = "LOG_ON - AI Agent Marketplace | Voice-First Business Intelligence",
   description = "Deploy autonomous AI agents with LOG_ON to automate workflows, accelerate growth & transform your business. Enterprise-grade infrastructure for voice-first business intelligence.",
