@@ -22,6 +22,9 @@ export interface SendMessageResult {
   usage?: any;
 }
 
+/**
+ * A service for managing conversations with the AI.
+ */
 export class ConversationService {
   private genAI: GoogleGenerativeAI;
   private model: any;
@@ -52,10 +55,21 @@ export class ConversationService {
     setInterval(() => this.cleanCache(), this.CACHE_TTL);
   }
 
+  /**
+   * Checks if the AI service is configured.
+   *
+   * @returns {boolean} True if the service is configured, false otherwise.
+   */
   public isConfigured(): boolean {
     return !!environment.googleGenerativeAIApiKey && this.genAI !== null && this.model !== null;
   }
 
+  /**
+   * Sends a message to the AI.
+   *
+   * @param {SendMessageParams} params - The parameters for sending the message.
+   * @returns {Promise<SendMessageResult>} A promise that resolves with the AI's response.
+   */
   public async sendMessage(params: SendMessageParams): Promise<SendMessageResult> {
     const { text, image, conversationHistory = [], useRag = false } = params;
 
@@ -116,6 +130,12 @@ export class ConversationService {
     }
   }
 
+  /**
+   * Generates a title from a message.
+   *
+   * @param {string} message - The message to generate a title from.
+   * @returns {Promise<string>} A promise that resolves with the generated title.
+   */
   public async generateTitleFromMessage(message: string): Promise<string> {
     try {
       const prompt = `Generate a concise, descriptive title (max 50 characters) for this conversation based on the first message: "${message}"`;

@@ -7,6 +7,9 @@ export interface GeminiApiResponse {
   timestamp: number;
 }
 
+/**
+ * A service for interacting with the Google Gemini API.
+ */
 export class GeminiApiService {
   private genAI: GoogleGenerativeAI | null = null;
   private model: any = null;
@@ -29,6 +32,11 @@ export class GeminiApiService {
     }
   }
 
+  /**
+   * Checks if the Gemini API is configured.
+   *
+   * @returns {boolean} True if the API is configured, false otherwise.
+   */
   public isConfigured(): boolean {
     return Boolean(environment.googleGenerativeAIApiKey) && this.genAI !== null;
   }
@@ -50,6 +58,13 @@ export class GeminiApiService {
     });
   }
 
+  /**
+   * Sends a message to the Gemini API.
+   *
+   * @param {string} text - The text message to send.
+   * @param {File} [image] - An optional image to send with the message.
+   * @returns {Promise<ApiResponse<GeminiApiResponse>>} A promise that resolves with the API response.
+   */
   async sendMessage(text: string, image?: File): Promise<ApiResponse<GeminiApiResponse>> {
     if (!this.isConfigured()) {
       return {
@@ -107,10 +122,23 @@ export class GeminiApiService {
     }
   }
 
+  /**
+   * Sends a text-only message to the Gemini API.
+   *
+   * @param {string} text - The text message to send.
+   * @returns {Promise<ApiResponse<GeminiApiResponse>>} A promise that resolves with the API response.
+   */
   async sendTextMessage(text: string): Promise<ApiResponse<GeminiApiResponse>> {
     return this.sendMessage(text);
   }
 
+  /**
+   * Sends a message with an image to the Gemini API.
+   *
+   * @param {string} text - The text message to send.
+   * @param {File} image - The image to send with the message.
+   * @returns {Promise<ApiResponse<GeminiApiResponse>>} A promise that resolves with the API response.
+   */
   async sendImageMessage(text: string, image: File): Promise<ApiResponse<GeminiApiResponse>> {
     return this.sendMessage(text, image);
   }

@@ -19,6 +19,9 @@ export interface ISpeechRecognitionService {
   getTranscript(): string;
 }
 
+/**
+ * A service for handling speech recognition.
+ */
 export class SpeechRecognitionService implements ISpeechRecognitionService {
   private static instance: SpeechRecognitionService;
   private recognition: SpeechRecognition | null = null;
@@ -26,6 +29,11 @@ export class SpeechRecognitionService implements ISpeechRecognitionService {
   private currentTranscript = '';
   private timeoutId: NodeJS.Timeout | null = null;
 
+  /**
+   * Gets the singleton instance of the SpeechRecognitionService.
+   *
+   * @returns {SpeechRecognitionService} The singleton instance.
+   */
   public static getInstance(): SpeechRecognitionService {
     if (!SpeechRecognitionService.instance) {
       SpeechRecognitionService.instance = new SpeechRecognitionService();
@@ -44,18 +52,39 @@ export class SpeechRecognitionService implements ISpeechRecognitionService {
     this.recognition = new SpeechRecognition();
   }
 
+  /**
+   * Checks if speech recognition is supported in the browser.
+   *
+   * @returns {boolean} True if supported, false otherwise.
+   */
   isSupported(): boolean {
     return 'SpeechRecognition' in window || 'webkitSpeechRecognition' in window;
   }
 
+  /**
+   * Checks if the service is currently listening for speech.
+   *
+   * @returns {boolean} True if listening, false otherwise.
+   */
   isListening(): boolean {
     return this.isCurrentlyListening;
   }
 
+  /**
+   * Gets the current transcript.
+   *
+   * @returns {string} The current transcript.
+   */
   getTranscript(): string {
     return this.currentTranscript;
   }
 
+  /**
+   * Starts speech recognition.
+   *
+   * @param {SpeechRecognitionConfig} [config] - The configuration for speech recognition.
+   * @returns {Promise<void>} A promise that resolves when recognition starts.
+   */
   async startRecognition(config: SpeechRecognitionConfig = {}): Promise<void> {
     if (!this.isSupported()) {
       throw new Error('Speech recognition is not supported in this browser');
@@ -125,6 +154,9 @@ export class SpeechRecognitionService implements ISpeechRecognitionService {
     });
   }
 
+  /**
+   * Stops speech recognition.
+   */
   stopRecognition(): void {
     if (this.recognition && this.isCurrentlyListening) {
       this.recognition.stop();
@@ -137,6 +169,9 @@ export class SpeechRecognitionService implements ISpeechRecognitionService {
     }
   }
 
+  /**
+   * Clears the current transcript.
+   */
   clearTranscript(): void {
     this.currentTranscript = '';
   }
